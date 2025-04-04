@@ -5,6 +5,7 @@ module module_name {
     requires javafx.graphics;
     requires static lombok;
     requires net.datafaker;
+    requires java.desktop;
 
     opens iuh.fit;
 }

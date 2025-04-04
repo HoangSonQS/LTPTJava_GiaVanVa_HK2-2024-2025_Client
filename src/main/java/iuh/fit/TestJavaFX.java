@@ -16,6 +16,7 @@ public class TestJavaFX extends Application {
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);
             primaryStage.show();
+            scene.getStylesheets().add(getClass().getResource("/styles/menu.css").toExternalForm());
         } catch(Exception e) {
             e.printStackTrace();
         }

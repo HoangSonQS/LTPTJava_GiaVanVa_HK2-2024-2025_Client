@@ -1,0 +1,23 @@
+.vBox{
+    /*-fx-border-style: solid inside;*/
+    /*-fx-border-width: 1;*/
+}
+.subVBox{
+    /*-fx-border-style: solid inside;*/
+    /*-fx-border-width: 1;*/
+    /*-fx-border-color: #4da6ff;*/
+    -fx-background-color: #cb73ea;
+}
+.menu{
+    /*-fx-background-color:#4da6ff;*/
+}
+.subMenu{
+    /*-fx-border-style: solid inside;*/
+    /*-fx-border-width: 1;*/
+    /*-fx-border-color: #8FF9E0;*/
+    -fx-background-color: #cb73ea;
+}
+
+.p_gioHang{
+    -fx-border-color: solid #808080;
+}
