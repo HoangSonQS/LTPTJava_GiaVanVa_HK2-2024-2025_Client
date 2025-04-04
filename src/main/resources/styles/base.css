@@ -1,0 +1,4 @@
+.store {
+    -fx-background-image:url('images/store.jpg');
+    -fx-background-size:cover;
+}

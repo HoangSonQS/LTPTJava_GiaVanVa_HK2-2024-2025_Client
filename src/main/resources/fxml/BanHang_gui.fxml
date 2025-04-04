@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <Pane layoutX="270.0" prefHeight="80.0" prefWidth="1270.0" style="-fx-background-color: #CC33FF;">
+         <children>
+            <Label layoutX="15.0" layoutY="15.0" text="Địa chỉ: Số 12, Nguyễn Văn Bảo, Phường 4" textFill="#ffff90">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="40.0" text="Quận Gò Vấp, Thành phố Hồ Chí Minh" textFill="#ffff90">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Circle layoutX="1500.0" layoutY="35.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label alignment="CENTER_RIGHT" layoutX="1286.0" layoutY="15.0" prefHeight="20.0" prefWidth="170.0" text="Nguyễn Văn A" textFill="YELLOW">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </Pane>
+      <Pane prefHeight="795.0" prefWidth="270.0" style="-fx-background-color: #9900CC;">
+         <children>
+            <Button layoutX="65.0" layoutY="700.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #FF0033;" text="Đăng xuất" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="20.0" />
+               </font>
+            </Button>
+         </children></Pane>
+      <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
+         <children>
+            <Pane layoutX="15.0" layoutY="15.0" prefHeight="70.0" prefWidth="420.0" style="-fx-background-color: #EEEEEE;">
+               <children>
+                  <Label layoutX="15.0" layoutY="5.0" text="Tên khách hàng: ">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="35.0" text="Số điện thoại: ">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="165.0" layoutY="10.0" prefHeight="25.0" prefWidth="250.0" />
+                  <TextField layoutX="165.0" layoutY="40.0" prefHeight="25.0" prefWidth="250.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="15.0" layoutY="90.0" prefHeight="610.0" prefWidth="850.0" style="-fx-background-color: #EEEEEE;">
+               <children>
+                  <TableView prefHeight="610.0" prefWidth="850.0">
+                    <columns>
+                      <TableColumn fx:id="tcSTT" prefWidth="100.0" text="STT" />
+                      <TableColumn fx:id="tcMaSP" prefWidth="150.0" text="Mã sản phẩm" />
+                        <TableColumn fx:id="tcTenSP" prefWidth="150.0" text="Tên sản phẩm" />
+                        <TableColumn fx:id="tcSoLuong" prefWidth="150.0" text="Số lượng" />
+                        <TableColumn fx:id="tcDonGia" prefWidth="150.0" text="Đơn giá" />
+                        <TableColumn fx:id="tcThanhTien" prefWidth="150.0" text="Thành tiền" />
+                    </columns>
+                  </TableView>
+               </children></Pane>
+            <Pane layoutX="880.0" layoutY="15.0" prefHeight="110.0" prefWidth="375.0" style="-fx-background-color: #EEEEEE;">
+               <children>
+                  <Button layoutX="180.0" layoutY="55.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #00CC66;" text="Thêm sản phẩm" textFill="WHITE">
+                     <font>
+                        <Font name="Arial Bold" size="20.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="15.0" layoutY="15.0" text="Nhập mã sản phẩm: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="65.0" text="Số lượng: ">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </Label>
+                  <TextField layoutX="180.0" layoutY="10.0" prefHeight="40.0" prefWidth="190.0">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                  </TextField>
+                  <TextField layoutX="100.0" layoutY="65.0" prefHeight="25.0" prefWidth="70.0" />
+               </children></Pane>
+            <Pane layoutX="445.0" layoutY="15.0" prefHeight="70.0" prefWidth="420.0" style="-fx-background-color: #EEEEEE;">
+               <children>
+                  <Label layoutX="15.0" layoutY="5.0" text="Ngày lập: ">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="15.0" layoutY="35.0" text="Thời gian: ">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER_RIGHT" layoutX="260.0" layoutY="5.0" prefWidth="150.0" text="03/11/2025">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="CENTER_RIGHT" layoutX="260.0" layoutY="35.0" prefWidth="150.0" text="00:00:00">
+                     <font>
+                        <Font size="20.0" />
+                     </font>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
