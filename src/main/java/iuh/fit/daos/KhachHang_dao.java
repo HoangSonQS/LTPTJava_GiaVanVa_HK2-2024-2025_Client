@@ -13,9 +13,7 @@ package iuh.fit.daos;/*
 import iuh.fit.entities.KhachHang;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.TypedQuery;
 import java.util.List;
 
 public class KhachHang_dao {
@@ -77,24 +75,4 @@ public class KhachHang_dao {
             e.printStackTrace();
         }
     }
-
-    /**
-     * Tìm kiếm khách hàng theo số điện thoại
-     * @param sdt Số điện thoại cần tìm
-     * @return Đối tượng KhachHang nếu tìm thấy, null nếu không tìm thấy
-     */
-    public KhachHang findByPhone(String sdt) {
-        try {
-            TypedQuery<KhachHang> query = em.createQuery(
-                "SELECT k FROM KhachHang k WHERE k.sdt = :sdt", KhachHang.class);
-            query.setParameter("sdt", sdt);
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null; // Trả về null nếu không tìm thấy khách hàng
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }
