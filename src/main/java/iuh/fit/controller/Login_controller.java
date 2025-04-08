@@ -101,20 +101,14 @@ public class Login_controller implements Initializable {
         // Kiểm tra đăng nhập
         try {
             // TODO: Thực hiện kiểm tra đăng nhập với cơ sở dữ liệu
-            // Ví dụ:
-            // TaiKhoan taiKhoan = taiKhoanDao.checkLogin(username, password);
-
-            // Tạm thời cho phép đăng nhập với bất kỳ thông tin nào
-            TaiKhoan taiKhoan = new TaiKhoan();
-            taiKhoan.setMaTaiKhoan("TK001");
-            taiKhoan.setTenDangNhap(username);
-
+            TaiKhoan taiKhoan = taiKhoanDao.findByUsernameandPassword(username, password);
             if (taiKhoan != null) {
                 // Lưu thông tin đăng nhập
                 App.taiKhoan = taiKhoan;
                 App.user = username;
                 App.ma = taiKhoan.getMaTaiKhoan();
                 System.out.println(App.user);
+                System.out.println(App.taiKhoan);
 
                 // Chuyển đến giao diện chính
                 try {

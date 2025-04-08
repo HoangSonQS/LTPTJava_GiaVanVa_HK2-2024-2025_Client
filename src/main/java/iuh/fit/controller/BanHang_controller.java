@@ -19,13 +19,7 @@ import iuh.fit.daos.HoaDon_dao;
 import iuh.fit.daos.KhachHang_dao;
 import iuh.fit.daos.NhanVien_dao;
 import iuh.fit.daos.SanPham_dao;
-import iuh.fit.entities.CaLam;
-import iuh.fit.entities.ChiTietHoaDon_SanPham;
-import iuh.fit.entities.ChiTietHoaDon_SanPhamId;
-import iuh.fit.entities.HoaDon;
-import iuh.fit.entities.KhachHang;
-import iuh.fit.entities.NhanVien;
-import iuh.fit.entities.SanPham;
+import iuh.fit.entities.*;
 import iuh.fit.enums.PhuongThucThanhToan;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -251,6 +245,12 @@ public class BanHang_controller implements Initializable {
     @FXML
     private VBox vBox;
 
+    @FXML
+    private Label lb_chucVu;
+
+    @FXML
+    private Label lb_tenNV;
+
     Map<VBox,VBox> map = new HashMap<VBox,VBox>();
 
     // DAO để truy xuất dữ liệu
@@ -287,6 +287,9 @@ public class BanHang_controller implements Initializable {
 
         // Khởi tạo tổng tiền
         updateTotalAmount();
+
+        // Khởi tạo thông tin nhân viên
+        initializeNhanVien();
         System.out.println(App.user);
     }
 
@@ -562,6 +565,18 @@ public class BanHang_controller implements Initializable {
         clock.play();
     }
 
+    private void initializeNhanVien() {
+        try {
+            TaiKhoan taiKhoan = App.taiKhoan;
+            System.out.println(taiKhoan);
+            NhanVien nhanVien = taiKhoan.getNhanVien();
+            lb_tenNV.setText(nhanVien.getTenNV());
+            lb_chucVu.setText(nhanVien.getChucVu().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể lấy thông tin nhân viên: " + e.getMessage());
+        }
+    }
     /**
      * Khởi tạo bảng giỏ hàng
      */

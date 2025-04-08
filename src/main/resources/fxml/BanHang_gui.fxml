@@ -19,12 +19,12 @@
       <Pane prefHeight="80.0" prefWidth="1540.0" style="-fx-background-color: #CC33FF;">
          <children>
             <Circle layoutX="1500.0" layoutY="35.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label alignment="CENTER_RIGHT" layoutX="1286.0" layoutY="15.0" prefHeight="20.0" prefWidth="170.0" text="Nguyễn Văn A" textFill="YELLOW">
+            <Label fx:id="lb_tenNV" alignment="CENTER_RIGHT" layoutX="1286.0" layoutY="15.0" prefHeight="20.0" prefWidth="170.0" text="Nguyễn Văn A" textFill="YELLOW">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>
             </Label>
-            <Label alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
+            <Label fx:id="lb_chucVu" alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>

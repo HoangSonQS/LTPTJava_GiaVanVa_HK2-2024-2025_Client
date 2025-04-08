@@ -49,4 +49,5 @@ public class NhanVien_dao {
         em.getTransaction().commit();
         em.close();
     }
+
 }
