@@ -114,6 +114,7 @@ public class Login_controller implements Initializable {
                 App.taiKhoan = taiKhoan;
                 App.user = username;
                 App.ma = taiKhoan.getMaTaiKhoan();
+                System.out.println(App.user);
 
                 // Chuyển đến giao diện chính
                 try {

@@ -249,7 +249,7 @@
                   </VBox>
                </children>
             </VBox>
-            <Button layoutX="65.0" layoutY="635.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #FF0033;" text="Đăng xuất" textFill="WHITE">
+            <Button fx:id="btn_dangXuat" layoutX="65.0" layoutY="635.0" mnemonicParsing="false" onMouseClicked="#handleDangXuatClick" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #FF0033;" text="Đăng xuất" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="20.0" />
                </font>

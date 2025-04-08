@@ -5,20 +5,26 @@ import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
+import iuh.fit.daos.CaLam_dao;
 import iuh.fit.daos.ChiTietHoaDon_SanPham_dao;
 import iuh.fit.daos.HoaDon_dao;
 import iuh.fit.daos.KhachHang_dao;
+import iuh.fit.daos.NhanVien_dao;
 import iuh.fit.daos.SanPham_dao;
+import iuh.fit.entities.CaLam;
 import iuh.fit.entities.ChiTietHoaDon_SanPham;
 import iuh.fit.entities.ChiTietHoaDon_SanPhamId;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.KhachHang;
+import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.SanPham;
 import iuh.fit.enums.PhuongThucThanhToan;
 import javafx.animation.FadeTransition;
@@ -37,10 +43,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -135,6 +144,9 @@ public class BanHang_controller implements Initializable {
     private Button btn_thanhToan;
 
     @FXML
+    private Button btn_dangXuat;
+
+    @FXML
     private Label lb_thongKe;
 
     @FXML
@@ -210,6 +222,9 @@ public class BanHang_controller implements Initializable {
     private TableView<SanPham> tableView;
 
     @FXML
+    private TextField txt_timKiem;
+
+    @FXML
     private VBox thongKeSubMenuList;
 
     @FXML
@@ -243,6 +258,8 @@ public class BanHang_controller implements Initializable {
     private HoaDon_dao hoaDonDao;
     private KhachHang_dao khachHangDao;
     private ChiTietHoaDon_SanPham_dao chiTietHoaDonDao;
+    private CaLam_dao caLamDao;
+    private NhanVien_dao nhanVienDao;
 
     // Danh sách các sản phẩm trong giỏ hàng
     private ObservableList<SanPham> cartItems;
@@ -256,6 +273,8 @@ public class BanHang_controller implements Initializable {
         hoaDonDao = new HoaDon_dao();
         khachHangDao = new KhachHang_dao();
         chiTietHoaDonDao = new ChiTietHoaDon_SanPham_dao();
+        caLamDao = new CaLam_dao();
+        nhanVienDao = new NhanVien_dao();
 
         // Khởi tạo các menu
         addMenusToMap();
@@ -268,6 +287,7 @@ public class BanHang_controller implements Initializable {
 
         // Khởi tạo tổng tiền
         updateTotalAmount();
+        System.out.println(App.user);
     }
 
     /**
@@ -332,12 +352,22 @@ public class BanHang_controller implements Initializable {
 
     @FXML
     void handleGioHangClick(MouseEvent event) {
-        // Hiển thị menu bán hàng
-        toolsSlider(banHangSubVBox, banHangSubMenuList);
-        removeOtherMenus(banHangSubVBox);
+        try {
+            // Hiển thị menu bán hàng
+            if (banHangSubVBox != null && banHangSubMenuList != null) {
+                toolsSlider(banHangSubVBox, banHangSubMenuList);
+                removeOtherMenus(banHangSubVBox);
+            }
 
-        // Hiển thị giao diện bán hàng chính
-        showMainSalesInterface();
+            // Hiển thị giao diện bán hàng chính
+            showMainSalesInterface();
+
+            // Làm mới giỏ hàng
+            updateTotalAmount();
+        } catch (Exception e) {
+            System.err.println("Lỗi trong handleGioHangClick: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -354,12 +384,34 @@ public class BanHang_controller implements Initializable {
 
     @FXML
     void handleTimKiemClick(MouseEvent event) {
-        // Hiển thị menu tìm kiếm
-        toolsSlider(timKiemSubVBox, timKiemSubMenuList);
-        removeOtherMenus(timKiemSubVBox);
+        try {
+            // Chuyển đến giao diện TraCuu_gui.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TraCuu_gui.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
 
-        // Hiển thị giao diện tìm kiếm
-        showSearchInterface();
+            // Lấy stage hiện tại
+            Stage stage = (Stage) p_gioHang.getScene().getWindow();
+
+            // Thiết lập scene mới
+            stage.setScene(scene);
+            stage.setTitle("Tra cứu sản phẩm");
+
+            // Hiển thị stage
+            stage.show();
+
+            System.out.println("Chuyển đến giao diện tra cứu thành công");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
+
+            // Nếu không thể mở giao diện tra cứu, hiển thị giao diện tìm kiếm trên giao diện hiện tại
+            toolsSlider(timKiemSubVBox, timKiemSubMenuList);
+            removeOtherMenus(timKiemSubVBox);
+
+            // Hiển thị giao diện tìm kiếm
+            showSearchInterface();
+        }
     }
     @FXML
     void themSanPham(MouseEvent event) {
@@ -572,6 +624,12 @@ public class BanHang_controller implements Initializable {
             cartItems = FXCollections.observableArrayList();
             if (tableView != null) {
                 tableView.setItems(cartItems);
+
+                // Thêm sự kiện nhấp đúp vào bảng
+                tableView.setOnMouseClicked(this::handleSearchResultDoubleClick);
+
+                // Thêm context menu cho bảng
+                setupTableContextMenu();
             } else {
                 System.out.println("TableView is null. Check your FXML file.");
             }
@@ -697,45 +755,43 @@ public class BanHang_controller implements Initializable {
      */
     private void createInvoice() {
         try {
-            // Kiểm tra giỏ hàng có sản phẩm không
+            // Check if the cart is empty
             if (cartItems.isEmpty()) {
                 showAlert(AlertType.WARNING, "Thông báo", "Giỏ hàng trống!");
                 return;
             }
 
-            // Lấy thông tin khách hàng
+            // Validate customer information
             String tenKH = txt_tenKH.getText().trim();
             String sdt = txt_sdt.getText().trim();
 
-            // Tạo mã hóa đơn mới
+            // Generate invoice ID
             String maHD = "HD" + System.currentTimeMillis();
 
-            // Tạo hóa đơn mới
-            HoaDon hoaDon = new HoaDon();
-            hoaDon.setMaHD(maHD);
-            hoaDon.setMaNV("NV001"); // Mã nhân viên mặc định
-            hoaDon.setThoiGian(java.time.LocalDateTime.now());
+            // Handle shift (CaLam)
+            String maCa = "CA" + System.currentTimeMillis();
+            CaLam caLam = caLamDao.read("CA001");
+            if (caLam == null) {
+                caLam = new CaLam();
+                caLam.setMaCa(maCa);
+                caLam.setGioBatDau(java.time.LocalDateTime.now());
+                caLam.setGioKetThuc(java.time.LocalDateTime.now().plusHours(8));
+                caLam.setTrangThai(true);
 
-            // Tính tổng số lượng sản phẩm
-            int tongSoLuong = 0;
-            for (Integer quantity : productQuantities.values()) {
-                tongSoLuong += quantity;
+                if (App.taiKhoan != null) {
+                    caLam.setTaiKhoan(App.taiKhoan);
+                } else {
+                    showAlert(AlertType.WARNING, "Cảnh báo", "Không có tài khoản đăng nhập, sử dụng tài khoản mặc định");
+                    return;
+                }
+
+                caLamDao.create(caLam);
             }
-            hoaDon.setTongSoLuongSP(tongSoLuong);
 
-            // Tính tổng tiền
-            double tongTien = calculateTotal();
-            hoaDon.setThanhTien(tongTien);
-
-            // Đặt phương thức thanh toán mặc định
-            hoaDon.setPhuongThucTT(PhuongThucThanhToan.Tien_Mat);
-
-            // Kiểm tra và tạo khách hàng nếu có thông tin
+            // Handle customer (KhachHang)
+            KhachHang khachHang = null;
             if (!tenKH.isEmpty() && !sdt.isEmpty()) {
-                // Tìm kiếm khách hàng theo số điện thoại
-                KhachHang khachHang = khachHangDao.findByPhone(sdt);
-
-                // Nếu khách hàng chưa tồn tại, tạo mới
+                khachHang = khachHangDao.findByPhone(sdt);
                 if (khachHang == null) {
                     khachHang = new KhachHang();
                     khachHang.setMaKH("KH" + System.currentTimeMillis());
@@ -743,51 +799,63 @@ public class BanHang_controller implements Initializable {
                     khachHang.setSdt(sdt);
                     khachHangDao.create(khachHang);
                 }
-
-                // Gán mã khách hàng cho hóa đơn
-                hoaDon.setMaKH(khachHang.getMaKH());
+            } else {
+                khachHang = khachHangDao.read("KH001");
+                if (khachHang == null) {
+                    khachHang = new KhachHang();
+                    khachHang.setMaKH("KH001");
+                    khachHang.setTenKH("Khách hàng vãng lai");
+                    khachHang.setSdt("0000000000");
+                    khachHangDao.create(khachHang);
+                }
             }
 
-            // Lưu hóa đơn vào database
+            // Create invoice (HoaDon)
+            HoaDon hoaDon = new HoaDon();
+            hoaDon.setMaHD(maHD);
+            hoaDon.setThoiGian(java.time.LocalDateTime.now());
+            hoaDon.setTongSoLuongSP(productQuantities.values().stream().mapToInt(Integer::intValue).sum());
+            hoaDon.setThanhTien(calculateTotal());
+            hoaDon.setPhuongThucTT(PhuongThucThanhToan.Tien_Mat);
+            hoaDon.setCaLam(caLam);
+            hoaDon.setKhachHang(khachHang);
             hoaDonDao.create(hoaDon);
 
-            // Tạo chi tiết hóa đơn cho từng sản phẩm
+            // Create invoice details (ChiTietHoaDon_SanPham)
             for (SanPham sp : cartItems) {
                 int soLuong = productQuantities.getOrDefault(sp.getMaSP(), 0);
 
-                // Tạo ID cho chi tiết hóa đơn
-                ChiTietHoaDon_SanPhamId chiTietId = new ChiTietHoaDon_SanPhamId();
-                chiTietId.setMaHD(maHD);
-                chiTietId.setMaSP(sp.getMaSP());
+                // Check stock availability
+                if (sp.getSoLuongTon() < soLuong) {
+                    showAlert(AlertType.WARNING, "Thông báo", "Sản phẩm " + sp.getTenSP() + " không đủ số lượng trong kho!");
+                    return;
+                }
 
-                // Tạo chi tiết hóa đơn
+                ChiTietHoaDon_SanPhamId chiTietId = new ChiTietHoaDon_SanPhamId(maHD, sp.getMaSP());
                 ChiTietHoaDon_SanPham chiTiet = new ChiTietHoaDon_SanPham();
                 chiTiet.setId(chiTietId);
                 chiTiet.setSoLuongSP(soLuong);
                 chiTiet.setDonGia(sp.getGiaBan());
                 chiTiet.setHoaDon(hoaDon);
                 chiTiet.setSanPham(sp);
-
-                // Lưu chi tiết hóa đơn
                 chiTietHoaDonDao.create(chiTiet);
 
-                // Cập nhật số lượng tồn kho
+                // Update stock
                 sp.setSoLuongTon(sp.getSoLuongTon() - soLuong);
                 sanPhamDao.update(sp);
             }
 
-            // Xóa giỏ hàng sau khi tạo hóa đơn
+            // Clear cart and refresh UI
             cartItems.clear();
             productQuantities.clear();
             tableView.refresh();
-
-            // Làm mới form
             txt_tenKH.clear();
             txt_sdt.clear();
             txt_nhapMa.clear();
             txt_nhapSL.clear();
+            updateTotalAmount();
 
-            // Hiển thị thông báo thành công
+            // Show success message
             showAlert(AlertType.INFORMATION, "Thành công", "Đã tạo hóa đơn thành công!");
 
         } catch (Exception e) {
@@ -800,7 +868,271 @@ public class BanHang_controller implements Initializable {
      * Hiển thị giao diện tìm kiếm
      */
     private void showSearchInterface() {
-        // TODO: Hiển thị giao diện tìm kiếm
+        try {
+            // Làm mới form tìm kiếm
+            txt_timKiem.clear();
+            txt_timKiem.requestFocus();
+
+            // Khởi tạo dữ liệu tìm kiếm nếu cần
+            initializeSearchData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể hiển thị giao diện tìm kiếm: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Khởi tạo dữ liệu tìm kiếm
+     */
+    private void initializeSearchData() {
+        try {
+            // Tạo danh sách sản phẩm cho tìm kiếm
+            ObservableList<SanPham> searchResults = FXCollections.observableArrayList();
+
+            // Lấy tất cả sản phẩm từ database
+            List<SanPham> allProducts = sanPhamDao.readAll();
+            searchResults.addAll(allProducts);
+
+            // Hiển thị kết quả tìm kiếm trong bảng
+            // Sử dụng bảng hiện tại để hiển thị kết quả tìm kiếm
+            tableView.setItems(searchResults);
+
+
+            // Thêm sự kiện cho trường tìm kiếm
+            setupSearchField();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể khởi tạo dữ liệu tìm kiếm: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Thiết lập sự kiện cho trường tìm kiếm
+     */
+    private void setupSearchField() {
+        // Thêm sự kiện khi nhập vào trường tìm kiếm
+        txt_timKiem.textProperty().addListener((observable, oldValue, newValue) -> {
+            performSearch(newValue);
+        });
+    }
+
+    /**
+     * Thực hiện tìm kiếm sản phẩm
+     */
+    private void performSearch(String keyword) {
+        try {
+            if (keyword == null || keyword.trim().isEmpty()) {
+                // Nếu từ khóa trống, hiển thị tất cả sản phẩm
+                List<SanPham> allProducts = sanPhamDao.readAll();
+                tableView.setItems(FXCollections.observableArrayList(allProducts));
+                return;
+            }
+
+            // Tìm kiếm sản phẩm theo từ khóa
+            List<SanPham> searchResults = new ArrayList<>();
+            List<SanPham> allProducts = sanPhamDao.readAll();
+
+            // Lọc sản phẩm theo từ khóa (mã hoặc tên)
+            String keywordLower = keyword.toLowerCase();
+            for (SanPham sp : allProducts) {
+                if (sp.getMaSP().toLowerCase().contains(keywordLower) ||
+                    sp.getTenSP().toLowerCase().contains(keywordLower)) {
+                    searchResults.add(sp);
+                }
+            }
+
+            // Cập nhật bảng và trạng thái
+            tableView.setItems(FXCollections.observableArrayList(searchResults));
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể thực hiện tìm kiếm: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Xử lý sự kiện khi nhấp đúp vào sản phẩm trong kết quả tìm kiếm
+     */
+    @FXML
+    private void handleSearchResultDoubleClick(MouseEvent event) {
+        if (event.getClickCount() == 2) { // Nhấp đúp
+            SanPham selectedProduct = tableView.getSelectionModel().getSelectedItem();
+            if (selectedProduct != null) {
+                // Chuyển sang giao diện bán hàng và thêm sản phẩm vào giỏ hàng
+                handleGioHangClick(null);
+
+                // Điền thông tin sản phẩm vào form
+                txt_nhapMa.setText(selectedProduct.getMaSP());
+                txt_nhapSL.setText("1"); // Mặc định số lượng là 1
+                txt_nhapSL.requestFocus();
+            }
+        }
+    }
+
+    /**
+     * Thiết lập context menu cho bảng giỏ hàng
+     */
+    private void setupTableContextMenu() {
+        // Tạo context menu
+        ContextMenu contextMenu = new ContextMenu();
+
+        // Tạo menu item Xóa
+        MenuItem deleteItem = new MenuItem("Xóa sản phẩm");
+        deleteItem.setOnAction(event -> {
+            // Lấy sản phẩm được chọn
+            SanPham selectedProduct = tableView.getSelectionModel().getSelectedItem();
+            if (selectedProduct != null) {
+                // Xóa sản phẩm khỏi giỏ hàng
+                removeProductFromCart(selectedProduct.getMaSP());
+            }
+        });
+
+        // Tạo menu item Xóa tất cả
+        MenuItem clearAllItem = new MenuItem("Xóa tất cả");
+        clearAllItem.setOnAction(event -> {
+            // Xóa tất cả sản phẩm trong giỏ hàng
+            clearCart();
+        });
+
+        // Tạo menu item Sửa số lượng
+        MenuItem editItem = new MenuItem("Sửa số lượng");
+        editItem.setOnAction(event -> {
+            // Lấy sản phẩm được chọn
+            SanPham selectedProduct = tableView.getSelectionModel().getSelectedItem();
+            if (selectedProduct != null) {
+                // Hiển thị hộp thoại nhập số lượng mới
+                editProductQuantity(selectedProduct);
+            }
+        });
+
+        // Thêm các menu item vào context menu
+        contextMenu.getItems().addAll(deleteItem, editItem, clearAllItem);
+
+        // Gán context menu cho bảng
+        tableView.setContextMenu(contextMenu);
+    }
+
+    /**
+     * Sửa số lượng sản phẩm trong giỏ hàng
+     */
+    private void editProductQuantity(SanPham product) {
+        try {
+            // Tạo dialog để nhập số lượng mới
+            TextInputDialog dialog = new TextInputDialog(productQuantities.getOrDefault(product.getMaSP(), 1).toString());
+            dialog.setTitle("Sửa số lượng");
+            dialog.setHeaderText("Sản phẩm: " + product.getTenSP());
+            dialog.setContentText("Nhập số lượng mới:");
+
+            // Hiển thị dialog và đợi kết quả
+            dialog.showAndWait().ifPresent(result -> {
+                try {
+                    // Chuyển kết quả thành số
+                    int newQuantity = Integer.parseInt(result);
+
+                    // Kiểm tra số lượng hợp lệ
+                    if (newQuantity <= 0) {
+                        showAlert(AlertType.WARNING, "Cảnh báo", "Số lượng phải lớn hơn 0!");
+                        return;
+                    }
+
+                    // Kiểm tra số lượng tồn kho
+                    if (newQuantity > product.getSoLuongTon()) {
+                        showAlert(AlertType.WARNING, "Cảnh báo", "Số lượng vượt quá số lượng tồn kho (" + product.getSoLuongTon() + ")!");
+                        return;
+                    }
+
+                    // Cập nhật số lượng
+                    productQuantities.put(product.getMaSP(), newQuantity);
+
+                    // Cập nhật bảng và tổng tiền
+                    tableView.refresh();
+                    updateTotalAmount();
+
+                    showAlert(AlertType.INFORMATION, "Thông báo", "Đã cập nhật số lượng sản phẩm!");
+                } catch (NumberFormatException e) {
+                    showAlert(AlertType.ERROR, "Lỗi", "Số lượng phải là số nguyên!");
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể sửa số lượng sản phẩm: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Xóa tất cả sản phẩm trong giỏ hàng
+     */
+    private void clearCart() {
+        try {
+            // Kiểm tra xem giỏ hàng có trống không
+            if (cartItems.isEmpty()) {
+                showAlert(AlertType.INFORMATION, "Thông báo", "Giỏ hàng đã trống!");
+                return;
+            }
+
+            // Hiển thị hộp thoại xác nhận
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận xóa");
+            alert.setHeaderText(null);
+            alert.setContentText("Bạn có chắc chắn muốn xóa tất cả sản phẩm trong giỏ hàng?");
+
+            // Nếu người dùng nhấn OK
+            if (alert.showAndWait().get() == javafx.scene.control.ButtonType.OK) {
+                // Xóa tất cả sản phẩm trong giỏ hàng
+                cartItems.clear();
+                productQuantities.clear();
+                tableView.refresh();
+
+                // Cập nhật tổng tiền
+                updateTotalAmount();
+
+                showAlert(AlertType.INFORMATION, "Thông báo", "Đã xóa tất cả sản phẩm trong giỏ hàng!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể xóa giỏ hàng: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Xử lý sự kiện khi nhấn nút đăng xuất
+     */
+    @FXML
+    private void handleDangXuatClick(MouseEvent event) {
+        try {
+            // Hiển thị hộp thoại xác nhận
+            Alert alert = new Alert(AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận đăng xuất");
+            alert.setHeaderText(null);
+            alert.setContentText("Bạn có chắc chắn muốn đăng xuất?");
+
+            // Nếu người dùng nhấn OK
+            if (alert.showAndWait().get() == javafx.scene.control.ButtonType.OK) {
+                // Chuyển về màn hình đăng nhập
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login_gui.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+
+                // Lấy stage hiện tại
+                Stage stage = (Stage) btn_dangXuat.getScene().getWindow();
+
+                // Thiết lập scene mới
+                stage.setScene(scene);
+                stage.setTitle("Đăng nhập");
+
+                // Xóa thông tin đăng nhập hiện tại
+                App.taiKhoan = null;
+                App.user = null;
+                App.ma = null;
+
+                // Hiển thị stage
+                stage.show();
+
+                System.out.println("Đã đăng xuất thành công");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể đăng xuất: " + e.getMessage());
+        }
     }
 
     /**
@@ -810,10 +1142,14 @@ public class BanHang_controller implements Initializable {
         try {
             double total = calculateTotal();
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-            lb_tongTien.setText(currencyFormat.format(total));
+            if (lb_tongTien != null) {
+                lb_tongTien.setText(currencyFormat.format(total));
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            lb_tongTien.setText("0 VNĐ");
+            if (lb_tongTien != null) {
+                lb_tongTien.setText("0 VNĐ");
+            }
         }
     }
 
