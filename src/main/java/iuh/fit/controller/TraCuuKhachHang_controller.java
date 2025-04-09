@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class TraCuu_controller implements Initializable {
+public class TraCuuKhachHang_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -32,43 +32,22 @@ public class TraCuu_controller implements Initializable {
     private Button btn_TraCuu;
 
     @FXML
-    private Button btn_qlSanPham;
+    private Button btn_qlKhachHang;
 
     @FXML
     private ComboBox<?> ccb_GiaoDien;
 
     @FXML
-    private TableColumn<?, ?> cl_giaBan;
+    private TableColumn<?, ?> cl_maKH;
 
     @FXML
-    private TableColumn<?, ?> cl_giaNhap;
+    private TableColumn<?, ?> cl_sdt;
 
     @FXML
-    private TableColumn<?, ?> cl_hsd;
+    private TableColumn<?, ?> cl_stt;
 
     @FXML
-    private TableColumn<?, ?> cl_loaiHang;
-
-    @FXML
-    private TableColumn<?, ?> cl_maSP;
-
-    @FXML
-    private TableColumn<?, ?> cl_ncc;
-
-    @FXML
-    private TableColumn<?, ?> cl_nsx;
-
-    @FXML
-    private TableColumn<?, ?> cl_tenSP;
-
-    @FXML
-    private TableColumn<?, ?> cl_slt;
-
-    @FXML
-    private TableColumn<?, ?> cl_tgcn;
-
-    @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<?, ?> cl_tenKH;
 
     @FXML
     private ImageView img_HoaDon;
@@ -113,34 +92,16 @@ public class TraCuu_controller implements Initializable {
     private Label lb_HoaDon;
 
     @FXML
-    private Label lb_giaBan;
-
-    @FXML
-    private Label lb_giaNhap;
-
-    @FXML
     private Label lb_gioHang;
 
     @FXML
     private Label lb_hoaDon;
 
     @FXML
-    private Label lb_hsd;
-
-    @FXML
-    private Label lb_loaiHang;
-
-    @FXML
-    private Label lb_maSP;
-
-    @FXML
-    private Label lb_ncc;
+    private Label lb_maKH;
 
     @FXML
     private Label lb_nhanVien;
-
-    @FXML
-    private Label lb_nsx;
 
     @FXML
     private Label lb_phieuNhap;
@@ -152,16 +113,13 @@ public class TraCuu_controller implements Initializable {
     private Label lb_sanPham;
 
     @FXML
-    private Label lb_slt;
+    private Label lb_sdt;
 
     @FXML
     private Label lb_taiKhoan;
 
     @FXML
-    private Label lb_tenSP;
-
-    @FXML
-    private Label lb_tgcn;
+    private Label lb_tenKH;
 
     @FXML
     private Label lb_thongKe;
@@ -230,11 +188,10 @@ public class TraCuu_controller implements Initializable {
     private VBox timKiemSubVBox;
 
     @FXML
-    private TextField txt_maSP;
+    private TextField txt_maKH;
 
     @FXML
     private VBox vBox;
-
     Map<VBox,VBox> map = new HashMap<VBox,VBox>();
     public void addMenusToMap() {
         addMenusToMapImpl();
@@ -279,10 +236,6 @@ public class TraCuu_controller implements Initializable {
             transition.play();
         }
     }
-    /**
-     * Remove other menus
-     * @param menu
-     */
     public void removeOtherMenus(VBox menu){
         removeOtherMenusImpl(menu);
     }
@@ -292,7 +245,6 @@ public class TraCuu_controller implements Initializable {
                 entry.getKey().getChildren().remove(entry.getValue());
         }
     }
-
     @FXML
     void handleGioHangClick(MouseEvent event) {
         // Hiển thị menu bán hàng
@@ -318,7 +270,6 @@ public class TraCuu_controller implements Initializable {
         toolsSlider(timKiemSubVBox, timKiemSubMenuList);
         removeOtherMenus(timKiemSubVBox);
     }
-
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
@@ -364,4 +315,5 @@ public class TraCuu_controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addMenusToMap();
     }
+
 }

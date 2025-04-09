@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -12,9 +12,11 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iuh.fit.controller.BanHang_controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iuh.fit.controller.TraCuuNhanVien_controller">
    <children>
       <Pane prefHeight="80.0" prefWidth="1540.0" style="-fx-background-color: #CC33FF;">
          <children>
@@ -31,11 +33,140 @@
             </Label>
          </children>
       </Pane>
+      <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
+         <children>
+            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <TextField fx:id="txt_maNV" layoutX="745.0" layoutY="22.0" prefHeight="40.0" prefWidth="332.0" promptText="Nhập mã" />
+            <ImageView fx:id="img_taiKhoan1" fitHeight="30.0" fitWidth="30.0" layoutX="1037.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/find.png" />
+               </image>
+            </ImageView>
+            <ComboBox fx:id="ccb_GiaoDien" layoutX="535.0" layoutY="22.0" prefHeight="40.0" prefWidth="200.0" />
+            <Label layoutX="400.0" layoutY="22.0" prefHeight="40.0" prefWidth="122.0" text="Tra cứu theo:">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cc33ff" height="50.0" layoutY="80.0" stroke="BLACK" strokeType="INSIDE" width="1270.0" />
+            <Text fill="WHITE" layoutX="603.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin nhân viên" y="80.0">
+               <font>
+                  <Font size="30.0" />
+               </font>
+            </Text>
+            <TableView layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
+               <columns>
+                  <TableColumn fx:id="cl_stt" prefWidth="50.4000244140625" text="STT" />
+                  <TableColumn fx:id="cl_maNV" prefWidth="102.4000244140625" text="Mã nhân viên" />
+                  <TableColumn fx:id="cl_tenNV" prefWidth="125.60003662109375" text="Tên nhân viên" />
+                  <TableColumn fx:id="cl_cccd" prefWidth="116.0" text="CCCD" />
+                  <TableColumn fx:id="cl_diaChi" prefWidth="110.39996337890625" text="Địa chỉ" />
+                  <TableColumn fx:id="cl_email" prefWidth="113.60009765625" text="Email" />
+                  <TableColumn fx:id="cl_sdt" prefWidth="130.39990234375" text="Số điện thoại" />
+                  <TableColumn fx:id="cl_ngaySinh" prefWidth="107.1998291015625" text="Ngày sinh" />
+                  <TableColumn fx:id="cl_chucVu" prefWidth="109.60009765625" text="Chức vụ" />
+               </columns>
+            </TableView>
+            <Label layoutX="15.0" layoutY="140.0" text="Thông tin chi tiết:">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="180.0" text="Mã nhân viên:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="220.0" text="Tên nhân viên:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_maNV" layoutX="200.0" layoutY="180.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_tenNV" layoutX="200.0" layoutY="220.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="260.0" text="CCCD:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_cccd" layoutX="200.0" layoutY="260.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="300.0" text="Địa chỉ:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_diaChi" layoutX="200.0" layoutY="300.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="340.0" text="Email:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_email" layoutX="200.0" layoutY="340.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="380.0" text="Số điện thoại:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_sdt" layoutX="200.0" layoutY="380.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="420.0" text="Ngày sinh:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_ngaySinh" layoutX="200.0" layoutY="420.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="460.0" text="Chức vụ:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_chucVu" layoutX="200.0" layoutY="460.0" text="Trống">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Button fx:id="btn_qlNhanVien" layoutX="52.0" layoutY="520.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý nhân viên" textFill="WHITE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </Pane>
       <Pane layoutY="80.0" prefHeight="715.0" prefWidth="270.0" style="-fx-background-color: #9900cc;">
          <children>
             <VBox id="vBox" fx:id="vBox" layoutX="0.0" prefHeight="630.0" prefWidth="270.0" styleClass="vBox">
                <children>
-                  <!-- First Menu -->
                   <VBox id="banHangSubVBox" fx:id="banHangSubVBox" prefHeight="60.0" prefWidth="270.0" styleClass="vBox">
                      <children>
                         <Pane fx:id="p_gioHang" prefHeight="60.0">
@@ -53,11 +184,9 @@
                               </Label>
                            </children>
                         </Pane>
-                        <VBox fx:id="banHangSubMenuList" styleClass="subVBox">
-                        </VBox>
+                        <VBox fx:id="banHangSubMenuList" styleClass="subVBox" />
                      </children>
                   </VBox>
-                  <!-- Second Menu -->
                   <VBox id="quanLySubVBox" fx:id="quanLySubVBox" styleClass="vBox">
                      <children>
                         <Pane fx:id="p_quanLy" prefHeight="60.0" prefWidth="270.0">
@@ -171,7 +300,6 @@
                         </VBox>
                      </children>
                   </VBox>
-                  <!-- Third Menu -->
                   <VBox id="timKiemSubVBox" fx:id="timKiemSubVBox" prefHeight="60.0" prefWidth="270.0" styleClass="vBox">
                      <children>
                         <Pane fx:id="p_timKiem">
@@ -189,11 +317,9 @@
                               </ImageView>
                            </children>
                         </Pane>
-                        <VBox fx:id="timKiemSubMenuList" styleClass="subVBox">
-                        </VBox>
+                        <VBox fx:id="timKiemSubMenuList" styleClass="subVBox" />
                      </children>
                   </VBox>
-                  <!-- Fourth Menu -->
                   <VBox id="thongKeSubVBox" fx:id="thongKeSubVBox" prefHeight="160.0" prefWidth="270.0" styleClass="vBox">
                      <children>
                         <Pane fx:id="p_thongKe" onMouseClicked="#handleThongKeClick">
@@ -254,108 +380,6 @@
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Button>
-         </children></Pane>
-      <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
-         <children>
-            <Pane layoutX="15.0" layoutY="15.0" prefHeight="70.0" prefWidth="420.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <Label layoutX="15.0" layoutY="5.0" text="Tên khách hàng: ">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="15.0" layoutY="35.0" text="Số điện thoại: ">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txt_tenKH" layoutX="165.0" layoutY="10.0" prefHeight="25.0" prefWidth="250.0" />
-                  <TextField fx:id="txt_sdt" layoutX="165.0" layoutY="40.0" prefHeight="25.0" prefWidth="250.0" />
-               </children>
-            </Pane>
-            <Pane layoutX="15.0" layoutY="90.0" prefHeight="610.0" prefWidth="850.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <TableView fx:id="tableView" prefHeight="610.0" prefWidth="850.0">
-                    <columns>
-                      <TableColumn fx:id="tcSTT" prefWidth="100.0" text="STT" />
-                      <TableColumn fx:id="tcMaSP" prefWidth="150.0" text="Mã sản phẩm" />
-                        <TableColumn fx:id="tcTenSP" prefWidth="150.0" text="Tên sản phẩm" />
-                        <TableColumn fx:id="tcSoLuong" prefWidth="150.0" text="Số lượng" />
-                        <TableColumn fx:id="tcDonGia" prefWidth="150.0" text="Đơn giá" />
-                        <TableColumn fx:id="tcThanhTien" prefWidth="150.0" text="Thành tiền" />
-                    </columns>
-                  </TableView>
-               </children></Pane>
-            <Pane layoutX="880.0" layoutY="15.0" prefHeight="110.0" prefWidth="375.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <Button fx:id="btn_themSP" layoutX="180.0" layoutY="55.0" mnemonicParsing="false" onMouseClicked="#themSanPham" prefHeight="40.0" prefWidth="190.0" style="-fx-background-color: #00CC66;" text="Thêm sản phẩm" textFill="WHITE">
-                     <font>
-                        <Font name="Arial Bold" size="20.0" />
-                     </font>
-                  </Button>
-                  <Label layoutX="15.0" layoutY="15.0" text="Nhập mã sản phẩm: ">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="15.0" layoutY="65.0" text="Số lượng: ">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </Label>
-                  <TextField fx:id="txt_nhapMa" layoutX="180.0" layoutY="10.0" prefHeight="40.0" prefWidth="190.0">
-                     <font>
-                        <Font size="18.0" />
-                     </font>
-                  </TextField>
-                  <TextField fx:id="txt_nhapSL" layoutX="100.0" layoutY="65.0" prefHeight="25.0" prefWidth="70.0" />
-               </children></Pane>
-            <Pane layoutX="880.0" layoutY="130.0" prefHeight="570.0" prefWidth="375.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <Button fx:id="btn_thanhToan" layoutX="50.0" layoutY="500.0" mnemonicParsing="false" onMouseClicked="#thanhToan" prefHeight="50.0" prefWidth="275.0" style="-fx-background-color: #FF6600;" text="THANH TOÁN" textFill="WHITE">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Button>
-                  <Label layoutX="50.0" layoutY="450.0" text="Tổng tiền:" textFill="#0000cc">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lb_tongTien" alignment="CENTER_RIGHT" layoutX="175.0" layoutY="450.0" prefHeight="35.0" prefWidth="150.0" text="0 VNĐ" textFill="#0000cc">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Label>
-               </children>
-            </Pane>
-            <Pane layoutX="445.0" layoutY="15.0" prefHeight="70.0" prefWidth="420.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <Label layoutX="15.0" layoutY="5.0" text="Ngày lập: ">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <Label layoutX="15.0" layoutY="35.0" text="Thời gian: ">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lb_ngayLap" alignment="CENTER_RIGHT" layoutX="260.0" layoutY="5.0" prefWidth="150.0" text="03/11/2025">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lb_thoiGian" alignment="CENTER_RIGHT" layoutX="260.0" layoutY="35.0" prefWidth="150.0" text="00:00:00">
-                     <font>
-                        <Font size="20.0" />
-                     </font>
-                     <opaqueInsets>
-                        <Insets />
-                     </opaqueInsets>
-                  </Label>
-               </children>
-            </Pane>
          </children>
       </Pane>
    </children>
