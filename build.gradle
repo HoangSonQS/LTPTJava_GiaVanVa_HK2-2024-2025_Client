@@ -12,13 +12,14 @@ repositories {
 }
 
 javafx {
-    version = "23"
+    version = "21"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
 run {
     doFirst {
         jvmArgs = [
+                '--module-path', classpath.asPath,
                 '--add-modules', 'javafx.controls,javafx.fxml'
         ]
     }
