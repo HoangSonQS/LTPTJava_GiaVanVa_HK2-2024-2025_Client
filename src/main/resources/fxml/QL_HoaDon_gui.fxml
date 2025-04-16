@@ -97,20 +97,20 @@
                         <Font size="20.0" />
                     </font>
                 </Label>
-                <Button fx:id="btn_timkiemHoaDon" layoutX="87.0" layoutY="539.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="225.0" style="-fx-background-color: #CC33FF;" text="Tìm kiếm hóa đơn" textFill="WHITE">
+                <Button fx:id="btn_timkiemHoaDon" layoutX="89.0" layoutY="539.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="225.0" style="-fx-background-color: #CC33FF;" text="Tìm kiếm hóa đơn" textFill="WHITE">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-            <TextField id="txt_MaHD" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
+            <TextField fx:id="txt_MaHD" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_MaNV" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_MaKH" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_SoSP" layoutX="165.0" layoutY="305.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_PTTT" layoutX="165.0" layoutY="345.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_ThoiGian" layoutX="165.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" />
             <TextField fx:id="txt_ThanhTien" layoutX="165.0" layoutY="425.0" prefHeight="30.0" prefWidth="200.0" />
-            <Button fx:id="btn_Them" layoutX="80.0" layoutY="490.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #00bf63;" text="Thêm" />
-            <Button fx:id="bn_XoaTrang" layoutX="222.0" layoutY="490.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: gray;" text="Xóa trắng" />
+            <Button fx:id="btn_Them" layoutX="89.0" layoutY="490.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: #00bf63;" text="Thêm" />
+            <Button fx:id="bn_XoaTrang" layoutX="215.0" layoutY="490.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="100.0" style="-fx-background-color: gray;" text="Xóa trắng" />
             </children>
         </Pane>
         <Pane layoutY="80.0" prefHeight="715.0" prefWidth="270.0" style="-fx-background-color: #9900cc;">

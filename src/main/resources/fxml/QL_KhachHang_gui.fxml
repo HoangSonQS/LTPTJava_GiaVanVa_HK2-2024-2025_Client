@@ -40,17 +40,17 @@
                     </image>
                 </ImageView>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cc33ff" height="50.0" layoutY="56.0" stroke="BLACK" strokeType="INSIDE" width="1270.0" />
-                <Text fill="WHITE" layoutX="603.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin hóa đơn" wrappingWidth="246.357421875" y="80.0">
+                <Text fill="WHITE" layoutX="531.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin khách hàng" wrappingWidth="330.357421875" y="80.0">
                     <font>
                         <Font size="30.0" />
                     </font>
                 </Text>
                 <TableView layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
                     <columns>
-                        <TableColumn id="cll_stt" fx:id="cl_txt" prefWidth="45.5999755859375" text="STT" />
-                        <TableColumn id="cll_maKH" fx:id="cl_maHD" prefWidth="192.79998779296875" text="Mã khách hàng" />
-                        <TableColumn id="cll_tenKH" fx:id="cl_maNV" prefWidth="320.0" text="Tên khách hàng" />
-                        <TableColumn id="cll_SDT" fx:id="lc_slsp" prefWidth="318.800048828125" text="Số điện thoại" />
+                        <TableColumn fx:id="cl_txt" prefWidth="45.5999755859375" text="STT" />
+                        <TableColumn fx:id="cl_maKH" prefWidth="192.79998779296875" text="Mã khách hàng" />
+                        <TableColumn fx:id="cl_TenKH" prefWidth="320.0" text="Tên khách hàng" />
+                        <TableColumn fx:id="cl_SDT" prefWidth="318.800048828125" text="Số điện thoại" />
                     </columns>
                 </TableView>
                 <Label layoutX="94.0" layoutY="130.0" text="Thông tin chi tiết:">
@@ -73,9 +73,9 @@
                         <Font size="20.0" />
                     </font>
                 </Label>
-                <TextField id="txt_MaKH" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField id="txt_tenKH" fx:id="txt_MaNV" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField id="txt_SDT" fx:id="txt_MaKH" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
+                <TextField fx:id="txt_MaKH" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
+                <TextField fx:id="txt_TenKH" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
+                <TextField fx:id="txt_SDT" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
                 <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="53.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#suaTTNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
@@ -91,7 +91,7 @@
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #2972d3;" text="      Tìm kiếm khách hàng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm khách hàng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
                     </font>
