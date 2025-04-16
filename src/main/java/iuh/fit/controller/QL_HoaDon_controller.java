@@ -1,19 +1,28 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.entities.HoaDon;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import static iuh.fit.App.loadFXML;
 
-public class QL_HoaDon_controller {
+public class QL_HoaDon_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -49,7 +58,7 @@ public class QL_HoaDon_controller {
     private TableColumn<?, ?> cl_thoiGian;
 
     @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<HoaDon, Integer> cl_txt;
 
     @FXML
     private ImageView img_HoaDon;
@@ -205,6 +214,51 @@ public class QL_HoaDon_controller {
     private VBox vBox;
 
     @FXML
+    private TableView<HoaDon> table_HD;
+
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            HoaDon_dao hdDAO = new HoaDon_dao();
+
+            // Xóa dữ liệu cũ trong table
+            table_HD.getItems().clear();
+
+            // Lấy danh sách hóa đơn từ database
+            ObservableList<HoaDon> listHD = FXCollections.observableArrayList(hdDAO.readAll());
+            // Thiết lập cell value factory cho các cột
+            cl_maHD.setCellValueFactory(new PropertyValueFactory<>("maHD"));
+            cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cl_maKH.setCellValueFactory(new PropertyValueFactory<>("maKH"));
+            lc_slsp.setCellValueFactory(new PropertyValueFactory<>("tongSoLuongSP"));
+            cl_pttt.setCellValueFactory(new PropertyValueFactory<>("phuongThucTT"));
+            cl_thoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
+            cl_thanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<HoaDon, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_HD.setItems(listHD);
+
+            // Refresh table view
+            table_HD.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     void handleGioHangClick(MouseEvent event) {
 
     }
@@ -330,5 +384,10 @@ public class QL_HoaDon_controller {
         Stage stage = (Stage) p_gioHang.getScene().getWindow();
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadTableData();
     }
 }
