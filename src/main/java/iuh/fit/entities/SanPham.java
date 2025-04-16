@@ -4,6 +4,7 @@ import iuh.fit.enums.LoaiHang;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -15,7 +16,8 @@ import java.util.Set;
 @Entity
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Table(name = "SanPhams")
-public class SanPham {
+public class SanPham implements Serializable {
+    private static final long serialVersionUID = 4L; // SANPHAM_SERIAL_VERSION_UID
 
     @Id
     @EqualsAndHashCode.Include
