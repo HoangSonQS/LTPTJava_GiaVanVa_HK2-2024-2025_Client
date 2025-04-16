@@ -515,7 +515,7 @@ public class BanHang_controller implements Initializable {
     void toQLHoaDon(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý hóa đơn
-            loadFXML("/fxml/QuanLyHoaDon_gui.fxml");
+            loadFXML("/fxml/QL_HoaDon_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
@@ -526,7 +526,7 @@ public class BanHang_controller implements Initializable {
     void toQLKhachHang(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý khách hàng
-            loadFXML("/fxml/QuanLyKhachHang_gui.fxml");
+            loadFXML("/fxml/QL_KhachHang_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
@@ -537,7 +537,7 @@ public class BanHang_controller implements Initializable {
     void toQLNhanVien(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý nhân viên
-            loadFXML("/fxml/QuanLyNhanVien_gui.fxml");
+            loadFXML("/fxml/QL_NhanVien_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
@@ -548,7 +548,7 @@ public class BanHang_controller implements Initializable {
     void toQLPhieuNhap(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý phiếu nhập
-            loadFXML("/fxml/QuanLyPhieuNhap_gui.fxml");
+            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
@@ -559,7 +559,7 @@ public class BanHang_controller implements Initializable {
     void toQLSanPham(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý sản phẩm
-            loadFXML("/fxml/QuanLySanPham_gui.fxml");
+            loadFXML("/fxml/QL_SanPham_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
@@ -570,7 +570,7 @@ public class BanHang_controller implements Initializable {
     void toQLTaiKhoan(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý tài khoản
-            loadFXML("/fxml/QuanLyTaiKhoan_gui.fxml");
+            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
