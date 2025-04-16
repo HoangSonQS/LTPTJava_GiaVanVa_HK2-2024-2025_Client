@@ -12,7 +12,7 @@ public class TestJavaFX extends Application {
     public void start(Stage primaryStage) {
         try {
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/QL_HoaDon_gui.fxml"));
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/BanHang_gui.fxml"));
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/TraCuu_gui.fxml"));
 //            Parent root = FXMLLoader.load(getClass().getResource("/fxml/BanHang_gui.fxml"));
             Scene scene = new Scene(root);
