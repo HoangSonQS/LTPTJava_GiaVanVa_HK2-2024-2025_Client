@@ -1692,11 +1692,4 @@ public class BanHang_controller implements Initializable {
         }
     }
 
-    /**
-     * Tính tiền thừa (phiên bản không có tham số)
-     * Được gọi từ các phương thức khác trong controller
-     */
-    private void tinhTienThua() {
-        tinhTienThua(null);
-    }
 }

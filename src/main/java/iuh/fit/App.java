@@ -12,6 +12,7 @@ import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.SanPham;
 import iuh.fit.entities.TaiKhoan;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -26,13 +27,16 @@ import jakarta.persistence.Persistence;
  * Lớp chính của ứng dụng
  */
 public class App extends Application {
-    public static final int widthModalLogin = 600;
-    public static final int heightModalLogin = 400;
+//    public static final int widthModalLogin = 600;
+//    public static final int heightModalLogin = 400;
     public static Stage stage;
     public static Scene primaryScene;
     public static String user;
     public static String ma;
     public static TaiKhoan taiKhoan;
+
+    // Biến để theo dõi trạng thái đăng nhập
+    private static boolean loginScreenOpened = false;
 
     public static void main(String[] args) {
         System.setProperty("javafx.preloader", AppPreloader.class.getName());
@@ -58,15 +62,18 @@ public class App extends Application {
         System.out.println("App.start() called");
         stage = primaryStage;
 
-        // Để đảm bảo rằng splash screen đã được đóng, chúng ta có thể kiểm tra
-        if (AppPreloader.splashStage != null && AppPreloader.splashStage.isShowing()) {
-            System.out.println("Splash screen is still showing, closing it");
-            AppPreloader.splashStage.close();
-        }
+        // Thiết lập sự kiện khi đóng cửa sổ chính
+        stage.setOnCloseRequest(event -> {
+            System.out.println("Application is closing");
+            Platform.exit();
+            System.exit(0);
+        });
 
-        // Mở trực tiếp màn hình đăng nhập vì splash screen không hoạt động đúng
-        System.out.println("Opening login screen directly from App.start()");
-        openLoginGUI();
+        // Chỉ mở giao diện đăng nhập nếu không có splash screen
+        if (AppPreloader.splashStage == null) {
+            System.out.println("No splash screen detected, opening login screen directly");
+//            openLoginGUI();
+        }
     }
 
     /**
@@ -74,23 +81,20 @@ public class App extends Application {
      */
     public static void openMainGUI() throws IOException {
         try {
+            // Load the main GUI
             Parent root = FXMLLoader.load(App.class.getResource("/fxml/BanHang_gui.fxml"));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(App.class.getResource("/styles/menu.css").toExternalForm());
 
+            // Set the new scene for the stage
             stage.setScene(scene);
+            stage.setMaximized(true);
             stage.setTitle("Hệ thống quản lý bán hàng");
-            Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 
-            // Thiết lập kích thước stage theo màn hình chính
-            stage.setX(primaryScreenBounds.getMinX());
-            stage.setY(primaryScreenBounds.getMinY());
-            stage.setWidth(primaryScreenBounds.getWidth());
-            stage.setHeight(primaryScreenBounds.getHeight());
+            // Show the main GUI
             stage.show();
-        } catch (NullPointerException ex) {
-            System.err.println("Không tìm thấy file BanHang_gui.fxml: " + ex.getMessage());
-            ex.printStackTrace();
+        } catch (IOException ex) {
+            System.err.println("Error loading BanHang_gui.fxml: " + ex.getMessage());
             throw ex;
         }
     }
@@ -112,11 +116,11 @@ public class App extends Application {
             URL loginFxmlUrl = App.class.getResource("/fxml/Login_gui.fxml");
             System.out.println("Login FXML URL: " + loginFxmlUrl);
 
-            if (loginFxmlUrl == null) {
-                System.err.println("Login_gui.fxml not found! Trying to open BanHang_gui.fxml instead.");
-                openMainGUI();
-                return;
-            }
+//            if (loginFxmlUrl == null) {
+//                System.err.println("Login_gui.fxml not found! Trying to open BanHang_gui.fxml instead.");
+//                openMainGUI();
+//                return;
+//            }
 
             // Load giao diện đăng nhập
             FXMLLoader fxmlLoader = new FXMLLoader(loginFxmlUrl);
@@ -126,6 +130,7 @@ public class App extends Application {
             Scene scene = new Scene(root);
             stage.setScene(scene);
             stage.setTitle("Đăng nhập");
+            stage.setMaximized(true);
 
             // Đặt kích thước và vị trí của cửa sổ
             Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
@@ -134,20 +139,11 @@ public class App extends Application {
 
             // Hiển thị cửa sổ
             stage.show();
+            System.out.println(1);
             System.out.println("Login GUI opened successfully");
         } catch (Exception ex) {
             System.err.println("Error opening Login_gui.fxml: " + ex.getMessage());
             ex.printStackTrace();
-
-            // Nếu không thể mở màn hình đăng nhập, thử mở màn hình chính
-            try {
-                System.out.println("Falling back to BanHang_gui.fxml");
-                openMainGUI();
-            } catch (Exception e) {
-                System.err.println("Failed to open BanHang_gui.fxml as fallback: " + e.getMessage());
-                e.printStackTrace();
-                throw new IOException("Failed to open any GUI", ex);
-            }
         }
     }
 
