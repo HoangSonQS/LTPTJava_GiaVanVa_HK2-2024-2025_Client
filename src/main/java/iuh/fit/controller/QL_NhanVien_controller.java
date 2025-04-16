@@ -2,6 +2,7 @@ package iuh.fit.controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -11,9 +12,12 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import static iuh.fit.App.loadFXML;
 
-public class QL_NhanVien_controller {
+public class QL_NhanVien_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -367,4 +371,8 @@ public class QL_NhanVien_controller {
         stage.show();
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+
+    }
 }

@@ -1,19 +1,30 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.daos.KhachHang_dao;
+import iuh.fit.entities.HoaDon;
+import iuh.fit.entities.KhachHang;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.net.URL;
+import java.util.ResourceBundle;
+
 import static iuh.fit.App.loadFXML;
 
-public class QL_KhachHang_controller {
+public class QL_KhachHang_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -37,13 +48,16 @@ public class QL_KhachHang_controller {
     private Button btnXoaTrang;
 
     @FXML
-    private TableColumn<?, ?> cl_maHD;
+    private TableColumn<?, ?> cl_SDT;
 
     @FXML
-    private TableColumn<?, ?> cl_maNV;
+    private TableColumn<?, ?> cl_TenKH;
 
     @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<?, ?> cl_maKH;
+
+    @FXML
+    private TableColumn<KhachHang, Integer> cl_txt;
 
     @FXML
     private ImageView img_HoaDon;
@@ -121,9 +135,6 @@ public class QL_KhachHang_controller {
     private Label lb_timKiem;
 
     @FXML
-    private TableColumn<?, ?> lc_slsp;
-
-    @FXML
     private Pane p_HoaDon;
 
     @FXML
@@ -166,6 +177,9 @@ public class QL_KhachHang_controller {
     private VBox quanLySubVBox;
 
     @FXML
+    private TableView<KhachHang> table_KH;
+
+    @FXML
     private VBox thongKeSubMenuList;
 
     @FXML
@@ -181,7 +195,10 @@ public class QL_KhachHang_controller {
     private TextField txt_MaKH;
 
     @FXML
-    private TextField txt_MaNV;
+    private TextField txt_SDT;
+
+    @FXML
+    private TextField txt_TenKH;
 
     @FXML
     private VBox vBox;
@@ -342,5 +359,46 @@ public class QL_KhachHang_controller {
         stage.setScene(scene);
         stage.show();
     }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            KhachHang_dao khDAO = new KhachHang_dao();
 
+            // Xóa dữ liệu cũ trong table
+            table_KH.getItems().clear();
+
+            // Lấy danh sách hóa đơn từ database
+            ObservableList<KhachHang> listKH = FXCollections.observableArrayList(khDAO.readAll());
+            // Thiết lập cell value factory cho các cột
+            cl_maKH.setCellValueFactory(new PropertyValueFactory<>("maKH"));
+            cl_TenKH.setCellValueFactory(new PropertyValueFactory<>("tenKH"));
+            cl_SDT.setCellValueFactory(new PropertyValueFactory<>("sdt"));
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<KhachHang, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_KH.setItems(listKH);
+
+            // Refresh table view
+            table_KH.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadTableData();
+    }
 }
