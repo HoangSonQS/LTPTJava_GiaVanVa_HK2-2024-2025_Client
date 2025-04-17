@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -55,8 +57,8 @@
                         <TableColumn id="cll_giaBan" fx:id="cl_giaBan" prefWidth="83.199951171875" text="Giá bán" />
                         <TableColumn fx:id="cl_ngaySX" minWidth="0.0" prefWidth="113.5999755859375" text="Ngày SX" />
                         <TableColumn fx:id="cl_hanSD" prefWidth="105.5999755859375" text="Hạn SD" />
-                  <TableColumn fx:id="cl_nhaCC" prefWidth="113.5999755859375" text="Nhà Cung cấp" />
-                  <TableColumn fx:id="cl_soLuongTon" prefWidth="88.0" text="Số lượng tồn" />
+                        <TableColumn fx:id="cl_nhaCC" prefWidth="113.5999755859375" text="Nhà Cung cấp" />
+                        <TableColumn fx:id="cl_soLuongTon" prefWidth="88.0" text="Số lượng tồn" />
                     </columns>
                 </TableView>
                 <Label layoutX="94.0" layoutY="130.0" text="Thông tin chi tiết:">
@@ -96,53 +98,53 @@
                 </Label>
                 <TextField fx:id="txt_MaSP" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_tenSP" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField fx:id="txt_LoaiHang" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_GiaBan" layoutX="165.0" layoutY="305.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_GiaNhap" layoutX="165.0" layoutY="345.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField fx:id="txt_NgaySX" layoutX="165.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField fx:id="txt_HanSD" layoutX="165.0" layoutY="425.0" prefHeight="30.0" prefWidth="200.0" />
-            <Label layoutX="15.0" layoutY="465.0" text="Nhà cung cấp:">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <Label layoutX="15.0" layoutY="505.0" text="Số lượng tồn:">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <TextField fx:id="txt_NhaCC" layoutX="165.0" layoutY="465.0" prefHeight="30.0" prefWidth="200.0" />
-            <TextField fx:id="txt_SoLuongTon" layoutX="165.0" layoutY="505.0" prefHeight="30.0" prefWidth="200.0" />
-            <Label layoutX="14.0" layoutY="265.0" text="Loại hàng:">
-               <font>
-                  <Font size="20.0" />
-               </font>
-            </Label>
-            <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="51.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#suaTTNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="153.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#xoaNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="258.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#themNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="151.0" layoutY="661.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm sản phẩm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
-            <Button id="btn_XoaTrang" fx:id="btnXoaTrang" contentDisplay="RIGHT" layoutX="51.0" layoutY="661.0" mnemonicParsing="false" onMouseClicked="#xoaTrang" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: gray;" text="Xoá trắng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Button>
+                <Label layoutX="15.0" layoutY="465.0" text="Nhà cung cấp:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <Label layoutX="15.0" layoutY="505.0" text="Số lượng tồn:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="txt_NhaCC" layoutX="165.0" layoutY="465.0" prefHeight="30.0" prefWidth="200.0" />
+                <TextField fx:id="txt_SoLuongTon" layoutX="165.0" layoutY="505.0" prefHeight="30.0" prefWidth="200.0" />
+                <Label layoutX="14.0" layoutY="265.0" text="Loại hàng:">
+                    <font>
+                        <Font size="20.0" />
+                    </font>
+                </Label>
+                <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="51.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#suaSP" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="153.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#xoaSP" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="258.0" layoutY="595.0" mnemonicParsing="false" onMouseClicked="#themSP" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="151.0" layoutY="661.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemSP" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm sản phẩm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+                <Button id="btn_XoaTrang" fx:id="btnXoaTrang" contentDisplay="RIGHT" layoutX="51.0" layoutY="661.0" mnemonicParsing="false" onMouseClicked="#xoaTrang" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: gray;" text="Xoá trắng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Button>
+            <DatePicker fx:id="txt_NgaySX" layoutX="165.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" />
+            <DatePicker fx:id="txt_hanSD" layoutX="165.0" layoutY="425.0" prefHeight="30.0" prefWidth="200.0" />
+            <ComboBox fx:id="txt_loaiHang" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="198.0" />
             </children>
         </Pane>
         <Pane layoutY="80.0" prefHeight="715.0" prefWidth="270.0" style="-fx-background-color: #9900cc;">

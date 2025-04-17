@@ -28,6 +28,12 @@ public class KhachHang implements Serializable {
     @Column(name = "SDT", nullable = false)
     private String sdt;
 
+    public KhachHang(String maKH, String tenKH, String sdt) {
+        this.maKH = maKH;
+        this.tenKH = tenKH;
+        this.sdt = sdt;
+    }
+
     //check
     @OneToMany(mappedBy = "khachHang", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

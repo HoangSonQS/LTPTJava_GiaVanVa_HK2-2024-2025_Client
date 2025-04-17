@@ -4,6 +4,7 @@ import iuh.fit.daos.PhieuNhapHang_dao;
 import iuh.fit.daos.SanPham_dao;
 import iuh.fit.entities.PhieuNhapHang;
 import iuh.fit.entities.SanPham;
+import iuh.fit.enums.LoaiHang;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,6 +21,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -48,7 +53,7 @@ public class QL_SanPham_controller implements Initializable {
     private Button btnXoaTrang;
 
     @FXML
-    private TableColumn<?, ?> cl_LoaiHang;
+    private TableColumn<SanPham, LoaiHang> cl_LoaiHang;
 
     @FXML
     private TableColumn<?, ?> cl_MaSP;
@@ -214,18 +219,17 @@ public class QL_SanPham_controller implements Initializable {
 
     @FXML
     private TextField txt_GiaNhap;
+    @FXML
+    private DatePicker txt_hanSD;
 
     @FXML
-    private TextField txt_HanSD;
-
-    @FXML
-    private TextField txt_LoaiHang;
+    private ComboBox<LoaiHang> txt_loaiHang;
 
     @FXML
     private TextField txt_MaSP;
 
     @FXML
-    private TextField txt_NgaySX;
+    private DatePicker txt_NgaySX;
 
     @FXML
     private TextField txt_NhaCC;
@@ -265,18 +269,122 @@ public class QL_SanPham_controller implements Initializable {
     }
 
     @FXML
-    void moGiaoDienTimKiemNV(MouseEvent event) {
-
+    void moGiaoDienTimKiemSP(MouseEvent event) {
+        try {
+            loadFXML("/fxml/TraCuu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu!");
+        }
     }
 
     @FXML
-    void suaTTNV(MouseEvent event) {
+    void suaSP(MouseEvent event) {
+        try {
+            // Lấy thông tin từ các trường nhập liệu
+            String maSP = txt_MaSP.getText();
+            String tenSP = txt_tenSP.getText();
+            LoaiHang loaiHang = txt_loaiHang.getValue();
+            String nhaCC = txt_NhaCC.getText();
+            double giaNhap = Double.parseDouble(txt_GiaNhap.getText());
+            double giaBan = Double.parseDouble(txt_GiaBan.getText());
 
+            // Ngày sản xuất và hạn sử dụng
+            LocalDateTime ngaySXWithTime = txt_NgaySX.getValue().atStartOfDay();
+            LocalDateTime hanSDWithTime = txt_hanSD.getValue().atStartOfDay();
+
+            int soLuongTon = Integer.parseInt(txt_SoLuongTon.getText());
+
+            // Tạo sản phẩm mới
+            SanPham sp = new SanPham(maSP, tenSP, nhaCC, soLuongTon, giaNhap, giaBan,
+                    ngaySXWithTime, hanSDWithTime, LocalDateTime.now(), loaiHang);
+
+            // Gọi DAO để cập nhật
+            SanPham_dao dao = new SanPham_dao();
+            dao.update(sp);
+
+            // Load lại bảng
+            loadTableData();
+            showAlert(Alert.AlertType.INFORMATION, "Thành công", "Sản phẩm đã được cập nhật!");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể sửa sản phẩm!");
+        }
+    }
+
+
+    @FXML
+    void themSP(MouseEvent event) {
+        try {
+            // Lấy thông tin từ các trường nhập liệu
+            String maSP = txt_MaSP.getText();
+            String tenSP = txt_tenSP.getText();
+            LoaiHang loaiHang = txt_loaiHang.getValue();
+            String nhaCC = txt_NhaCC.getText();
+            double giaNhap = Double.parseDouble(txt_GiaNhap.getText());
+            double giaBan = Double.parseDouble(txt_GiaBan.getText());
+
+            String textNgaySX = txt_NgaySX.getValue().toString();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            LocalDate ngaySX = LocalDate.parse(textNgaySX, formatter); // Sử dụng LocalDate
+            LocalDateTime ngaySXWithTime = ngaySX.atStartOfDay(); // Chuyển đổi thành LocalDateTime, giờ mặc định là 00:00:00
+
+            String textHanSD = txt_hanSD.getValue().toString();
+            LocalDate hanSD = LocalDate.parse(textHanSD, formatter); // Sử dụng LocalDate
+            LocalDateTime hanSDWithTime = hanSD.atStartOfDay(); // Chuyển đổi thành LocalDateTime, giờ mặc định là 00:00:00
+
+
+            int soLuongTon = Integer.parseInt(txt_SoLuongTon.getText());
+
+            // Tạo đối tượng SanPham mới
+            SanPham sanPham = new SanPham(maSP, tenSP, nhaCC, soLuongTon, giaNhap, giaBan, ngaySXWithTime, hanSDWithTime, LocalDateTime.now(),loaiHang);
+
+            // Tạo DAO object
+            SanPham_dao spDAO = new SanPham_dao();
+
+            // Thêm sản phẩm vào database
+            spDAO.create(sanPham);
+            System.out.println("Thêm sản phẩm thành công!");
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm sản phẩm!");
+        }
     }
 
     @FXML
-    void themNV(MouseEvent event) {
+    void xoaSP(MouseEvent event) {
+        try{
+            // Lấy mã sản phẩm từ trường nhập liệu
+            String maSP = txt_MaSP.getText();
 
+            // Tạo DAO object
+            SanPham_dao spDAO = new SanPham_dao();
+
+            // Xóa sản phẩm khỏi database
+            spDAO.delete(maSP);
+            System.out.println("Xóa sản phẩm thành công!");
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể xóa sản phẩm!");
+        }
+    }
+
+    @FXML
+    void xoaTrang(MouseEvent event) {
+        txt_tenSP.setText("");
+        txt_MaSP.setText("");
+        txt_loaiHang.setValue(null);
+        txt_NhaCC.setText("");
+        txt_GiaNhap.setText("");
+        txt_GiaBan.setText("");
+        txt_NgaySX.setValue(null);
+        txt_hanSD.setValue(null);
+        txt_SoLuongTon.setText("");
     }
 
     @FXML
@@ -374,15 +482,7 @@ public class QL_SanPham_controller implements Initializable {
         alert.showAndWait();
     }
 
-    @FXML
-    void xoaNV(MouseEvent event) {
 
-    }
-
-    @FXML
-    void xoaTrang(MouseEvent event) {
-
-    }
     private void loadFXML(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
         Scene scene = new Scene(root);
@@ -392,9 +492,10 @@ public class QL_SanPham_controller implements Initializable {
     }
     private void loadTableData() {
         try {
+
             // Tạo DAO object
             SanPham_dao spDAO = new SanPham_dao();
-
+            List<SanPham> ds = spDAO.readAll();
             // Xóa dữ liệu cũ trong table
             table_SP.getItems().clear();
 
@@ -411,7 +512,17 @@ public class QL_SanPham_controller implements Initializable {
             cl_hanSD.setCellValueFactory(new PropertyValueFactory<>("hanSD"));
             cl_soLuongTon.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
 
-
+            cl_LoaiHang.setCellFactory(column -> new TableCell<SanPham, LoaiHang>() {
+                @Override
+                protected void updateItem(LoaiHang item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getLoaiHang()); // gọi method trả về tên đẹp
+                    }
+                }
+            });
             // Gán STT tự động
             cl_txt.setCellFactory(col -> new TableCell<SanPham, Integer>() {
                 @Override
@@ -424,6 +535,8 @@ public class QL_SanPham_controller implements Initializable {
                     }
                 }
             });
+
+
             // Cập nhật dữ liệu vào table
             table_SP.setItems(listSP);
 
@@ -438,5 +551,44 @@ public class QL_SanPham_controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadTableData();
+        txt_loaiHang.getItems().setAll(LoaiHang.values());
+        txt_loaiHang.setCellFactory(lv -> new ListCell<LoaiHang>() {
+            @Override
+            protected void updateItem(LoaiHang item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getLoaiHang());  // Hiển thị giá trị đẹp
+                }
+            }
+        });
+
+// Sử dụng `setButtonCell` để hiển thị giá trị đẹp trên nút combo khi chọn
+        txt_loaiHang.setButtonCell(new ListCell<LoaiHang>() {
+            @Override
+            protected void updateItem(LoaiHang item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getLoaiHang());  // Hiển thị giá trị đẹp
+                }
+            }
+        });
+        table_SP.setOnMouseClicked(event -> {
+            SanPham selectedSP = table_SP.getSelectionModel().getSelectedItem();
+            if (selectedSP != null) {
+                txt_MaSP.setText(selectedSP.getMaSP());
+                txt_tenSP.setText(selectedSP.getTenSP());
+                txt_loaiHang.setValue(selectedSP.getLoaiHang());
+                txt_NhaCC.setText(selectedSP.getNhaCC());
+                txt_GiaNhap.setText(String.valueOf(selectedSP.getGiaNhap()));
+                txt_GiaBan.setText(String.valueOf(selectedSP.getGiaBan()));
+                txt_NgaySX.setValue(LocalDate.from(selectedSP.getNgaySX()));
+                txt_hanSD.setValue(LocalDate.from(selectedSP.getHanSD()));
+                txt_SoLuongTon.setText(String.valueOf(selectedSP.getSoLuongTon()));
+            }
+        });
     }
 }

@@ -4,6 +4,9 @@ import iuh.fit.daos.KhachHang_dao;
 import iuh.fit.daos.NhanVien_dao;
 import iuh.fit.entities.KhachHang;
 import iuh.fit.entities.NhanVien;
+import iuh.fit.entities.SanPham;
+import iuh.fit.enums.ChucVu;
+import iuh.fit.enums.LoaiHang;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,6 +23,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -51,7 +55,7 @@ public class QL_NhanVien_controller implements Initializable {
     private TableColumn<?, ?> cl_CCCD;
 
     @FXML
-    private TableColumn<?, ?> cl_chucVU;
+    private TableColumn<NhanVien, ChucVu> cl_chucVU;
 
     @FXML
     private TableColumn<?, ?> cl_email;
@@ -154,7 +158,10 @@ public class QL_NhanVien_controller implements Initializable {
 
     @FXML
     private Pane p_hoaDon;
-
+    @FXML
+    private TableColumn<?, ?> cl_DiaChi;
+    @FXML
+    private TextField txt_DiaChi;
     @FXML
     private Pane p_nhanVien;
 
@@ -203,8 +210,6 @@ public class QL_NhanVien_controller implements Initializable {
     @FXML
     private TextField txt_CCCD;
 
-    @FXML
-    private TextField txt_ChucVu;
 
     @FXML
     private TextField txt_Email;
@@ -213,7 +218,10 @@ public class QL_NhanVien_controller implements Initializable {
     private TextField txt_MaNV;
 
     @FXML
-    private TextField txt_NgaySinh;
+    private ComboBox<ChucVu> txt_chucVu;
+
+    @FXML
+    private DatePicker txt_ngaySinh;
 
     @FXML
     private TextField txt_SDT;
@@ -264,12 +272,64 @@ public class QL_NhanVien_controller implements Initializable {
 
     @FXML
     void suaTTNV(MouseEvent event) {
+        try{
+            // Lấy thông tin nhân viên từ các trường nhập liệu
+            String maNV = txt_MaNV.getText();
+            String tenNV = txt_TenNV.getText();
+            String cccd = txt_CCCD.getText();
+            String sdt = txt_SDT.getText();
+            String email = txt_Email.getText();
+            String ngaySinh = txt_ngaySinh.getValue().toString();
+            ChucVu chucVu = txt_chucVu.getValue();
+            String diaChi = txt_DiaChi.getText();
+            // Tạo đối tượng NhanVien mới
+            NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
 
+            // Tạo DAO object
+            NhanVien_dao nvDAO = new NhanVien_dao();
+
+            // Cập nhật thông tin nhân viên vào database
+            nvDAO.updateNhanVien(nv);
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+            showAlert(Alert.AlertType.INFORMATION, "Thành công", "Cập nhật thông tin nhân viên thành công!");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể cập nhật thông tin nhân viên!");
+        }
     }
 
     @FXML
     void themNV(MouseEvent event) {
+        try{
+            // Lấy thông tin nhân viên từ các trường nhập liệu
+            String maNV = txt_MaNV.getText();
+            String tenNV = txt_TenNV.getText();
+            String cccd = txt_CCCD.getText();
+            String sdt = txt_SDT.getText();
+            String email = txt_Email.getText();
+            String ngaySinh = txt_ngaySinh.getValue().toString();
+            ChucVu chucVu = txt_chucVu.getValue();
+            String diaChi = txt_DiaChi.getText();
 
+            // Tạo đối tượng NhanVien mới
+            NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
+
+            // Tạo DAO object
+            NhanVien_dao nvDAO = new NhanVien_dao();
+
+            // Thêm nhân viên vào database
+            nvDAO.createNhanVien(nv);
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+            showAlert(Alert.AlertType.INFORMATION, "Thành công", "Thêm nhân viên thành công!");
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm nhân viên!");
+        }
     }
 
     @FXML
@@ -369,12 +429,37 @@ public class QL_NhanVien_controller implements Initializable {
 
     @FXML
     void xoaNV(MouseEvent event) {
+        try{
+            // Lấy mã nhân viên từ trường nhập liệu
+            String maNV = txt_MaNV.getText();
 
+            // Tạo DAO object
+            NhanVien_dao nvDAO = new NhanVien_dao();
+
+            // Xóa nhân viên khỏi database
+            nvDAO.deleteNhanVien(maNV);
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+            showAlert(Alert.AlertType.INFORMATION, "Thành công", "Xóa nhân viên thành công!");
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể xóa nhân viên!");
+        }
     }
 
     @FXML
     void xoaTrang(MouseEvent event) {
-
+        txt_MaNV.setText("");
+        txt_TenNV.setText("");
+        txt_CCCD.setText("");
+        txt_SDT.setText("");
+        txt_Email.setText("");
+        txt_ngaySinh.setValue(null);
+        txt_chucVu.setValue(null);
+        txt_DiaChi.setText("");
+        // Xóa lựa chọn trong bảng
+        table_NV.getSelectionModel().clearSelection();
     }
     private void loadFXML(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -395,12 +480,25 @@ public class QL_NhanVien_controller implements Initializable {
             ObservableList<NhanVien> listNV = FXCollections.observableArrayList(nvDAO.readAllNhanVien());
             // Thiết lập cell value factory cho các cột
             cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cl_DiaChi.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
             cl_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
             cl_CCCD.setCellValueFactory(new PropertyValueFactory<>("cccd"));
             lc_SDT.setCellValueFactory(new PropertyValueFactory<>("sdt"));
             cl_email.setCellValueFactory(new PropertyValueFactory<>("email"));
             cl_ngaySinh.setCellValueFactory(new PropertyValueFactory<>("ngaySinh"));
             cl_chucVU.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
+            cl_chucVU.setCellFactory(column -> new TableCell<NhanVien, ChucVu>() {
+                @Override
+                protected void updateItem(ChucVu item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getChucVu()); // gọi method trả về tên đẹp
+                    }
+                }
+            });
+
 
 
             // Gán STT tự động
@@ -429,5 +527,46 @@ public class QL_NhanVien_controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadTableData();
+        // Thiết lập các giá trị cho ComboBox
+        txt_chucVu.getItems().addAll(ChucVu.values());
+        txt_chucVu.setCellFactory(lv -> new ListCell<ChucVu>() {
+            @Override
+            protected void updateItem(ChucVu item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getChucVu());  // Hiển thị giá trị đẹp
+                }
+            }
+        });
+
+// Sử dụng `setButtonCell` để hiển thị giá trị đẹp trên nút combo khi chọn
+        txt_chucVu.setButtonCell(new ListCell<ChucVu>() {
+            @Override
+            protected void updateItem(ChucVu item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getChucVu());  // Hiển thị giá trị đẹp
+                }
+            }
+        });
+        // Thiết lập sự kiện khi người dùng chọn một hàng trong bảng
+        table_NV.setOnMouseClicked(event -> {
+
+                NhanVien selectedNV = table_NV.getSelectionModel().getSelectedItem();
+                if (selectedNV != null) {
+                    txt_MaNV.setText(selectedNV.getMaNV());
+                    txt_TenNV.setText(selectedNV.getTenNV());
+                    txt_CCCD.setText(selectedNV.getCccd());
+                    txt_SDT.setText(selectedNV.getSdt());
+                    txt_Email.setText(selectedNV.getEmail());
+                    txt_ngaySinh.setValue(selectedNV.getNgaySinh());
+                    txt_chucVu.setValue(selectedNV.getChucVu());
+                    txt_DiaChi.setText(selectedNV.getDiaChi());
+                }
+        });
     }
 }
