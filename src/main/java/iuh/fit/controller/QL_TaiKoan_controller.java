@@ -1,11 +1,16 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.entities.TaiKhoan;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -53,7 +58,7 @@ public class QL_TaiKoan_controller implements Initializable {
     private TableColumn<?, ?> cl_tenDN;
 
     @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<TaiKhoan, Integer> cl_txt;
 
     @FXML
     private ImageView img_HoaDon;
@@ -171,6 +176,9 @@ public class QL_TaiKoan_controller implements Initializable {
 
     @FXML
     private VBox quanLySubVBox;
+
+    @FXML
+    private TableView<TaiKhoan> table_TK;
 
     @FXML
     private VBox thongKeSubMenuList;
@@ -350,9 +358,48 @@ public class QL_TaiKoan_controller implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            TaiKhoan_dao tkDAO = new TaiKhoan_dao();
+
+            // Xóa dữ liệu cũ trong table
+            table_TK.getItems().clear();
+
+            // Lấy danh sách tài khoản từ database
+            ObservableList<TaiKhoan> listTK = FXCollections.observableArrayList(tkDAO.readAll());
+            // Thiết lập cell value factory cho các cột
+            cl_maTK.setCellValueFactory(new PropertyValueFactory<>("maTaiKhoan"));
+            cl_MaNV.setCellValueFactory(new PropertyValueFactory<>("nhanVien"));
+            cl_tenDN.setCellValueFactory(new PropertyValueFactory<>("tenDangNhap"));
+            cl_ThoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGianDangNhap"));
+
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<TaiKhoan, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_TK.setItems(listTK);
+
+            // Refresh table view
+            table_TK.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        loadTableData();
     }
 }

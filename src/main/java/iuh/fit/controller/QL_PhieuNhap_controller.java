@@ -1,11 +1,16 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.PhieuNhapHang_dao;
+import iuh.fit.entities.PhieuNhapHang;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -35,13 +40,13 @@ public class QL_PhieuNhap_controller implements Initializable {
     private Button btn_timkiemHoaDon;
 
     @FXML
-    private TableColumn<?, ?> cl_pttt;
+    private TableColumn<?, ?> cl_thanhTien;
 
     @FXML
     private TableColumn<?, ?> cl_thoiGian;
 
     @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<PhieuNhapHang, Integer> cl_txt;
 
     @FXML
     private TableColumn<?, ?> cll_MaPhieuNhap;
@@ -171,6 +176,9 @@ public class QL_PhieuNhap_controller implements Initializable {
 
     @FXML
     private VBox quanLySubVBox;
+
+    @FXML
+    private TableView<PhieuNhapHang> table_PNhap;
 
     @FXML
     private VBox thongKeSubMenuList;
@@ -331,9 +339,49 @@ public class QL_PhieuNhap_controller implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            PhieuNhapHang_dao pNhapDAO = new PhieuNhapHang_dao();
+
+            // Xóa dữ liệu cũ trong table
+            table_PNhap.getItems().clear();
+
+            // Lấy danh sách phiếu nhập từ database
+            ObservableList<PhieuNhapHang> listpNhap = FXCollections.observableArrayList(pNhapDAO.readAll());
+            // Thiết lập cell value factory cho các cột
+            cll_MaPhieuNhap.setCellValueFactory(new PropertyValueFactory<>("maPNH"));
+            cll_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cll_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
+            cll_SoLuongSP.setCellValueFactory(new PropertyValueFactory<>("tongSoLuongSP"));
+            cl_thoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
+            cl_thanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<PhieuNhapHang, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_PNhap.setItems(listpNhap);
+
+            // Refresh table view
+            table_PNhap.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        loadTableData();
     }
 }

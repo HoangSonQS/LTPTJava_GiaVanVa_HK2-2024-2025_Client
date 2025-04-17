@@ -1,11 +1,18 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.KhachHang_dao;
+import iuh.fit.daos.NhanVien_dao;
+import iuh.fit.entities.KhachHang;
+import iuh.fit.entities.NhanVien;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -41,25 +48,25 @@ public class QL_NhanVien_controller implements Initializable {
     private Button btnXoaTrang;
 
     @FXML
-    private TableColumn<?, ?> cl_maHD;
+    private TableColumn<?, ?> cl_CCCD;
 
     @FXML
-    private TableColumn<?, ?> cl_maKH;
+    private TableColumn<?, ?> cl_chucVU;
+
+    @FXML
+    private TableColumn<?, ?> cl_email;
 
     @FXML
     private TableColumn<?, ?> cl_maNV;
 
     @FXML
-    private TableColumn<?, ?> cl_pttt;
+    private TableColumn<?, ?> cl_ngaySinh;
 
     @FXML
-    private TableColumn<?, ?> cl_thanhTien;
+    private TableColumn<?, ?> cl_tenNV;
 
     @FXML
-    private TableColumn<?, ?> cl_thoiGian;
-
-    @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<NhanVien, Integer> cl_txt;
 
     @FXML
     private ImageView img_HoaDon;
@@ -137,7 +144,7 @@ public class QL_NhanVien_controller implements Initializable {
     private Label lb_timKiem;
 
     @FXML
-    private TableColumn<?, ?> lc_slsp;
+    private TableColumn<?, ?> lc_SDT;
 
     @FXML
     private Pane p_HoaDon;
@@ -194,25 +201,31 @@ public class QL_NhanVien_controller implements Initializable {
     private VBox timKiemSubVBox;
 
     @FXML
-    private TextField txt_MaKH;
+    private TextField txt_CCCD;
+
+    @FXML
+    private TextField txt_ChucVu;
+
+    @FXML
+    private TextField txt_Email;
 
     @FXML
     private TextField txt_MaNV;
 
     @FXML
-    private TextField txt_PTTT;
+    private TextField txt_NgaySinh;
 
     @FXML
-    private TextField txt_SoSP;
+    private TextField txt_SDT;
 
     @FXML
-    private TextField txt_ThanhTien;
-
-    @FXML
-    private TextField txt_ThoiGian;
+    private TextField txt_TenNV;
 
     @FXML
     private VBox vBox;
+
+    @FXML
+    private TableView<NhanVien> table_NV;
 
     @FXML
     void handleGioHangClick(MouseEvent event) {
@@ -370,9 +383,51 @@ public class QL_NhanVien_controller implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            NhanVien_dao nvDAO = new NhanVien_dao();
+
+            // Xóa dữ liệu cũ trong table
+            table_NV.getItems().clear();
+
+            // Lấy danh sách nhaan vieen từ database
+            ObservableList<NhanVien> listNV = FXCollections.observableArrayList(nvDAO.readAllNhanVien());
+            // Thiết lập cell value factory cho các cột
+            cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cl_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
+            cl_CCCD.setCellValueFactory(new PropertyValueFactory<>("cccd"));
+            lc_SDT.setCellValueFactory(new PropertyValueFactory<>("sdt"));
+            cl_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+            cl_ngaySinh.setCellValueFactory(new PropertyValueFactory<>("ngaySinh"));
+            cl_chucVU.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
+
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<NhanVien, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_NV.setItems(listNV);
+
+            // Refresh table view
+            table_NV.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-
+        loadTableData();
     }
 }
