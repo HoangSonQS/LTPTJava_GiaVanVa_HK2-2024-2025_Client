@@ -58,7 +58,7 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <TableView layoutX="389.0" layoutY="130.0" prefHeight="555.0" prefWidth="881.0">
+            <TableView fx:id="tableTaiKhoan" layoutX="389.0" layoutY="130.0" prefHeight="555.0" prefWidth="881.0">
                <columns>
                   <TableColumn fx:id="cl_stt" prefWidth="50.4000244140625" text="STT" />
                   <TableColumn fx:id="cl_maTK" prefWidth="250.4000244140625" text="Mã tài khoản" />
