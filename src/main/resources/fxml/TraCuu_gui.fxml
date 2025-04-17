@@ -35,7 +35,7 @@
       </Pane>
       <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
          <children>
-          <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
+          <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -58,16 +58,16 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <TableView fx:id="tableSanPham" layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
+            <TableView fx:id="tableSanPham" layoutX="458.0" layoutY="130.0" prefHeight="555.0" prefWidth="810.0">
               <columns>
-                <TableColumn fx:id="cl_txt" prefWidth="50.4000244140625" text="STT" />
-                <TableColumn fx:id="cl_maSP" prefWidth="102.4000244140625" text="Mã sản phẩm" />
-                  <TableColumn fx:id="cl_tenSP" prefWidth="104.00006103515625" text="Tên sản phẩm" />
-                  <TableColumn fx:id="cl_ncc" prefWidth="100.800048828125" text="Nhà cung cấp" />
-                  <TableColumn fx:id="cl_slt" prefWidth="92.79998779296875" text="Số lượng tồn" />
-                  <TableColumn fx:id="cl_giaNhap" prefWidth="64.800048828125" text="Giá nhập" />
-                  <TableColumn fx:id="cl_giaBan" prefWidth="61.5999755859375" text="Giá bán" />
-                  <TableColumn fx:id="cl_nsx" prefWidth="98.4000244140625" text="Ngày sản xuất" />
+                <TableColumn fx:id="cl_txt" prefWidth="41.60003662109375" text="STT" />
+                <TableColumn fx:id="cl_maSP" prefWidth="86.39996337890625" text="Mã sản phẩm" />
+                  <TableColumn fx:id="cl_tenSP" prefWidth="109.60003662109375" text="Tên sản phẩm" />
+                  <TableColumn fx:id="cl_ncc" prefWidth="103.199951171875" text="Nhà cung cấp" />
+                  <TableColumn fx:id="cl_slt" prefWidth="79.2000732421875" text="Số lượng tồn" />
+                  <TableColumn fx:id="cl_giaNhap" prefWidth="69.60009765625" text="Giá nhập" />
+                  <TableColumn fx:id="cl_giaBan" prefWidth="70.4000244140625" text="Giá bán" />
+                  <TableColumn fx:id="cl_nsx" prefWidth="124.0" text="Ngày sản xuất" />
                   <TableColumn fx:id="cl_hsd" prefWidth="84.0001220703125" text="Hạn sử dụng" />
                   <TableColumn fx:id="cl_tgcn" prefWidth="120.0" text="Thời gian cập nhật" />
                   <TableColumn fx:id="cl_loaiHang" text="Loại hàng" />
@@ -178,7 +178,7 @@
                   <Font size="20.0" />
                </font>
             </Label>
-            <Button fx:id="btn_qlSanPham" layoutX="52.0" layoutY="588.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý sản phẩm" textFill="WHITE">
+            <Button fx:id="btn_qlSanPham" layoutX="157.0" layoutY="591.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý sản phẩm" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>

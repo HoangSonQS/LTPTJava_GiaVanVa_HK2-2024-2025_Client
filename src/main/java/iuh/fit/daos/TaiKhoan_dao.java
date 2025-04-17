@@ -66,4 +66,15 @@ public class TaiKhoan_dao {
             e.printStackTrace();
         }
     }
+    public TaiKhoan findByUsernameandPassword(String username, String password) {
+        try {
+            return em.createQuery("SELECT t FROM TaiKhoan t WHERE t.tenDangNhap = :username AND t.matKhau = :password", TaiKhoan.class)
+                    .setParameter("username", username)
+                    .setParameter("password", password)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

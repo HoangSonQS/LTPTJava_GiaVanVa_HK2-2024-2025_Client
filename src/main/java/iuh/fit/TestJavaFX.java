@@ -11,7 +11,12 @@ public class TestJavaFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/fxml/TraCuuPhieuNhap_gui.fxml"));
+
+            Parent root = FXMLLoader.load(getClass().getResource("/fxml/TraCuu_gui.fxml"));
+
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/TraCuu_gui.fxml"));
+//            Parent root = FXMLLoader.load(getClass().getResource("/fxml/BanHang_gui.fxml"));
             Scene scene = new Scene(root);
             primaryStage.setScene(scene);
             primaryStage.setMaximized(true);

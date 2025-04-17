@@ -13,6 +13,7 @@ import java.io.Serializable;
 @EqualsAndHashCode
 
 public class ChiTietSanPham_PhieuNhapId implements Serializable {
+    private static final long serialVersionUID = 11L; // CHITIETSANPHAM_PHIEUNHAPID_SERIAL_VERSION_UID
     private String maPNH;
     private String maSP;
 

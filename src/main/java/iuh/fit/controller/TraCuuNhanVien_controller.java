@@ -1,22 +1,29 @@
 package iuh.fit.controller;
 
+import iuh.fit.App;
+import iuh.fit.daos.NhanVien_dao;
+import iuh.fit.entities.NhanVien;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -35,34 +42,34 @@ public class TraCuuNhanVien_controller implements Initializable {
     private Button btn_qlNhanVien;
 
     @FXML
-    private ComboBox<?> ccb_GiaoDien;
+    private ComboBox<String> ccb_GiaoDien;
 
     @FXML
-    private TableColumn<?, ?> cl_cccd;
+    private TableColumn<NhanVien, String> cl_cccd;
 
     @FXML
-    private TableColumn<?, ?> cl_chucVu;
+    private TableColumn<NhanVien, String> cl_chucVu;
 
     @FXML
-    private TableColumn<?, ?> cl_diaChi;
+    private TableColumn<NhanVien, String> cl_diaChi;
 
     @FXML
-    private TableColumn<?, ?> cl_email;
+    private TableColumn<NhanVien, String> cl_email;
 
     @FXML
-    private TableColumn<?, ?> cl_maNV;
+    private TableColumn<NhanVien, String> cl_maNV;
 
     @FXML
-    private TableColumn<?, ?> cl_ngaySinh;
+    private TableColumn<NhanVien, String> cl_ngaySinh;
 
     @FXML
-    private TableColumn<?, ?> cl_sdt;
+    private TableColumn<NhanVien, String> cl_sdt;
 
     @FXML
-    private TableColumn<?, ?> cl_stt;
+    private TableColumn<NhanVien, String> cl_stt;
 
     @FXML
-    private TableColumn<?, ?> cl_tenNV;
+    private TableColumn<NhanVien, String> cl_tenNV;
 
     @FXML
     private ImageView img_HoaDon;
@@ -221,6 +228,9 @@ public class TraCuuNhanVien_controller implements Initializable {
     private TextField txt_maNV;
 
     @FXML
+    private TableView<NhanVien> tableNhanVien;
+
+    @FXML
     private VBox vBox;
 
     Map<VBox,VBox> map = new HashMap<VBox,VBox>();
@@ -303,49 +313,245 @@ public class TraCuuNhanVien_controller implements Initializable {
         removeOtherMenus(timKiemSubVBox);
     }
 
-    @FXML
-    void toQLHoaDon(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toQLKhachHang(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toQLNhanVien(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toQLPhieuNhap(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toQLSanPham(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toQLTaiKhoan(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toTKDoanhThu(MouseEvent event) {
-
-    }
-
-    @FXML
-    void toTKSanPham(MouseEvent event) {
-
-    }
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         addMenusToMap();
+        setupTableColumns();
+        loadTableData();
+        setupTableClickEvent();
+        initializeComboBox();
     }
 
+    private void setupTableColumns() {
+        cl_stt.setCellFactory(col -> new TableCell<NhanVien, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+
+        cl_stt.setCellValueFactory(new PropertyValueFactory<>("stt"));
+        cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+        cl_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
+        cl_cccd.setCellValueFactory(new PropertyValueFactory<>("cccd"));
+        cl_sdt.setCellValueFactory(new PropertyValueFactory<>("sdt"));
+        cl_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+        cl_diaChi.setCellValueFactory(new PropertyValueFactory<>("diaChi"));
+        cl_chucVu.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
+        
+        // Định dạng ngày sinh
+        cl_ngaySinh.setCellValueFactory(cellData -> {
+            LocalDate date = cellData.getValue().getNgaySinh();
+            if (date == null) return null;
+            return new SimpleStringProperty(date.format(dateFormatter));
+        });
+    }
+
+    private void loadTableData() {
+        try {
+            NhanVien_dao nhanVienDao = new NhanVien_dao();
+            List<NhanVien> dsnv = nhanVienDao.readAllNhanVien();
+            ObservableList<NhanVien> data = FXCollections.observableArrayList(dsnv);
+            tableNhanVien.setItems(data);
+        } catch (Exception e) {
+            showError("Lỗi", "Không thể tải dữ liệu nhân viên");
+        }
+    }
+
+    private void setupTableClickEvent() {
+        tableNhanVien.setOnMouseClicked(event -> {
+            NhanVien selectedNhanVien = tableNhanVien.getSelectionModel().getSelectedItem();
+            if (selectedNhanVien != null) {
+                updateLabels(selectedNhanVien);
+            }
+        });
+    }
+
+    private void updateLabels(NhanVien nv) {
+        lb_maNV.setText(nv.getMaNV());
+        lb_tenNV.setText(nv.getTenNV());
+        lb_cccd.setText(nv.getCccd());
+        lb_sdt.setText(nv.getSdt());
+        lb_email.setText(nv.getEmail());
+        lb_diaChi.setText(nv.getDiaChi());
+        lb_chucVu.setText(nv.getChucVu().toString());
+        lb_ngaySinh.setText(nv.getNgaySinh().format(dateFormatter));
+    }
+
+    private void initializeComboBox() {
+        ObservableList<String> list = FXCollections.observableArrayList(
+            "Sản phẩm", "Tài khoản", "Hoá đơn", "Phiếu nhập", "Nhân viên", "Khách hàng"
+        );
+        ccb_GiaoDien.setItems(list);
+        ccb_GiaoDien.setValue("Nhân viên");
+        setupComboBoxHandler();
+    }
+
+    private void setupComboBoxHandler() {
+        ccb_GiaoDien.setOnAction(event -> {
+            String selectedValue = ccb_GiaoDien.getValue();
+            switch (selectedValue) {
+                case "Sản phẩm":
+                    try {
+                        App.setRoot("TraCuu_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu sản phẩm");
+                    }
+                    break;
+                case "Tài khoản":
+                    try {
+                        App.setRoot("TraCuuTaiKhoan_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu tài khoản");
+                    }
+                    break;
+                case "Hoá đơn":
+                    try {
+                        App.setRoot("TraCuuHoaDon_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu hóa đơn");
+                    }
+                    break;
+                case "Phiếu nhập":
+                    try {
+                        App.setRoot("TraCuuPhieuNhap_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu phiếu nhập");
+                    }
+                    break;
+                case "Nhân viên":
+                    // Giữ nguyên giao diện hiện tại
+                    break;
+                case "Khách hàng":
+                    try {
+                        App.setRoot("TraCuuKhachHang_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu khách hàng");
+                    }
+                    break;
+            }
+        });
+    }
+
+    @FXML
+    void timKiem(MouseEvent event) {
+        String maNhanVien = txt_maNV.getText();
+        App.maTraCuu = maNhanVien;
+        NhanVien nhanVien = new NhanVien_dao().readNhanVien(maNhanVien);
+        lb_maNV.setText(nhanVien.getMaNV());
+        lb_tenNV.setText(nhanVien.getTenNV());
+        lb_cccd.setText(nhanVien.getCccd());
+        lb_sdt.setText(nhanVien.getSdt());
+        lb_email.setText(nhanVien.getEmail());
+        lb_diaChi.setText(nhanVien.getDiaChi());
+        lb_chucVu.setText(nhanVien.getChucVu().toString());
+        lb_ngaySinh.setText(nhanVien.getNgaySinh().format(dateFormatter));
+        highlightMatchingRow(maNhanVien);
+    }
+
+    private void highlightMatchingRow(String maNhanVien) {
+        if (maNhanVien == null || maNhanVien.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < tableNhanVien.getItems().size(); i++) {
+            NhanVien nhanVien = tableNhanVien.getItems().get(i);
+            if (nhanVien.getMaNV().equals(maNhanVien)) {  // Sửa lại điều kiện so sánh
+                // Select the row
+                tableNhanVien.getSelectionModel().select(i);
+                // Scroll to the row
+                tableNhanVien.scrollTo(i);
+                // Request focus
+                tableNhanVien.requestFocus();
+                break;
+            }
+        }
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    @FXML
+    void toQLHoaDon(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyHoaDon_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý hóa đơn");
+        }
+    }
+
+    @FXML
+    void toQLKhachHang(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyKhachHang_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý khách hàng");
+        }
+    }
+
+    @FXML
+    void toQLNhanVien(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyNhanVien_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý nhân viên");
+        }
+    }
+
+    @FXML
+    void toQLPhieuNhap(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyPhieuNhap_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý phiếu nhập");
+        }
+    }
+
+    @FXML
+    void toQLSanPham(MouseEvent event) {
+        try {
+            App.setRoot("QuanLySanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý sản phẩm");
+        }
+    }
+
+    @FXML
+    void toQLTaiKhoan(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyTaiKhoan_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý tài khoản");
+        }
+    }
+
+    @FXML
+    void toTKDoanhThu(MouseEvent event) {
+        try {
+            App.setRoot("ThongKeDoanhThu_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê doanh thu");
+        }
+    }
+
+    @FXML
+    void toTKSanPham(MouseEvent event) {
+        try {
+            App.setRoot("ThongKeSanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê sản phẩm");
+        }
+    }
 }

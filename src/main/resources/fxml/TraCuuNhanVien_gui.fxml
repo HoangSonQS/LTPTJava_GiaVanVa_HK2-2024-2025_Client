@@ -35,7 +35,7 @@
       </Pane>
       <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
          <children>
-            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
+            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -58,7 +58,7 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <TableView layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
+            <TableView fx:id="tableNhanVien" layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
                <columns>
                   <TableColumn fx:id="cl_stt" prefWidth="50.4000244140625" text="STT" />
                   <TableColumn fx:id="cl_maNV" prefWidth="102.4000244140625" text="Mã nhân viên" />

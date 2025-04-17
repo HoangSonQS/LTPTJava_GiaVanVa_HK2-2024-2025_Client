@@ -3,15 +3,14 @@ package iuh.fit.controller;
 import iuh.fit.App;
 import iuh.fit.daos.SanPham_dao;
 import iuh.fit.entities.SanPham;
-import iuh.fit.entities.TaiKhoan;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.beans.property.ReadOnlyStringWrapper;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
@@ -22,9 +21,12 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+import javafx.scene.control.TableCell;
+import iuh.fit.enums.LoaiHang;
 
 public class TraCuu_controller implements Initializable {
 
@@ -306,11 +308,12 @@ public class TraCuu_controller implements Initializable {
         toolsSlider(timKiemSubVBox, timKiemSubMenuList);
         removeOtherMenus(timKiemSubVBox);
     }
-
+    
+    @FXML
     void timKiem(MouseEvent event) {
 
         String maSanPham = txt_maSP.getText();
-        App.ma = maSanPham;
+        App.maTraCuu = maSanPham;
         SanPham sp = new SanPham_dao().read(maSanPham);
         lb_maSP.setText(sp.getMaSP());
         lb_tenSP.setText(sp.getTenSP());
@@ -318,172 +321,203 @@ public class TraCuu_controller implements Initializable {
         lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
         lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
         lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
-        lb_nsx.setText(sp.getNgaySX().toString());
-        lb_hsd.setText(sp.getHanSD().toString());
-        lb_tgcn.setText(sp.getThoiGianCapNhat().toString());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        lb_nsx.setText(sp.getNgaySX().format(formatter));
+        lb_hsd.setText(sp.getHanSD().format(formatter));
+        lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
         lb_loaiHang.setText(sp.getLoaiHang().toString());
         highlightMatchingRow(maSanPham);
     }
 
-    private void highlightMatchingRow(String maTaiKhoan) {
+    private void highlightMatchingRow(String maSanPham) {
+        if (maSanPham == null || maSanPham.isEmpty()) {
+            return;
+        }
+
         for (int i = 0; i < tableSanPham.getItems().size(); i++) {
             SanPham sanPham = tableSanPham.getItems().get(i);
-            if (sanPham.getMaSP().equals(sanPham)) {
-                // Select the row (important)
+            if (sanPham.getMaSP().equals(maSanPham)) {  // Sửa lại điều kiện so sánh
+                // Select the row
                 tableSanPham.getSelectionModel().select(i);
-                // Set focus to the row
-                tableSanPham.getFocusModel().focus(i);
-                // Highlight the row (optional, but recommended)
-                tableSanPham.getFocusModel().focus(i);
-                tableSanPham.getSelectionModel().focus(i);
+                // Scroll to the row
+                tableSanPham.scrollTo(i);
+                // Request focus
+                tableSanPham.requestFocus();
                 break;
             }
         }
     }
     @Override
     public void initialize(URL arg0, ResourceBundle arg1) {
-        lb_tenSP.setText("");
-        lb_tenSP.setText("");
-        lb_ncc.setText("");
-        ObservableList<String> list = FXCollections.observableArrayList("Sản phẩm", "Tài khoản", "Hoá đơn", "Phiếu nhập", "Nhân viên", "Khách hàng");
+        // Khởi tạo ComboBox
+        initializeComboBox();
+        
+        // Khởi tạo các cột cho bảng
+        initializeTableColumns();
+        
+        // Load dữ liệu vào bảng
+        loadTableData();
+        
+        // Thêm sự kiện click cho bảng
+        setupTableClickEvent();
+    }
+
+    private void initializeComboBox() {
+        ObservableList<String> list = FXCollections.observableArrayList(
+            "Sản phẩm", "Tài khoản", "Hoá đơn", "Phiếu nhập", "Nhân viên", "Khách hàng"
+        );
         cbb_GiaoDien.setItems(list);
         cbb_GiaoDien.setValue("Sản phẩm");
-        // Xử lý sự kiện chọn ComboBox để chuyển giao diện
+        setupComboBoxHandler();
+    }
+
+    private void setupComboBoxHandler() {
         cbb_GiaoDien.setOnAction(event -> {
             String selectedValue = cbb_GiaoDien.getValue();
             switch (selectedValue) {
                 case "Sản phẩm":
-                    try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuu_gui.fxml"))));
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
+                    // Giữ nguyên giao diện hiện tại
                     break;
                 case "Tài khoản":
                     try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuuTaiKhoan_gui.fxml"))));
+                        App.setRoot("TraCuuTaiKhoan_gui");
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu tài khoản");
                     }
                     break;
                 case "Hoá đơn":
                     try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuuHoaDon_gui.fxml"))));
+                        App.setRoot("TraCuuHoaDon_gui");
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu hóa đơn");
                     }
                     break;
                 case "Phiếu nhập":
                     try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuuPhieuNhap_gui.fxml"))));
+                        App.setRoot("TraCuuPhieuNhap_gui");
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu phiếu nhập");
                     }
                     break;
                 case "Nhân viên":
                     try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuuNhanVien_gui.fxml"))));
+                        App.setRoot("TraCuuNhanVien_gui");
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu nhân viên");
                     }
                     break;
                 case "Khách hàng":
                     try {
-                        App.stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/fxml/TraCuuKhachHang_gui.fxml"))));
+                        App.setRoot("TraCuuKhachHang_gui");
                     } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu khách hàng");
                     }
                     break;
-                default:
-                    System.out.println("Không tìm thấy giao diện phù hợp!");
-                    break;
             }
         });
-        cl_txt.setCellFactory(col -> {
-            return new TableCell<SanPham, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (empty) {
-                        setText(null);
-                    } else {
-                        // Số thứ tự = index + 1
-                        setText(String.valueOf(getIndex() + 1));
-                    }
-                }
-            };
-        });
-
-
-        cl_maSP.setCellValueFactory(new PropertyValueFactory<>("MaSP"));
-        cl_tenSP.setCellValueFactory(new PropertyValueFactory<>("TenSP"));
-        cl_ncc.setCellValueFactory(new PropertyValueFactory<>("NhaCC"));
-        cl_slt.setCellValueFactory(new PropertyValueFactory<>("SoLuongTon"));
-        cl_giaNhap.setCellValueFactory(new PropertyValueFactory<>("GiaNhap"));
-        cl_giaBan.setCellValueFactory(new PropertyValueFactory<>("GiaBan"));
-        cl_nsx.setCellValueFactory(new PropertyValueFactory<>("NgaySX"));
-        cl_hsd.setCellValueFactory(new PropertyValueFactory<>("HanSD"));
-        cl_tgcn.setCellValueFactory(new PropertyValueFactory<>("ThoiGianCapNhat"));
-        cl_loaiHang.setCellValueFactory(new PropertyValueFactory<>("LoaiHang"));
-
-        loadTableData();
-        tableSanPham.setOnMouseClicked(event -> {
-            SanPham selectedSanPham = tableSanPham.getSelectionModel().getSelectedItem();
-            if (selectedSanPham != null) {
-                lb_maSP.setText(selectedSanPham.getMaSP());
-                lb_tenSP.setText(selectedSanPham.getTenSP());
-                lb_ncc.setText(selectedSanPham.getNhaCC());
-                lb_slt.setText(String.valueOf(selectedSanPham.getSoLuongTon()));
-                lb_giaNhap.setText(String.valueOf(selectedSanPham.getGiaNhap()));
-                lb_giaBan.setText(String.valueOf(selectedSanPham.getGiaBan()));
-                lb_nsx.setText(selectedSanPham.getNgaySX().toString());
-                lb_hsd.setText(selectedSanPham.getHanSD().toString());
-                lb_tgcn.setText(selectedSanPham.getThoiGianCapNhat().toString());
-                lb_loaiHang.setText(selectedSanPham.getLoaiHang().toString());
-            }
-        });
-        loadTableData();
-        tableSanPham.setOnMouseClicked(event -> {
-            SanPham selectedSanPham = tableSanPham.getSelectionModel().getSelectedItem();
-            if (selectedSanPham != null) {
-                lb_maSP.setText(selectedSanPham.getMaSP());
-                lb_tenSP.setText(selectedSanPham.getTenSP());
-                lb_ncc.setText(selectedSanPham.getNhaCC());
-                lb_slt.setText(String.valueOf(selectedSanPham.getSoLuongTon()));
-                lb_giaNhap.setText(String.valueOf(selectedSanPham.getGiaNhap()));
-                lb_giaBan.setText(String.valueOf(selectedSanPham.getGiaBan()));
-                lb_nsx.setText(selectedSanPham.getNgaySX().toString());
-                lb_hsd.setText(selectedSanPham.getHanSD().toString());
-                lb_tgcn.setText(selectedSanPham.getThoiGianCapNhat().toString());
-                lb_loaiHang.setText(selectedSanPham.getLoaiHang().toString());
-            }
-        });
-
-        addUserLogin();
     }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void initializeTableColumns() {
+        // Cột STT
+        cl_txt.setCellFactory(col -> new TableCell<SanPham, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+
+        // Các cột khác
+        cl_maSP.setCellValueFactory(new PropertyValueFactory<>("maSP"));
+        cl_tenSP.setCellValueFactory(new PropertyValueFactory<>("tenSP"));
+        cl_ncc.setCellValueFactory(new PropertyValueFactory<>("nhaCC"));
+        cl_slt.setCellValueFactory(new PropertyValueFactory<>("soLuongTon"));
+        cl_giaNhap.setCellValueFactory(new PropertyValueFactory<>("giaNhap"));
+        cl_giaBan.setCellValueFactory(new PropertyValueFactory<>("giaBan"));
+
+        // Định dạng ngày tháng
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // Cột Ngày sản xuất
+        cl_nsx.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getNgaySX();
+            if (date == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        });
+
+        // Cột Hạn sử dụng
+        cl_hsd.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getHanSD();
+            if (date == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        });
+
+        // Cột Thời gian cập nhật
+        cl_tgcn.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getThoiGianCapNhat();
+            if (date == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        });
+
+        // Cột Loại hàng
+        cl_loaiHang.setCellValueFactory(cellData -> {
+            LoaiHang loaiHang = cellData.getValue().getLoaiHang();
+            if (loaiHang == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(loaiHang.toString());
+        });
+    }
+
     private void loadTableData() {
         try {
-            KhuyenMai_DAO kmdao = new KhuyenMai_DAO();
-            ArrayList<KhuyenMai> dskm = kmdao.getAllKhuyenMai();
-
-            ObservableList<KhuyenMai> observableList = FXCollections.observableArrayList(dskm);
-            tableKhuyenMai.setItems(observableList);
-
+            SanPham_dao sanPhamDao = new SanPham_dao();
+            List<SanPham> dssp = sanPhamDao.readAll();
+            ObservableList<SanPham> data = FXCollections.observableArrayList(dssp);
+            tableSanPham.setItems(data);
         } catch (Exception e) {
             e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText("Lỗi khi tải dữ liệu");
+            alert.setContentText("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+            alert.showAndWait();
         }
     }
-    private void addUserLogin() {
-        TaiKhoan tk = App.;
-        maNV.setText(String.valueOf(tk.getNhanVien().getIdNhanVien()));
-        tenNV.setText(String.valueOf(tk.getNhanVien().getTenNhanVien()));
+
+    private void setupTableClickEvent() {
+        tableSanPham.setOnMouseClicked(event -> {
+            SanPham selectedSanPham = tableSanPham.getSelectionModel().getSelectedItem();
+            if (selectedSanPham != null) {
+                updateLabels(selectedSanPham);
+            }
+        });
     }
+
+    private void updateLabels(SanPham sp) {
+        lb_maSP.setText(sp.getMaSP());
+        lb_tenSP.setText(sp.getTenSP());
+        lb_ncc.setText(sp.getNhaCC());
+        lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
+        lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
+        lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+        lb_nsx.setText(sp.getNgaySX().format(formatter));
+        lb_hsd.setText(sp.getHanSD().format(formatter));
+        lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
+        lb_loaiHang.setText(sp.getLoaiHang().toString());
+    }
+
     @FXML
     void toQLHoaDon(MouseEvent event) {
 
@@ -524,8 +558,4 @@ public class TraCuu_controller implements Initializable {
 
     }
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        addMenusToMap();
-    }
 }

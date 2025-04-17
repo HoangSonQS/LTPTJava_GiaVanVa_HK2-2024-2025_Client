@@ -3,6 +3,8 @@ package iuh.fit.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,7 +13,8 @@ import lombok.*;
 @Table(name = "ChiTietSanPham_PhieuNhaps")
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 
-public class ChiTietSanPham_PhieuNhap {
+public class ChiTietSanPham_PhieuNhap implements Serializable {
+    private static final long serialVersionUID = 10L; // CHITIETSANPHAM_PHIEUNHAP_SERIAL_VERSION_UID
     @EmbeddedId
     private ChiTietSanPham_PhieuNhapId id;
 
