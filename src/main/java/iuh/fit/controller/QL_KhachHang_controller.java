@@ -228,25 +228,6 @@ public class QL_KhachHang_controller implements Initializable {
         }
     }
 
-    @FXML
-    void moGiaoDienTimKiemNV(MouseEvent event) {
-        try {
-            loadFXML("/fxml/TraCuu_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu!");
-        }
-    }
-
-    @FXML
-    void suaTTNV(MouseEvent event) {
-
-    }
-
-    @FXML
-    void themNV(MouseEvent event) {
-
-    }
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
@@ -344,14 +325,96 @@ public class QL_KhachHang_controller implements Initializable {
     }
 
     @FXML
-    void xoaNV(MouseEvent event) {
+    void moGiaoDienTimKiemKH(MouseEvent event) {
+        try{
+            loadFXML("/fxml/TraCuuKhachHang_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tìm kiếm khách hàng!");
+        }
+    }
 
+    @FXML
+    void suaKH(MouseEvent event) {
+        try {
+            // Lấy thông tin từ các trường nhập liệu
+            String maKH = txt_MaKH.getText();
+            String tenKH = txt_TenKH.getText();
+            String sdt = txt_SDT.getText();
+
+            // Tạo đối tượng KhachHang mới
+            KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
+
+            // Tạo DAO object
+            KhachHang_dao khDAO = new KhachHang_dao();
+
+            // Cập nhật thông tin khách hàng vào database
+            khDAO.update(khachHang);
+
+            // Tải lại dữ liệu vào bảng
+            loadTableData();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể cập nhật thông tin khách hàng!");
+        }
+    }
+
+    @FXML
+    void themKH(MouseEvent event) {
+        try{
+            // Lấy thông tin từ các trường nhập liệu
+            String maKH = txt_MaKH.getText();
+            String tenKH = txt_TenKH.getText();
+            String sdt = txt_SDT.getText();
+
+            // Tạo đối tượng KhachHang mới
+            KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
+
+            // Tạo DAO object
+            KhachHang_dao khDAO = new KhachHang_dao();
+
+            // Thêm khách hàng vào database
+            khDAO.create(khachHang);
+
+            // Tải lại dữ liệu vào bảng
+            loadTableData();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm khách hàng!");
+        }
+
+    }
+    @FXML
+    void xoaKH(MouseEvent event) {
+        try{
+            // Lấy thông tin từ các trường nhập liệu
+            String maKH = txt_MaKH.getText();
+
+            // Tạo DAO object
+            KhachHang_dao khDAO = new KhachHang_dao();
+
+            // Xóa khách hàng khỏi database
+            khDAO.delete(maKH);
+
+            // Tải lại dữ liệu vào bảng
+            loadTableData();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể xóa khách hàng!");
+        }
     }
 
     @FXML
     void xoaTrang(MouseEvent event) {
-
+        txt_MaKH.setText("");
+        txt_TenKH.setText("");
+        txt_SDT.setText("");
+        table_KH.getSelectionModel().clearSelection();
     }
+
     private void loadFXML(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
         Scene scene = new Scene(root);
@@ -400,5 +463,16 @@ public class QL_KhachHang_controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadTableData();
+        // Thiết lập sự kiện click cho các cột trong table
+        table_KH.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                KhachHang selectedKhachHang = table_KH.getSelectionModel().getSelectedItem();
+                if (selectedKhachHang != null) {
+                    txt_MaKH.setText(selectedKhachHang.getMaKH());
+                    txt_TenKH.setText(selectedKhachHang.getTenKH());
+                    txt_SDT.setText(selectedKhachHang.getSdt());
+                }
+            }
+        });
     }
 }

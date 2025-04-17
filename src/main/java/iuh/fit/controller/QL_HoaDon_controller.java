@@ -2,6 +2,9 @@ package iuh.fit.controller;
 
 import iuh.fit.daos.HoaDon_dao;
 import iuh.fit.entities.HoaDon;
+import iuh.fit.entities.SanPham;
+import iuh.fit.enums.LoaiHang;
+import iuh.fit.enums.PhuongThucThanhToan;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -49,7 +53,7 @@ public class QL_HoaDon_controller implements Initializable {
     private TableColumn<?, ?> cl_maNV;
 
     @FXML
-    private TableColumn<?, ?> cl_pttt;
+    private TableColumn<HoaDon, PhuongThucThanhToan> cl_pttt;
 
     @FXML
     private TableColumn<?, ?> cl_thanhTien;
@@ -180,6 +184,7 @@ public class QL_HoaDon_controller implements Initializable {
     @FXML
     private VBox quanLySubVBox;
 
+
     @FXML
     private VBox thongKeSubMenuList;
 
@@ -193,13 +198,16 @@ public class QL_HoaDon_controller implements Initializable {
     private VBox timKiemSubVBox;
 
     @FXML
+    private TextField txt_MaHD;
+
+    @FXML
     private TextField txt_MaKH;
 
     @FXML
     private TextField txt_MaNV;
 
     @FXML
-    private TextField txt_PTTT;
+    private ComboBox<PhuongThucThanhToan> txt_Pttt;
 
     @FXML
     private TextField txt_SoSP;
@@ -232,6 +240,22 @@ public class QL_HoaDon_controller implements Initializable {
             cl_maKH.setCellValueFactory(new PropertyValueFactory<>("maKH"));
             lc_slsp.setCellValueFactory(new PropertyValueFactory<>("tongSoLuongSP"));
             cl_pttt.setCellValueFactory(new PropertyValueFactory<>("phuongThucTT"));
+            cl_pttt.setCellFactory(column -> new TableCell<HoaDon, PhuongThucThanhToan>() {
+                @Override
+                protected void updateItem(PhuongThucThanhToan item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {
+                        setText(null);
+                    } else {
+                        switch (item) {
+                            case Tien_Mat -> setText("Tiền mặt");
+                            case Chuyen_Khoan -> setText("Chuyển khoản");
+                            case The_Ngan_Hang-> setText("Thẻ ngân hàng");
+                        }
+                    }
+                }
+            });
+
             cl_thoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
             cl_thanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
 
@@ -385,9 +409,79 @@ public class QL_HoaDon_controller implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+    @FXML
+    void ThemHD(MouseEvent event) {
+        try{
+
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm hóa đơn!");
+        }
+    }
+
+    @FXML
+    void TimKiemHD(MouseEvent event) {
+
+    }
+
+    @FXML
+    void XoaTrang(MouseEvent event) {
+        txt_MaKH.setText("");
+        txt_MaNV.setText("");
+        txt_Pttt.setValue(null);
+        txt_SoSP.setText("");
+        txt_ThanhTien.setText("");
+        txt_ThoiGian.setText("");
+        table_HD.getSelectionModel().clearSelection();
+        txt_MaHD.setText("");
+
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         loadTableData();
+
+        // Cấu hình ComboBox txt_Pttt chỉ 1 lần
+        txt_Pttt.getItems().setAll(PhuongThucThanhToan.values());
+
+        txt_Pttt.setCellFactory(lv -> new ListCell<PhuongThucThanhToan>() {
+            @Override
+            protected void updateItem(PhuongThucThanhToan item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getPhuongThucThanhToan());  // Gọi getDisplayName() để hiển thị tên đẹp
+                }
+            }
+        });
+
+// Tùy chỉnh cách hiển thị trên nút ComboBox khi đã chọn
+        txt_Pttt.setButtonCell(new ListCell<PhuongThucThanhToan>() {
+            @Override
+            protected void updateItem(PhuongThucThanhToan item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(item.getPhuongThucThanhToan());  // Gọi getDisplayName() cho ButtonCell
+                }
+            }
+        });
+
+        // Sự kiện khi click vào table_HD
+        table_HD.setOnMouseClicked(event -> {
+            HoaDon selectedHD = table_HD.getSelectionModel().getSelectedItem();
+            if (selectedHD != null) {
+                txt_MaHD.setText(selectedHD.getMaHD());
+                txt_MaKH.setText(selectedHD.getMaKH());
+                txt_MaNV.setText(selectedHD.getMaNV());
+                txt_Pttt.setValue(selectedHD.getPhuongThucTT()); // Gán enum vào combo
+                txt_SoSP.setText(String.valueOf(selectedHD.getTongSoLuongSP()));
+                txt_ThanhTien.setText(String.valueOf(selectedHD.getThanhTien()));
+                txt_ThoiGian.setText(selectedHD.getThoiGian().toString());
+            }
+        });
     }
+
 }

@@ -39,6 +39,18 @@ public class NhanVien implements Serializable {
     @Column(name = "ChucVu")
     private ChucVu chucVu;
 
+    public NhanVien(String maNV, String tenNV, String cccd, String diaChi, String email, String sdt, LocalDate ngaySinh, ChucVu chucVu, TaiKhoan taiKhoan) {
+        this.maNV = maNV;
+        this.tenNV = tenNV;
+        this.cccd = cccd;
+        this.diaChi = diaChi;
+        this.email = email;
+        this.sdt = sdt;
+        this.ngaySinh = ngaySinh;
+        this.chucVu = chucVu;
+        this.taiKhoan = taiKhoan;
+    }
+
     //check
     @OneToOne(mappedBy = "nhanVien", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
