@@ -35,7 +35,7 @@
       </Pane>
       <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
          <children>
-            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
+            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -58,7 +58,7 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <TableView layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
+            <TableView fx:id="tableKhachHang" layoutX="300.0" layoutY="130.0" prefHeight="555.0" prefWidth="970.0">
                <columns>
                   <TableColumn fx:id="cl_stt" prefWidth="144.0" text="STT" />
                   <TableColumn fx:id="cl_maKH" prefWidth="253.60003662109375" text="Mã khách hàng" />
@@ -73,32 +73,32 @@
             </Label>
             <Label layoutX="15.0" layoutY="180.0" text="Mã khách hàng:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="220.0" text="Tên khách hàng:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maKH" layoutX="200.0" layoutY="180.0" text="Trống">
+            <Label fx:id="lb_maKH" layoutX="155.0" layoutY="180.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_tenKH" layoutX="200.0" layoutY="220.0" text="Trống">
+            <Label fx:id="lb_tenKH" layoutX="155.0" layoutY="220.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="260.0" text="Số điện thoại:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_sdt" layoutX="200.0" layoutY="260.0" text="Trống">
+            <Label fx:id="lb_sdt" layoutX="155.0" layoutY="260.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Button fx:id="btn_qlKhachHang" layoutX="50.0" layoutY="318.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="200.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý khách hàng" textFill="WHITE">
@@ -301,7 +301,7 @@
                               </Pane>
                               <Pane fx:id="p_thongKeSanPham" prefHeight="50.0" prefWidth="270.0">
                                  <children>
-                                    <Button mnemonicParsing="false" onMouseClicked="#toTKSanPham" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
+                                    <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
                                     <Label fx:id="lb_thongKeSanPham" layoutX="120.0" layoutY="10.0" text="SẢN PHẨM" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />

@@ -1,22 +1,29 @@
 package iuh.fit.controller;
 
+import iuh.fit.App;
+import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.entities.HoaDon;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -35,31 +42,31 @@ public class TraCuuHoaDon_controller implements Initializable {
     private Button btn_qlHoaDon;
 
     @FXML
-    private ComboBox<?> ccb_GiaoDien;
+    private ComboBox<String> ccb_GiaoDien;
 
     @FXML
-    private TableColumn<?, ?> cl_maHD;
+    private TableColumn<HoaDon, String> cl_maHD;
 
     @FXML
-    private TableColumn<?, ?> cl_maKH;
+    private TableColumn<HoaDon, String> cl_maKH;
 
     @FXML
-    private TableColumn<?, ?> cl_maNV;
+    private TableColumn<HoaDon, String> cl_maNV;
 
     @FXML
-    private TableColumn<?, ?> cl_pptt;
+    private TableColumn<HoaDon, String> cl_pptt;
 
     @FXML
-    private TableColumn<?, ?> cl_stt;
+    private TableColumn<HoaDon, String> cl_stt;
 
     @FXML
-    private TableColumn<?, ?> cl_thanhTien;
+    private TableColumn<HoaDon, String> cl_thanhTien;
 
     @FXML
-    private TableColumn<?, ?> cl_thoiGian;
+    private TableColumn<HoaDon, String> cl_thoiGian;
 
     @FXML
-    private TableColumn<?, ?> cl_tslsp;
+    private TableColumn<HoaDon, String> cl_tslsp;
 
     @FXML
     private ImageView img_HoaDon;
@@ -80,7 +87,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private ImageView img_quanLy;
 
     @FXML
-    private ImageView img_sanPham;
+    private ImageView img_SanPham;
 
     @FXML
     private ImageView img_taiKhoan;
@@ -95,7 +102,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private ImageView img_thongKeDoanhThu;
 
     @FXML
-    private ImageView img_thongKeSanPham;
+    private ImageView img_thongKeHoaDon;
 
     @FXML
     private ImageView img_timKiem;
@@ -131,7 +138,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private Label lb_quanLy;
 
     @FXML
-    private Label lb_sanPham;
+    private Label lb_SanPham;
 
     @FXML
     private Label lb_taiKhoan;
@@ -149,7 +156,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private Label lb_thongKeDoanhThu;
 
     @FXML
-    private Label lb_thongKeSanPham;
+    private Label lb_thongKeHoaDon;
 
     @FXML
     private Label lb_timKiem;
@@ -176,7 +183,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private Pane p_quanLy;
 
     @FXML
-    private Pane p_sanPham;
+    private Pane p_SanPham;
 
     @FXML
     private Pane p_taiKhoan;
@@ -188,7 +195,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     private Pane p_thongKeDoanhThu;
 
     @FXML
-    private Pane p_thongKeSanPham;
+    private Pane p_thongKeHoaDon;
 
     @FXML
     private Pane p_timKiem;
@@ -213,6 +220,9 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     @FXML
     private TextField txt_maHD;
+    
+    @FXML
+    private TableView<HoaDon> tableHoaDon;
 
     @FXML
     private VBox vBox;
@@ -302,7 +312,187 @@ public class TraCuuHoaDon_controller implements Initializable {
     }
 
     @FXML
-    void toQLHoaDon(MouseEvent event) {
+    void timKiem(MouseEvent event) {
+
+        String maHoaDon = txt_maHD.getText();
+        App.maTraCuu = maHoaDon;
+        HoaDon sp = new HoaDon_dao().read(maHoaDon);
+        lb_maHD.setText(sp.getMaHD());
+        lb_maNV.setText(sp.getMaNV());
+        lb_maKH.setText(sp.getMaKH());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        lb_thoiGian.setText(sp.getThoiGian().format(formatter));
+        lb_tslsp.setText(String.valueOf(sp.getTongSoLuongSP()));
+        lb_pptt.setText(sp.getPhuongThucTT().toString());
+        lb_thanhTien.setText(String.valueOf(sp.getThanhTien()));
+        highlightMatchingRow(maHoaDon);
+    }
+
+    private void highlightMatchingRow(String maHoaDon) {
+        if (maHoaDon == null || maHoaDon.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < tableHoaDon.getItems().size(); i++) {
+            HoaDon hoaDon = tableHoaDon.getItems().get(i);
+            if (hoaDon.getMaHD().equals(maHoaDon)) {  // Sửa lại điều kiện so sánh
+                // Select the row
+                tableHoaDon.getSelectionModel().select(i);
+                // Scroll to the row
+                tableHoaDon.scrollTo(i);
+                // Request focus
+                tableHoaDon.requestFocus();
+                break;
+            }
+        }
+    }
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        // Khởi tạo ComboBox
+        initializeComboBox();
+
+        // Khởi tạo các cột cho bảng
+        initializeTableColumns();
+
+        // Load dữ liệu vào bảng
+        loadTableData();
+
+        // Thêm sự kiện click cho bảng
+        setupTableClickEvent();
+    }
+
+    private void initializeComboBox() {
+        ObservableList<String> list = FXCollections.observableArrayList(
+                "Sản phẩm", "Tài khoản", "Hoá đơn", "Phiếu nhập", "Nhân viên", "Khách hàng"
+        );
+        ccb_GiaoDien.setItems(list);
+        ccb_GiaoDien.setValue("Sản phẩm");
+        setupComboBoxHandler();
+    }
+
+    private void setupComboBoxHandler() {
+        ccb_GiaoDien.setOnAction(event -> {
+            String selectedValue = ccb_GiaoDien.getValue();
+            switch (selectedValue) {
+                case "Sản phẩm":
+                    // Giữ nguyên giao diện hiện tại
+                    break;
+                case "Tài khoản":
+                    try {
+                        App.setRoot("TraCuuTaiKhoan_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu tài khoản");
+                    }
+                    break;
+                case "Hoá đơn":
+                    try {
+                        App.setRoot("TraCuuHoaDon_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu hóa đơn");
+                    }
+                    break;
+                case "Phiếu nhập":
+                    try {
+                        App.setRoot("TraCuuPhieuNhap_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu phiếu nhập");
+                    }
+                    break;
+                case "Nhân viên":
+                    try {
+                        App.setRoot("TraCuuNhanVien_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu nhân viên");
+                    }
+                    break;
+                case "Khách hàng":
+                    try {
+                        App.setRoot("TraCuuKhachHang_gui");
+                    } catch (IOException e) {
+                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu khách hàng");
+                    }
+                    break;
+            }
+        });
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void initializeTableColumns() {
+        // Cột STT
+        cl_stt.setCellFactory(col -> new TableCell<HoaDon, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+
+        // Các cột khác
+        cl_maHD.setCellValueFactory(new PropertyValueFactory<>("maHD"));
+        cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+        cl_maKH.setCellValueFactory(new PropertyValueFactory<>("maKH"));
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        cl_thoiGian.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getThoiGian();
+            if (date == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        });
+        cl_tslsp.setCellValueFactory(new PropertyValueFactory<>("tongSoLuongSP"));
+        cl_pptt.setCellValueFactory(new PropertyValueFactory<>("phuongThucTT"));
+        cl_thanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
+
+    }
+
+    private void loadTableData() {
+        try {
+            HoaDon_dao HoaDonDao = new HoaDon_dao();
+            List<HoaDon> dssp = HoaDonDao.readAll();
+            ObservableList<HoaDon> data = FXCollections.observableArrayList(dssp);
+            tableHoaDon.setItems(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText("Lỗi khi tải dữ liệu");
+            alert.setContentText("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+            alert.showAndWait();
+        }
+    }
+
+    private void setupTableClickEvent() {
+        tableHoaDon.setOnMouseClicked(event -> {
+            HoaDon selectedHoaDon = tableHoaDon.getSelectionModel().getSelectedItem();
+            if (selectedHoaDon != null) {
+                updateLabels(selectedHoaDon);
+            }
+        });
+    }
+
+    private void updateLabels(HoaDon sp) {
+        lb_maHD.setText(sp.getMaHD());
+        lb_maNV.setText(sp.getMaNV());
+        lb_maKH.setText(sp.getMaKH());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+        lb_thoiGian.setText(sp.getThoiGian().format(formatter));
+        lb_tslsp.setText(String.valueOf(sp.getTongSoLuongSP()));
+        lb_pptt.setText(sp.getPhuongThucTT().toString());
+        lb_thanhTien.setText(String.valueOf(sp.getThanhTien()));
+
+    }
+
+    @FXML
+    void toQLSanPham(MouseEvent event) {
 
     }
 
@@ -322,7 +512,7 @@ public class TraCuuHoaDon_controller implements Initializable {
     }
 
     @FXML
-    void toQLSanPham(MouseEvent event) {
+    void toQLHoaDon(MouseEvent event) {
 
     }
 
@@ -340,9 +530,5 @@ public class TraCuuHoaDon_controller implements Initializable {
     void toTKSanPham(MouseEvent event) {
 
     }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        addMenusToMap();
-    }
+    
 }

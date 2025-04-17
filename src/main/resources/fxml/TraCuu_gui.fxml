@@ -58,7 +58,7 @@
                   <Font size="30.0" />
                </font>
             </Text>
-            <TableView fx:id="tableSanPham" layoutX="458.0" layoutY="130.0" prefHeight="555.0" prefWidth="810.0">
+            <TableView fx:id="tableSanPham" layoutX="397.0" layoutY="130.0" prefHeight="555.0" prefWidth="871.0">
               <columns>
                 <TableColumn fx:id="cl_txt" prefWidth="41.60003662109375" text="STT" />
                 <TableColumn fx:id="cl_maSP" prefWidth="86.39996337890625" text="Mã sản phẩm" />
@@ -80,105 +80,105 @@
             </Label>
             <Label layoutX="15.0" layoutY="180.0" text="Mã sản phẩm:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="220.0" text="Tên sản phẩm:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maSP" layoutX="200.0" layoutY="180.0" text="Trống">
+            <Label fx:id="lb_maSP" layoutX="160.0" layoutY="180.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_tenSP" layoutX="200.0" layoutY="220.0" text="Trống">
+            <Label fx:id="lb_tenSP" layoutX="160.0" layoutY="220.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="260.0" text="Nhà cung cấp:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_ncc" layoutX="200.0" layoutY="260.0" text="Trống">
+            <Label fx:id="lb_ncc" layoutX="160.0" layoutY="260.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="300.0" text="Sống lượng tồn:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_slt" layoutX="200.0" layoutY="300.0" text="Trống">
+            <Label fx:id="lb_slt" layoutX="160.0" layoutY="300.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="340.0" text="Giá nhập:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_giaNhap" layoutX="200.0" layoutY="340.0" text="Trống">
+            <Label fx:id="lb_giaNhap" layoutX="160.0" layoutY="340.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="380.0" text="Giá bán:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_giaBan" layoutX="200.0" layoutY="380.0" text="Trống">
+            <Label fx:id="lb_giaBan" layoutX="160.0" layoutY="380.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="420.0" text="Ngày sản xuất:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_nsx" layoutX="200.0" layoutY="420.0" text="Trống">
+            <Label fx:id="lb_nsx" layoutX="160.0" layoutY="420.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="460.0" text="Hạn sử dụng:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_hsd" layoutX="200.0" layoutY="460.0" text="Trống">
+            <Label fx:id="lb_hsd" layoutX="160.0" layoutY="460.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="500.0" text="Thời gian cập nhật:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_tgcn" layoutX="200.0" layoutY="500.0" text="Trống">
+            <Label fx:id="lb_tgcn" layoutX="160.0" layoutY="500.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="540.0" text="Loại hàng:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_loaiHang" layoutX="200.0" layoutY="540.0" text="Trống">
+            <Label fx:id="lb_loaiHang" layoutX="160.0" layoutY="540.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Button fx:id="btn_qlSanPham" layoutX="157.0" layoutY="591.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý sản phẩm" textFill="WHITE">
+            <Button fx:id="btn_qlSanPham" layoutX="109.0" layoutY="592.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý sản phẩm" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
