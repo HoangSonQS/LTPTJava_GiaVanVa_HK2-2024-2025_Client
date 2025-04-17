@@ -9,13 +9,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -397,45 +400,29 @@ public class TraCuuNhanVien_controller implements Initializable {
     private void setupComboBoxHandler() {
         ccb_GiaoDien.setOnAction(event -> {
             String selectedValue = ccb_GiaoDien.getValue();
-            switch (selectedValue) {
-                case "Sản phẩm":
-                    try {
-                        App.setRoot("TraCuu_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu sản phẩm");
-                    }
-                    break;
-                case "Tài khoản":
-                    try {
-                        App.setRoot("TraCuuTaiKhoan_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu tài khoản");
-                    }
-                    break;
-                case "Hoá đơn":
-                    try {
-                        App.setRoot("TraCuuHoaDon_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu hóa đơn");
-                    }
-                    break;
-                case "Phiếu nhập":
-                    try {
-                        App.setRoot("TraCuuPhieuNhap_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu phiếu nhập");
-                    }
-                    break;
-                case "Nhân viên":
-                    // Giữ nguyên giao diện hiện tại
-                    break;
-                case "Khách hàng":
-                    try {
-                        App.setRoot("TraCuuKhachHang_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu khách hàng");
-                    }
-                    break;
+            if (selectedValue.equals("Nhân viên")) {
+                return;
+            }
+            
+            try {
+                String fxmlFile = switch (selectedValue) {
+                    case "Sản phẩm" -> "TraCuu_gui";
+                    case "Tài khoản" -> "TraCuuTaiKhoan_gui";
+                    case "Hoá đơn" -> "TraCuuHoaDon_gui";
+                    case "Phiếu nhập" -> "TraCuuPhieuNhap_gui";
+                    case "Khách hàng" -> "TraCuuKhachHang_gui";
+                    default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
+                };
+                
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) ccb_GiaoDien.getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+                
+            } catch (Exception e) {
+                showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
+                ccb_GiaoDien.setValue("Nhân viên");
             }
         });
     }
