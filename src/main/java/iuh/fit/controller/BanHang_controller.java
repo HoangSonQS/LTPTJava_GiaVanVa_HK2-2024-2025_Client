@@ -1,6 +1,7 @@
 package iuh.fit.controller;
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -34,23 +35,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -152,6 +144,11 @@ public class BanHang_controller implements Initializable {
     @FXML
     private Label lb_tamTinh;
 
+    @FXML
+    private TextField txt_tienKhachTra;
+
+    @FXML
+    private Label lb_tienThua;
 
     @FXML
     private Button btn_thanhToan;
@@ -290,6 +287,17 @@ public class BanHang_controller implements Initializable {
 
     @FXML
     private Label lb_tenNV;
+    @FXML
+    private ComboBox<?> cb_nganHang;
+
+    @FXML
+    private GridPane grid_chuyenKhoan;
+
+    @FXML
+    private GridPane grid_the;
+
+    @FXML
+    private GridPane grid_tienMat;
 
     Map<VBox,VBox> map = new HashMap<VBox,VBox>();
 
@@ -507,7 +515,7 @@ public class BanHang_controller implements Initializable {
     void toQLHoaDon(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý hóa đơn
-            loadFXML("/fxml/QuanLyHoaDon_gui.fxml");
+            loadFXML("/fxml/QL_HoaDon_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
@@ -518,7 +526,7 @@ public class BanHang_controller implements Initializable {
     void toQLKhachHang(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý khách hàng
-            loadFXML("/fxml/QuanLyKhachHang_gui.fxml");
+            loadFXML("/fxml/QL_KhachHang_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
@@ -529,7 +537,7 @@ public class BanHang_controller implements Initializable {
     void toQLNhanVien(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý nhân viên
-            loadFXML("/fxml/QuanLyNhanVien_gui.fxml");
+            loadFXML("/fxml/QL_NhanVien_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
@@ -540,7 +548,7 @@ public class BanHang_controller implements Initializable {
     void toQLPhieuNhap(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý phiếu nhập
-            loadFXML("/fxml/QuanLyPhieuNhap_gui.fxml");
+            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
@@ -551,7 +559,7 @@ public class BanHang_controller implements Initializable {
     void toQLSanPham(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý sản phẩm
-            loadFXML("/fxml/QuanLySanPham_gui.fxml");
+            loadFXML("/fxml/QL_SanPham_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
@@ -562,7 +570,7 @@ public class BanHang_controller implements Initializable {
     void toQLTaiKhoan(MouseEvent event) {
         try {
             // Chuyển đến giao diện quản lý tài khoản
-            loadFXML("/fxml/QuanLyTaiKhoan_gui.fxml");
+            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
@@ -644,6 +652,18 @@ public class BanHang_controller implements Initializable {
                 lb_tongThanhToan.setText("0 VNĐ");
             }
 
+            if (lb_tongSoSP != null) {
+                lb_tongSoSP.setText("0");
+            }
+
+            if (lb_tongSL != null) {
+                lb_tongSL.setText("0");
+            }
+
+            if (lb_tamTinh != null) {
+                lb_tamTinh.setText("0 VNĐ");
+            }
+
             if (txt_maGiamGia != null) {
                 txt_maGiamGia.setText("");
             }
@@ -655,6 +675,21 @@ public class BanHang_controller implements Initializable {
             // Thiết lập phương thức thanh toán mặc định
             if (rb_tienMat != null) {
                 rb_tienMat.setSelected(true);
+            }
+
+            // Thiết lập giá trị mặc định cho tiền khách trả và tiền thừa
+            if (txt_tienKhachTra != null) {
+                txt_tienKhachTra.setText("");
+            }
+
+            if (lb_tienThua != null) {
+                lb_tienThua.setText("0 VNĐ");
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+            }
+
+            // Mặc định, nút thanh toán bị vô hiệu hóa cho đến khi khách hàng trả đủ tiền
+            if (btn_thanhToan != null) {
+                btn_thanhToan.setDisable(true);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -974,11 +1009,34 @@ public class BanHang_controller implements Initializable {
             hoaDon.setMaHD(maHD);
             hoaDon.setThoiGian(java.time.LocalDateTime.now());
             hoaDon.setTongSoLuongSP(productQuantities.values().stream().mapToInt(Integer::intValue).sum());
-            hoaDon.setThanhTien(calculateTotal());
+            // Tính tổng tiền thanh toán
+            double tongTien = calculateTotal();
+            hoaDon.setThanhTien(tongTien);
+
+            // Lấy thông tin tiền khách trả và tiền thừa
+            double tienKhachTra = 0;
+            double tienThua = 0;
+            try {
+                tienKhachTra = Double.parseDouble(txt_tienKhachTra.getText().trim());
+                // Tính tiền thừa
+                tienThua = tienKhachTra - tongTien;
+            } catch (NumberFormatException e) {
+                // Nếu không thể chuyển đổi, sử dụng giá trị mặc định
+                tienKhachTra = tongTien;
+                tienThua = 0;
+            }
+
+            // Lưu thông tin tiền khách trả và tiền thừa vào hóa đơn
+            // Nếu có trường tương ứng trong entity HoaDon
+            // hoaDon.setTienKhachTra(tienKhachTra);
+            // hoaDon.setTienThua(tienThua);
+
             // Xác định phương thức thanh toán dựa trên lựa chọn
             PhuongThucThanhToan phuongThuc = PhuongThucThanhToan.Tien_Mat;
             if (rb_chuyenKhoan != null && rb_chuyenKhoan.isSelected()) {
                 phuongThuc = PhuongThucThanhToan.Chuyen_Khoan;
+            } else if (rb_the != null && rb_the.isSelected()) {
+                phuongThuc = PhuongThucThanhToan.The_Ngan_Hang;
             }
             hoaDon.setPhuongThucTT(phuongThuc);
             hoaDon.setCaLam(caLam);
@@ -1027,6 +1085,20 @@ public class BanHang_controller implements Initializable {
             }
             if (lb_giamGia != null) {
                 lb_giamGia.setText("0 VNĐ");
+            }
+
+            // Xóa thông tin tiền khách trả và tiền thừa
+            if (txt_tienKhachTra != null) {
+                txt_tienKhachTra.clear();
+            }
+            if (lb_tienThua != null) {
+                lb_tienThua.setText("0 VNĐ");
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+            }
+
+            // Vô hiệu hóa nút thanh toán cho đến khi khách hàng trả đủ tiền
+            if (btn_thanhToan != null) {
+                btn_thanhToan.setDisable(true);
             }
 
             // Cập nhật tổng tiền
@@ -1450,6 +1522,20 @@ public class BanHang_controller implements Initializable {
             return;
         }
 
+        // Kiểm tra xem khách hàng đã trả đủ tiền chưa
+        if (txt_tienKhachTra.getText().trim().isEmpty()) {
+            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập số tiền khách trả!");
+            txt_tienKhachTra.requestFocus();
+            return;
+        }
+
+        // Kiểm tra xem tiền thừa có âm không
+        if (lb_tienThua.getText().startsWith("-")) {
+            showAlert(AlertType.WARNING, "Thông báo", "Số tiền khách trả chưa đủ!");
+            txt_tienKhachTra.requestFocus();
+            return;
+        }
+
         // Xác nhận thanh toán
         Alert alert = new Alert(AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận thanh toán");
@@ -1512,4 +1598,98 @@ public class BanHang_controller implements Initializable {
         stage.setScene(scene);
         stage.show();
     }
+
+    @FXML
+    private void togglePaymentMethod() {
+        // Show/hide appropriate payment fields based on selection
+        boolean isCashSelected = rb_tienMat.isSelected();
+        boolean isTransferSelected = rb_chuyenKhoan.isSelected();
+        boolean isCardSelected = rb_the.isSelected();
+
+        grid_tienMat.setVisible(isCashSelected);
+        grid_tienMat.setManaged(isCashSelected);
+
+        grid_chuyenKhoan.setVisible(isTransferSelected);
+        grid_chuyenKhoan.setManaged(isTransferSelected);
+
+        grid_the.setVisible(isCardSelected);
+        grid_the.setManaged(isCardSelected);
+    }
+
+    /**
+     * Tính tiền thừa khi khách hàng thanh toán
+     * Được gọi khi người dùng nhập tiền khách trả
+     */
+    @FXML
+    private void tinhTienThua(KeyEvent event) {
+        try {
+            // Lấy tổng tiền thanh toán
+            String tongTienText = lb_tongThanhToan.getText();
+            // Loại bỏ các ký tự không phải số
+            tongTienText = tongTienText.replaceAll("[^\\d]", "");
+            double tongTien = Double.parseDouble(tongTienText);
+
+            // Lấy số tiền khách trả
+            String tienKhachTraText = txt_tienKhachTra.getText().trim();
+
+            // Kiểm tra xem trường nhập có trống không
+            if (tienKhachTraText.isEmpty()) {
+                lb_tienThua.setText("0 VNĐ");
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+                return;
+            }
+
+            // Kiểm tra xem trường nhập có chứa ký tự không phải số không
+            if (!tienKhachTraText.matches("\\d+")) {
+                // Nếu có, loại bỏ các ký tự không phải số
+                tienKhachTraText = tienKhachTraText.replaceAll("[^\\d]", "");
+                // Cập nhật lại trường nhập
+                txt_tienKhachTra.setText(tienKhachTraText);
+                // Đặt con trỏ vào cuối trường nhập
+                txt_tienKhachTra.positionCaret(tienKhachTraText.length());
+            }
+
+            // Nếu trường nhập vẫn trống sau khi loại bỏ các ký tự không phải số
+            if (tienKhachTraText.isEmpty()) {
+                lb_tienThua.setText("0 VNĐ");
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+                return;
+            }
+
+            // Chuyển đổi sang số
+            double tienKhachTra = Double.parseDouble(tienKhachTraText);
+            // Tính tiền thừa
+            double tienThua = tienKhachTra - tongTien;
+
+            // Định dạng tiền tệ với dấu phân cách hàng nghìn
+            NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            String tienThuaFormatted = currencyFormat.format(tienThua);
+
+            // Hiển thị tiền thừa với màu sắc tương ứng
+            if (tienThua >= 0) {
+                // Tiền thừa dương hoặc bằng 0 - màu xanh
+                lb_tienThua.setText(tienThuaFormatted);
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+
+                // Kiểm tra xem tiền khách trả có đủ không
+                if (tienKhachTra >= tongTien) {
+                    // Nếu đủ, cho phép thanh toán
+                    btn_thanhToan.setDisable(false);
+                }
+            } else {
+                // Tiền thừa âm - màu đỏ
+                lb_tienThua.setText(tienThuaFormatted);
+                lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #FF0000;");
+
+                // Nếu tiền khách trả không đủ, không cho phép thanh toán
+                btn_thanhToan.setDisable(true);
+            }
+        } catch (NumberFormatException e) {
+            // Xử lý lỗi chuyển đổi số
+            lb_tienThua.setText("0 VNĐ");
+            lb_tienThua.setStyle("-fx-font-weight: bold; -fx-text-fill: #009900;");
+            e.printStackTrace();
+        }
+    }
+
 }

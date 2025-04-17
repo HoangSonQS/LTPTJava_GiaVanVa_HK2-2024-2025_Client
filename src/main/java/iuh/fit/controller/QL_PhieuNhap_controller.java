@@ -1,16 +1,28 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.PhieuNhapHang_dao;
+import iuh.fit.entities.PhieuNhapHang;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class QL_PhieuNhap_controller {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import static iuh.fit.App.loadFXML;
+
+public class QL_PhieuNhap_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -28,13 +40,13 @@ public class QL_PhieuNhap_controller {
     private Button btn_timkiemHoaDon;
 
     @FXML
-    private TableColumn<?, ?> cl_pttt;
+    private TableColumn<?, ?> cl_thanhTien;
 
     @FXML
     private TableColumn<?, ?> cl_thoiGian;
 
     @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<PhieuNhapHang, Integer> cl_txt;
 
     @FXML
     private TableColumn<?, ?> cll_MaPhieuNhap;
@@ -166,6 +178,9 @@ public class QL_PhieuNhap_controller {
     private VBox quanLySubVBox;
 
     @FXML
+    private TableView<PhieuNhapHang> table_PNhap;
+
+    @FXML
     private VBox thongKeSubMenuList;
 
     @FXML
@@ -215,47 +230,158 @@ public class QL_PhieuNhap_controller {
 
     @FXML
     void handleTimKiemClick(MouseEvent event) {
-
+        try {
+            loadFXML("/fxml/TraCuu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu!");
+        }
     }
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý hóa đơn
+            loadFXML("/fxml/QL_HoaDon_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
+        }
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý khách hàng
+            loadFXML("/fxml/QL_KhachHang_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
+        }
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý nhân viên
+            loadFXML("/fxml/QL_NhanVien_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
+        }
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý phiếu nhập
+            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
+        }
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý sản phẩm
+            loadFXML("/fxml/QL_SanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
+        }
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý tài khoản
+            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
+        }
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện thống kê doanh thu
+            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
+        }
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
+        try {
+            // Chuyển đến giao diện thống kê sản phẩm
+            loadFXML("/fxml/ThongKeSanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+        }
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    private void loadFXML(String fxmlPath) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) p_gioHang.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            PhieuNhapHang_dao pNhapDAO = new PhieuNhapHang_dao();
 
+            // Xóa dữ liệu cũ trong table
+            table_PNhap.getItems().clear();
+
+            // Lấy danh sách phiếu nhập từ database
+            ObservableList<PhieuNhapHang> listpNhap = FXCollections.observableArrayList(pNhapDAO.readAll());
+            // Thiết lập cell value factory cho các cột
+            cll_MaPhieuNhap.setCellValueFactory(new PropertyValueFactory<>("maPNH"));
+            cll_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cll_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
+            cll_SoLuongSP.setCellValueFactory(new PropertyValueFactory<>("tongSoLuongSP"));
+            cl_thoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
+            cl_thanhTien.setCellValueFactory(new PropertyValueFactory<>("thanhTien"));
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<PhieuNhapHang, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_PNhap.setItems(listpNhap);
+
+            // Refresh table view
+            table_PNhap.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadTableData();
+    }
 }

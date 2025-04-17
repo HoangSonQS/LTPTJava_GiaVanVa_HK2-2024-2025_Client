@@ -114,7 +114,7 @@ public class SplashController implements Initializable {
                             }
 
                             // Mở màn hình đăng nhập
-                            App.openLoginGUI();
+//                            App.openLoginGUI();
                             System.out.println("Login screen opened");
                         } catch (Exception e) {
                             System.err.println("Error in Platform.runLater when opening login screen: " + e.getMessage());
@@ -152,46 +152,4 @@ public class SplashController implements Initializable {
     /**
      * Phương thức main để có thể chạy trực tiếp từ SplashController nếu cần
      */
-    public static void main(String[] args) {
-        try {
-            // Tạo một stage mới
-            Stage stage = new Stage();
-
-            // Load màn hình splash
-            FXMLLoader loader = new FXMLLoader(SplashController.class.getResource("/fxml/Splash.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-
-            // Thiết lập và hiển thị stage
-            stage.setScene(scene);
-            stage.initStyle(javafx.stage.StageStyle.UNDECORATED);
-            stage.show();
-
-            // Lấy controller để bắt đầu quá trình tải
-            SplashController controller = loader.getController();
-
-            // Bắt đầu quá trình tải trong một thread riêng
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000); // Đợi 1 giây
-                    Platform.runLater(() -> {
-                        try {
-                            // Đóng màn hình splash
-                            stage.close();
-
-                            // Mở màn hình đăng nhập
-                            iuh.fit.App.openLoginGUI();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }).start();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

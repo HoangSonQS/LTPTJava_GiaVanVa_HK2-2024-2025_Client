@@ -1,16 +1,30 @@
 package iuh.fit.controller;
 
+import iuh.fit.daos.KhachHang_dao;
+import iuh.fit.daos.NhanVien_dao;
+import iuh.fit.entities.KhachHang;
+import iuh.fit.entities.NhanVien;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
-public class QL_NhanVien_controller {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+import static iuh.fit.App.loadFXML;
+
+public class QL_NhanVien_controller implements Initializable {
 
     @FXML
     private VBox banHangSubMenuList;
@@ -34,25 +48,25 @@ public class QL_NhanVien_controller {
     private Button btnXoaTrang;
 
     @FXML
-    private TableColumn<?, ?> cl_maHD;
+    private TableColumn<?, ?> cl_CCCD;
 
     @FXML
-    private TableColumn<?, ?> cl_maKH;
+    private TableColumn<?, ?> cl_chucVU;
+
+    @FXML
+    private TableColumn<?, ?> cl_email;
 
     @FXML
     private TableColumn<?, ?> cl_maNV;
 
     @FXML
-    private TableColumn<?, ?> cl_pttt;
+    private TableColumn<?, ?> cl_ngaySinh;
 
     @FXML
-    private TableColumn<?, ?> cl_thanhTien;
+    private TableColumn<?, ?> cl_tenNV;
 
     @FXML
-    private TableColumn<?, ?> cl_thoiGian;
-
-    @FXML
-    private TableColumn<?, ?> cl_txt;
+    private TableColumn<NhanVien, Integer> cl_txt;
 
     @FXML
     private ImageView img_HoaDon;
@@ -130,7 +144,7 @@ public class QL_NhanVien_controller {
     private Label lb_timKiem;
 
     @FXML
-    private TableColumn<?, ?> lc_slsp;
+    private TableColumn<?, ?> lc_SDT;
 
     @FXML
     private Pane p_HoaDon;
@@ -187,25 +201,31 @@ public class QL_NhanVien_controller {
     private VBox timKiemSubVBox;
 
     @FXML
-    private TextField txt_MaKH;
+    private TextField txt_CCCD;
+
+    @FXML
+    private TextField txt_ChucVu;
+
+    @FXML
+    private TextField txt_Email;
 
     @FXML
     private TextField txt_MaNV;
 
     @FXML
-    private TextField txt_PTTT;
+    private TextField txt_NgaySinh;
 
     @FXML
-    private TextField txt_SoSP;
+    private TextField txt_SDT;
 
     @FXML
-    private TextField txt_ThanhTien;
-
-    @FXML
-    private TextField txt_ThoiGian;
+    private TextField txt_TenNV;
 
     @FXML
     private VBox vBox;
+
+    @FXML
+    private TableView<NhanVien> table_NV;
 
     @FXML
     void handleGioHangClick(MouseEvent event) {
@@ -224,12 +244,22 @@ public class QL_NhanVien_controller {
 
     @FXML
     void handleTimKiemClick(MouseEvent event) {
-
+        try {
+            loadFXML("/fxml/TraCuu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu!");
+        }
     }
 
     @FXML
     void moGiaoDienTimKiemNV(MouseEvent event) {
-
+        try {
+            loadFXML("/fxml/TraCuu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu!");
+        }
     }
 
     @FXML
@@ -244,42 +274,97 @@ public class QL_NhanVien_controller {
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý hóa đơn
+            loadFXML("/fxml/QL_HoaDon_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
+        }
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý khách hàng
+            loadFXML("/fxml/QL_KhachHang_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
+        }
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý nhân viên
+            loadFXML("/fxml/QL_NhanVien_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
+        }
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý phiếu nhập
+            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
+        }
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý sản phẩm
+            loadFXML("/fxml/QL_SanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
+        }
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện quản lý tài khoản
+            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
+        }
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện thống kê doanh thu
+            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
+        }
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
-
+        try {
+            // Chuyển đến giao diện thống kê sản phẩm
+            loadFXML("/fxml/ThongKeSanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+        }
+    }
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     @FXML
@@ -291,5 +376,58 @@ public class QL_NhanVien_controller {
     void xoaTrang(MouseEvent event) {
 
     }
+    private void loadFXML(String fxmlPath) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) p_gioHang.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+    private void loadTableData() {
+        try {
+            // Tạo DAO object
+            NhanVien_dao nvDAO = new NhanVien_dao();
 
+            // Xóa dữ liệu cũ trong table
+            table_NV.getItems().clear();
+
+            // Lấy danh sách nhaan vieen từ database
+            ObservableList<NhanVien> listNV = FXCollections.observableArrayList(nvDAO.readAllNhanVien());
+            // Thiết lập cell value factory cho các cột
+            cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
+            cl_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
+            cl_CCCD.setCellValueFactory(new PropertyValueFactory<>("cccd"));
+            lc_SDT.setCellValueFactory(new PropertyValueFactory<>("sdt"));
+            cl_email.setCellValueFactory(new PropertyValueFactory<>("email"));
+            cl_ngaySinh.setCellValueFactory(new PropertyValueFactory<>("ngaySinh"));
+            cl_chucVU.setCellValueFactory(new PropertyValueFactory<>("chucVu"));
+
+
+            // Gán STT tự động
+            cl_txt.setCellFactory(col -> new TableCell<NhanVien, Integer>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setText(null);
+                    } else {
+                        setText(String.valueOf(getIndex() + 1));
+                    }
+                }
+            });
+            // Cập nhật dữ liệu vào table
+            table_NV.setItems(listNV);
+
+            // Refresh table view
+            table_NV.refresh();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        loadTableData();
+    }
 }

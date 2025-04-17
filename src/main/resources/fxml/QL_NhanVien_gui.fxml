@@ -40,12 +40,12 @@
                     </image>
                 </ImageView>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cc33ff" height="50.0" layoutY="56.0" stroke="BLACK" strokeType="INSIDE" width="1270.0" />
-                <Text fill="WHITE" layoutX="603.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin sản phẩm" wrappingWidth="246.357421875" y="80.0">
+                <Text fill="WHITE" layoutX="566.0" layoutY="12.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin nhân viên" wrappingWidth="303.95751953125" y="80.0">
                     <font>
                         <Font size="30.0" />
                     </font>
                 </Text>
-                <TableView layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
+                <TableView fx:id="table_NV" layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
                     <columns>
                         <TableColumn fx:id="cl_txt" prefWidth="45.5999755859375" text="STT" />
                         <TableColumn fx:id="cl_maNV" prefWidth="96.800048828125" text="Mã nhân viên" />

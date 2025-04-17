@@ -85,7 +85,7 @@ public class Login_controller implements Initializable {
         String username = txtUsername.getText().trim();
         String password = txtPassword.getText().trim();
 
-        // Kiểm tra dữ liệu nhập vào
+        // Validate input
         if (username.isEmpty()) {
             showAlert(AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên đăng nhập!");
             txtUsername.requestFocus();
@@ -98,25 +98,17 @@ public class Login_controller implements Initializable {
             return;
         }
 
-        // Kiểm tra đăng nhập
+        // Check login
         try {
-            // TODO: Thực hiện kiểm tra đăng nhập với cơ sở dữ liệu
             TaiKhoan taiKhoan = taiKhoanDao.findByUsernameandPassword(username, password);
             if (taiKhoan != null) {
-                // Lưu thông tin đăng nhập
+                // Save login information
                 App.taiKhoan = taiKhoan;
                 App.user = username;
                 App.ma = taiKhoan.getMaTaiKhoan();
-                System.out.println(App.user);
-                System.out.println(App.taiKhoan);
-
-                // Chuyển đến giao diện chính
-                try {
-                    App.openMainGUI();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện chính!");
-                }
+                txtUsername.getScene().getWindow().hide();
+                // Close the login screen and open the main GUI
+                App.openMainGUI();
             } else {
                 showAlert(AlertType.ERROR, "Lỗi đăng nhập", "Tên đăng nhập hoặc mật khẩu không đúng!");
                 txtPassword.clear();

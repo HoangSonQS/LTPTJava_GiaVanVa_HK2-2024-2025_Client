@@ -14,6 +14,16 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.TitledPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iuh.fit.controller.BanHang_controller">
    <children>
       <Pane prefHeight="80.0" prefWidth="1540.0" style="-fx-background-color: #CC33FF;">
@@ -311,22 +321,152 @@
                   <TextField fx:id="txt_nhapSL" layoutX="100.0" layoutY="65.0" prefHeight="25.0" prefWidth="70.0" />
                </children></Pane>
             <Pane layoutX="880.0" layoutY="130.0" prefHeight="570.0" prefWidth="375.0" style="-fx-background-color: #EEEEEE;">
+               <VBox spacing="10" layoutX="15.0" layoutY="15.0" prefWidth="345.0">
+                  <!-- Transaction Summary Section -->
+                  <Label text="Thông tin đơn hàng" style="-fx-font-weight: bold; -fx-font-size: 18;">
+                     <padding>
+                        <Insets bottom="5.0" />
+                     </padding>
+                  </Label>
+
+                  <!-- Order details grid -->
+                  <GridPane hgap="10" vgap="8">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" />
+                     </columnConstraints>
+
+                     <Label text="Tổng sản phẩm:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                     <Label fx:id="lb_tongSoSP" text="0" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+
+                     <Label text="Tổng số lượng:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                     <Label fx:id="lb_tongSL" text="0" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+
+                     <Label text="Tạm tính:" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                     <Label fx:id="lb_tamTinh" text="0 VNĐ" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+                  </GridPane>
+
+                  <!-- Discount Section -->
+                  <TitledPane text="Khuyến mãi / Giảm giá" expanded="false">
+                     <VBox spacing="10">
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                           <Label text="Mã giảm giá:" />
+                           <TextField fx:id="txt_maGiamGia" prefWidth="150" />
+                           <Button fx:id="btn_apDungMa" text="Áp dụng" style="-fx-background-color: #3366FF; -fx-text-fill: white;" onMouseClicked="#apDungMaGiamGia"/>
+                        </HBox>
+
+                        <GridPane hgap="10" vgap="5">
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" />
+                           </columnConstraints>
+
+                           <Label text="Giảm giá:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                           <Label fx:id="lb_giamGia" text="0 VNĐ" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-font-weight: bold;" />
+                        </GridPane>
+                     </VBox>
+                  </TitledPane>
+
+                  <!-- Payment Method Section - Updated -->
+                  <TitledPane text="Phương thức thanh toán" expanded="true">
+                     <VBox spacing="10">
+                        <!-- Cash payment with amount and change calculation -->
+                        <VBox spacing="5">
+                           <RadioButton fx:id="rb_tienMat" text="Tiền mặt" selected="true" onAction="#togglePaymentMethod">
+                              <toggleGroup>
+                                 <ToggleGroup fx:id="phuongThucTT" />
+                              </toggleGroup>
+                           </RadioButton>
+
+                           <GridPane fx:id="grid_tienMat" hgap="10" vgap="5" visible="true">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" />
+                              </columnConstraints>
+
+                              <Label text="Số tiền khách trả:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                              <HBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                                 <TextField fx:id="txt_tienKhachTra" prefWidth="140" onKeyReleased="#tinhTienThua" />
+                                 <Label text="VNĐ" />
+                              </HBox>
+
+                              <Label text="Tiền thừa:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                              <Label fx:id="lb_tienThua" text="0 VNĐ" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                                     style="-fx-font-weight: bold; -fx-text-fill: #009900;" />
+                           </GridPane>
+                        </VBox>
+
+                        <!-- Bank transfer payment with reference number -->
+                        <VBox spacing="5">
+                           <RadioButton fx:id="rb_chuyenKhoan" text="Chuyển khoản" toggleGroup="$phuongThucTT" onAction="#togglePaymentMethod" />
+
+                           <GridPane fx:id="grid_chuyenKhoan" hgap="10" vgap="5" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" />
+                              </columnConstraints>
+
+                              <Label text="Số tham chiếu:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                              <TextField fx:id="txt_soThamChieu" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                              <Label text="Ngân hàng:" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                              <ComboBox fx:id="cb_nganHang" prefWidth="180.0" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                                 <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                       <String fx:value="Vietcombank" />
+                                       <String fx:value="Agribank" />
+                                       <String fx:value="BIDV" />
+                                       <String fx:value="Techcombank" />
+                                       <String fx:value="TPBank" />
+                                       <String fx:value="MB Bank" />
+                                       <String fx:value="Khác" />
+                                    </FXCollections>
+                                 </items>
+                              </ComboBox>
+                           </GridPane>
+                        </VBox>
+
+                        <!-- Credit card payment with card info -->
+                        <VBox spacing="5">
+                           <HBox spacing="10" alignment="CENTER_LEFT">
+                              <RadioButton fx:id="rb_the" text="Thẻ tín dụng" toggleGroup="$phuongThucTT" onAction="#togglePaymentMethod" />
+                              <ImageView fitHeight="20.0" fitWidth="60.0">
+                                 <image>
+
+                                 </image>
+                              </ImageView>
+                           </HBox>
+
+                           <GridPane fx:id="grid_the" hgap="10" vgap="5" visible="false">
+                              <columnConstraints>
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="120.0" />
+                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="180.0" />
+                              </columnConstraints>
+
+                              <Label text="Mã giao dịch:" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                              <TextField fx:id="txt_maGiaoDich" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                           </GridPane>
+                        </VBox>
+                     </VBox>
+                  </TitledPane>
+
+                  <!-- Payment Summary -->
+                  <GridPane hgap="10" vgap="8" style="-fx-background-color: #f0f0f0; -fx-padding: 10;">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
+                     </columnConstraints>
+
+                     <Label text="Tổng thanh toán:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-font-weight: bold; -fx-font-size: 16;" />
+                     <Label fx:id="lb_tongThanhToan" text="0 VNĐ" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #0000cc;" />
+                  </GridPane>
+               </VBox>
                <children>
                   <Button fx:id="btn_thanhToan" layoutX="50.0" layoutY="500.0" mnemonicParsing="false" onMouseClicked="#thanhToan" prefHeight="50.0" prefWidth="275.0" style="-fx-background-color: #FF6600;" text="THANH TOÁN" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="24.0" />
                      </font>
                   </Button>
-                  <Label layoutX="50.0" layoutY="450.0" text="Tổng tiền:" textFill="#0000cc">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="lb_tongTien" alignment="CENTER_RIGHT" layoutX="175.0" layoutY="450.0" prefHeight="35.0" prefWidth="150.0" text="0 VNĐ" textFill="#0000cc">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Label>
                </children>
             </Pane>
             <Pane layoutX="445.0" layoutY="15.0" prefHeight="70.0" prefWidth="420.0" style="-fx-background-color: #EEEEEE;">

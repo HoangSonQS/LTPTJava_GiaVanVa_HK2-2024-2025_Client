@@ -45,7 +45,7 @@
                         <Font size="30.0" />
                     </font>
                 </Text>
-                <TableView layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
+                <TableView fx:id="table_PNhap" layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
                     <columns>
                         <TableColumn fx:id="cl_txt" prefWidth="45.5999755859375" text="STT" />
                         <TableColumn fx:id="cll_MaPhieuNhap" prefWidth="118.39996337890625" text="Mã phiếu nhập" />

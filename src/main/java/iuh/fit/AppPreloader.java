@@ -1,5 +1,6 @@
 package iuh.fit;
 
+import javafx.application.Platform;
 import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -43,6 +44,18 @@ public class AppPreloader extends Preloader {
         if (info.getType() == StateChangeNotification.Type.BEFORE_START) {
             System.out.println("Main application is about to start, hiding preloader");
             preloaderStage.hide();
+
+            // Đợi một chút trước khi mở giao diện đăng nhập
+            // Điều này giúp tránh việc mở đồng thời với App.start()
+            Platform.runLater(() -> {
+                try {
+                    System.out.println("Opening login screen from AppPreloader");
+                    App.openLoginGUI();
+                } catch (Exception e) {
+                    System.err.println("Error opening login screen from AppPreloader: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            });
         }
     }
 }
