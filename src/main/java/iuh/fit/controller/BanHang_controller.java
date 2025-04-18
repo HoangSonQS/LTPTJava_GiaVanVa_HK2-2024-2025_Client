@@ -15,12 +15,12 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
-import iuh.fit.daos.CaLam_dao;
-import iuh.fit.daos.ChiTietHoaDon_SanPham_dao;
-import iuh.fit.daos.HoaDon_dao;
-import iuh.fit.daos.KhachHang_dao;
-import iuh.fit.daos.NhanVien_dao;
-import iuh.fit.daos.SanPham_dao;
+import iuh.fit.interfaces.CaLam_interface;
+import iuh.fit.interfaces.ChiTietHoaDon_SanPham_interface;
+import iuh.fit.interfaces.HoaDon_interface;
+import iuh.fit.interfaces.KhachHang_interface;
+import iuh.fit.interfaces.NhanVien_interface;
+import iuh.fit.interfaces.SanPham_interface;
 import iuh.fit.entities.*;
 import iuh.fit.enums.PhuongThucThanhToan;
 import javafx.animation.FadeTransition;
@@ -302,13 +302,13 @@ public class BanHang_controller implements Initializable {
 
     Map<VBox,VBox> map = new HashMap<VBox,VBox>();
 
-    // DAO để truy xuất dữ liệu
-    private SanPham_dao sanPhamDao;
-    private HoaDon_dao hoaDonDao;
-    private KhachHang_dao khachHangDao;
-    private ChiTietHoaDon_SanPham_dao chiTietHoaDonDao;
-    private CaLam_dao caLamDao;
-    private NhanVien_dao nhanVienDao;
+    // DAO interfaces để truy xuất dữ liệu
+    private SanPham_interface sanPhamDao;
+    private HoaDon_interface hoaDonDao;
+    private KhachHang_interface khachHangDao;
+    private ChiTietHoaDon_SanPham_interface chiTietHoaDonDao;
+    private CaLam_interface caLamDao;
+    private NhanVien_interface nhanVienDao;
 
     // Danh sách các sản phẩm trong giỏ hàng
     private ObservableList<SanPham> cartItems;
@@ -317,13 +317,19 @@ public class BanHang_controller implements Initializable {
     private Map<String, Integer> productQuantities = new HashMap<>();
 
     public void initialize(URL location, ResourceBundle resources) {
-        // Khởi tạo các DAO
-        sanPhamDao = new SanPham_dao();
-        hoaDonDao = new HoaDon_dao();
-        khachHangDao = new KhachHang_dao();
-        chiTietHoaDonDao = new ChiTietHoaDon_SanPham_dao();
-        caLamDao = new CaLam_dao();
-        nhanVienDao = new NhanVien_dao();
+        // Khởi tạo các DAO interfaces
+        try {
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
+            chiTietHoaDonDao = (ChiTietHoaDon_SanPham_interface) registry.lookup("chiTietHoaDonSanPhamDAO");
+            caLamDao = (CaLam_interface) registry.lookup("caLamDAO");
+            nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
+        }
 
         // Khởi tạo các menu
         addMenusToMap();
@@ -548,19 +554,19 @@ public class BanHang_controller implements Initializable {
             // Load giao diện thống kê doanh thu
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
             Parent root = loader.load();
-            
+
             // Lấy scene hiện tại
             Scene currentScene = p_gioHang.getScene();
             Stage currentStage = (Stage) currentScene.getWindow();
-            
+
             // Tạo scene mới và áp dụng stylesheet
             Scene newScene = new Scene(root);
             newScene.getStylesheets().add(getClass().getResource("/styles/menu.css").toExternalForm());
-            
+
             // Set scene mới và hiển thị
             currentStage.setScene(newScene);
             currentStage.show();
-            
+
         } catch (Exception e) {
             e.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.ERROR);

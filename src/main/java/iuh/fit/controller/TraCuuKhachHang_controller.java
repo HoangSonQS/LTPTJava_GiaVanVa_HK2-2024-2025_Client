@@ -1,8 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.KhachHang_dao;
-import iuh.fit.entities.KhachHang;
+import iuh.fit.interfaces.KhachHang_interface;
 import iuh.fit.entities.KhachHang;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
@@ -450,14 +449,22 @@ public class TraCuuKhachHang_controller implements Initializable {
 
     @FXML
     void timKiem(MouseEvent event) {
+        try {
+            String maKhachHang = txt_maKH.getText();
+            App.maTraCuu = maKhachHang;
 
-        String maKhachHang = txt_maKH.getText();
-        App.maTraCuu = maKhachHang;
-        KhachHang sp = new KhachHang_dao().read(maKhachHang);
-        lb_maKH.setText(sp.getMaKH());
-        lb_tenKH.setText(sp.getTenKH());
-        lb_sdt.setText(sp.getSdt());
-        highlightMatchingRow(maKhachHang);
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
+            KhachHang sp = khachHangDao.read(maKhachHang);
+
+            lb_maKH.setText(sp.getMaKH());
+            lb_tenKH.setText(sp.getTenKH());
+            lb_sdt.setText(sp.getSdt());
+            highlightMatchingRow(maKhachHang);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm khách hàng: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maKhachHang) {
@@ -510,7 +517,7 @@ public class TraCuuKhachHang_controller implements Initializable {
             if (selectedValue.equals("Khách hàng")) {
                 return;
             }
-            
+
             try {
                 String fxmlFile = switch (selectedValue) {
                     case "Sản phẩm" -> "TraCuu_gui";
@@ -520,13 +527,13 @@ public class TraCuuKhachHang_controller implements Initializable {
                     case "Nhân viên" -> "TraCuuNhanVien_gui";
                     default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
                 };
-                
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
                 Scene scene = new Scene(loader.load());
                 Stage stage = (Stage) ccb_GiaoDien.getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
-                
+
             } catch (Exception e) {
                 showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
                 ccb_GiaoDien.setValue("Khách hàng");
@@ -565,8 +572,9 @@ public class TraCuuKhachHang_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            KhachHang_dao KhachHangDao = new KhachHang_dao();
-            List<KhachHang> dssp = KhachHangDao.readAll();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
+            List<KhachHang> dssp = khachHangDao.readAll();
             ObservableList<KhachHang> data = FXCollections.observableArrayList(dssp);
             tableKhachHang.setItems(data);
         } catch (Exception e) {

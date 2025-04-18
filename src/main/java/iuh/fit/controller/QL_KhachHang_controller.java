@@ -1,8 +1,8 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.HoaDon_dao;
-import iuh.fit.daos.KhachHang_dao;
+import iuh.fit.interfaces.HoaDon_interface;
+import iuh.fit.interfaces.KhachHang_interface;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.KhachHang;
 import iuh.fit.entities.NhanVien;
@@ -468,11 +468,17 @@ public class QL_KhachHang_controller implements Initializable {
             // Tạo đối tượng KhachHang mới
             KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
 
-            // Tạo DAO object
-            KhachHang_dao khDAO = new KhachHang_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
 
-            // Cập nhật thông tin khách hàng vào database
-            khDAO.update(khachHang);
+                // Cập nhật thông tin khách hàng vào database
+                khDAO.update(khachHang);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Tải lại dữ liệu vào bảng
             loadTableData();
@@ -494,11 +500,17 @@ public class QL_KhachHang_controller implements Initializable {
             // Tạo đối tượng KhachHang mới
             KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
 
-            // Tạo DAO object
-            KhachHang_dao khDAO = new KhachHang_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
 
-            // Thêm khách hàng vào database
-            khDAO.create(khachHang);
+                // Thêm khách hàng vào database
+                khDAO.create(khachHang);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Tải lại dữ liệu vào bảng
             loadTableData();
@@ -515,11 +527,17 @@ public class QL_KhachHang_controller implements Initializable {
             // Lấy thông tin từ các trường nhập liệu
             String maKH = txt_MaKH.getText();
 
-            // Tạo DAO object
-            KhachHang_dao khDAO = new KhachHang_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
 
-            // Xóa khách hàng khỏi database
-            khDAO.delete(maKH);
+                // Xóa khách hàng khỏi database
+                khDAO.delete(maKH);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Tải lại dữ liệu vào bảng
             loadTableData();
@@ -547,13 +565,14 @@ public class QL_KhachHang_controller implements Initializable {
     }
     private void loadTableData() {
         try {
-            // Tạo DAO object
-            KhachHang_dao khDAO = new KhachHang_dao();
+            // Sử dụng DAO interface
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
 
             // Xóa dữ liệu cũ trong table
             table_KH.getItems().clear();
 
-            // Lấy danh sách hóa đơn từ database
+            // Lấy danh sách khách hàng từ database
             ObservableList<KhachHang> listKH = FXCollections.observableArrayList(khDAO.readAll());
             // Thiết lập cell value factory cho các cột
             cl_maKH.setCellValueFactory(new PropertyValueFactory<>("maKH"));

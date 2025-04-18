@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import javafx.animation.FadeTransition;
@@ -483,8 +483,9 @@ public class QL_TaiKoan_controller implements Initializable {
     }
     private void loadTableData() {
         try {
-            // Tạo DAO object
-            TaiKhoan_dao tkDAO = new TaiKhoan_dao();
+            // Sử dụng DAO interface
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
 
             // Xóa dữ liệu cũ trong table
             table_TK.getItems().clear();

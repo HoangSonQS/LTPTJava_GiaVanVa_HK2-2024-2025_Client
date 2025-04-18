@@ -5,9 +5,9 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import iuh.fit.daos.HoaDon_dao;
-import iuh.fit.daos.SanPham_dao;
-import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.interfaces.HoaDon_interface;
+import iuh.fit.interfaces.SanPham_interface;
+import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.SanPham;
 import iuh.fit.entities.TaiKhoan;
@@ -229,7 +229,8 @@ public class App extends Application {
      */
     private static void checkSanPham() {
         try {
-            SanPham_dao sanPhamDao = new SanPham_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
             List<SanPham> dsSanPham = sanPhamDao.readAll();
 
             // Kiểm tra và cập nhật thông tin sản phẩm nếu cần
@@ -257,7 +258,8 @@ public class App extends Application {
      */
     private static void checkHoaDon() {
         try {
-            HoaDon_dao hoaDonDao = new HoaDon_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
             List<HoaDon> dsHoaDon = hoaDonDao.readAll();
 
             // Kiểm tra và cập nhật thông tin hóa đơn nếu cần

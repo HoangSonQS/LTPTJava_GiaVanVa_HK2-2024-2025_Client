@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.interfaces.HoaDon_interface;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
@@ -228,7 +228,7 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     @FXML
     private TextField txt_maHD;
-    
+
     @FXML
     private TableView<HoaDon> tableHoaDon;
 
@@ -471,19 +471,27 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     @FXML
     void timKiem(MouseEvent event) {
+        try {
+            String maHoaDon = txt_maHD.getText();
+            App.maTraCuu = maHoaDon;
 
-        String maHoaDon = txt_maHD.getText();
-        App.maTraCuu = maHoaDon;
-        HoaDon sp = new HoaDon_dao().read(maHoaDon);
-        lb_maHD.setText(sp.getMaHD());
-        lb_maNV.setText(sp.getMaNV());
-        lb_maKH.setText(sp.getMaKH());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        lb_thoiGian.setText(sp.getThoiGian().format(formatter));
-        lb_tslsp.setText(String.valueOf(sp.getTongSoLuongSP()));
-        lb_pptt.setText(sp.getPhuongThucTT().toString());
-        lb_thanhTien.setText(String.valueOf(sp.getThanhTien()));
-        highlightMatchingRow(maHoaDon);
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            HoaDon sp = hoaDonDao.read(maHoaDon);
+
+            lb_maHD.setText(sp.getMaHD());
+            lb_maNV.setText(sp.getMaNV());
+            lb_maKH.setText(sp.getMaKH());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            lb_thoiGian.setText(sp.getThoiGian().format(formatter));
+            lb_tslsp.setText(String.valueOf(sp.getTongSoLuongSP()));
+            lb_pptt.setText(sp.getPhuongThucTT().toString());
+            lb_thanhTien.setText(String.valueOf(sp.getThanhTien()));
+            highlightMatchingRow(maHoaDon);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm hóa đơn: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maHoaDon) {
@@ -536,7 +544,7 @@ public class TraCuuHoaDon_controller implements Initializable {
             if (selectedValue.equals("Hoá đơn")) {
                 return;
             }
-            
+
             try {
                 String fxmlFile = switch (selectedValue) {
                     case "Sản phẩm" -> "TraCuu_gui";
@@ -546,13 +554,13 @@ public class TraCuuHoaDon_controller implements Initializable {
                     case "Khách hàng" -> "TraCuuKhachHang_gui";
                     default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
                 };
-                
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
                 Scene scene = new Scene(loader.load());
                 Stage stage = (Stage) ccb_GiaoDien.getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
-                
+
             } catch (Exception e) {
                 showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
                 ccb_GiaoDien.setValue("Hoá đơn");
@@ -600,8 +608,9 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            HoaDon_dao HoaDonDao = new HoaDon_dao();
-            List<HoaDon> dssp = HoaDonDao.readAll();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            List<HoaDon> dssp = hoaDonDao.readAll();
             ObservableList<HoaDon> data = FXCollections.observableArrayList(dssp);
             tableHoaDon.setItems(data);
         } catch (Exception e) {
@@ -635,6 +644,6 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     }
 
-    
-    
+
+
 }

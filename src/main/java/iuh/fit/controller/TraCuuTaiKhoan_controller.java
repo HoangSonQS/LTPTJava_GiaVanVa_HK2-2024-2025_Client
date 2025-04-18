@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.SanPham;
 import iuh.fit.entities.TaiKhoan;
@@ -457,16 +457,24 @@ public class TraCuuTaiKhoan_controller implements Initializable {
 
     @FXML
     void timKiem(MouseEvent event) {
+        try {
+            String maTaiKhoan = txt_maTK.getText();
+            App.maTraCuu = maTaiKhoan;
 
-        String maTaiKhoan = txt_maTK.getText();
-        App.maTraCuu = maTaiKhoan;
-        TaiKhoan tk = new TaiKhoan_dao().read(maTaiKhoan);
-        lb_maTK.setText(tk.getMaTaiKhoan());
-        lb_tenDN.setText(tk.getTenDangNhap());
-        lb_mk.setText(tk.getMatKhau());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        lb_tgdn.setText(tk.getThoiGianDangNhap().format(formatter));
-        highlightMatchingRow(maTaiKhoan);
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            TaiKhoan tk = taiKhoanDao.read(maTaiKhoan);
+
+            lb_maTK.setText(tk.getMaTaiKhoan());
+            lb_tenDN.setText(tk.getTenDangNhap());
+            lb_mk.setText(tk.getMatKhau());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            lb_tgdn.setText(tk.getThoiGianDangNhap().format(formatter));
+            highlightMatchingRow(maTaiKhoan);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm tài khoản: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maTaiKhoan) {
@@ -588,7 +596,8 @@ public class TraCuuTaiKhoan_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            TaiKhoan_dao taiKhoanDao = new TaiKhoan_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
             List<TaiKhoan> dssp = taiKhoanDao.readAll();
             ObservableList<TaiKhoan> data = FXCollections.observableArrayList(dssp);
             tableTaiKhoan.setItems(data);

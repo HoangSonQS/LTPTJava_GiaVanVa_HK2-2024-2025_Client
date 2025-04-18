@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.PhieuNhapHang_dao;
+import iuh.fit.interfaces.PhieuNhapHang_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.PhieuNhapHang;
 import iuh.fit.entities.SanPham;
@@ -464,18 +464,26 @@ public class TraCuuPhieuNhap_controller implements Initializable{
 
     @FXML
     void timKiem(MouseEvent event) {
+        try {
+            String maPhieuNhap = txt_maPN.getText();
+            App.maTraCuu = maPhieuNhap;
 
-        String maPhieuNhap = txt_maPN.getText();
-        App.maTraCuu = maPhieuNhap;
-        PhieuNhapHang pn = new PhieuNhapHang_dao().read(maPhieuNhap);
-        lb_maPN.setText(pn.getMaPNH());
-        lb_maNV.setText(pn.getMaNV());
-        lb_tenNV.setText(pn.getTenNV());
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        lb_thoiGian.setText(pn.getThoiGian().format(formatter));
-        lb_tslsp.setText(String.valueOf(pn.getTongSoLuongSP()));
-        lb_thanhTien.setText(String.valueOf(pn.getThanhTien()));
-        highlightMatchingRow(maPhieuNhap);
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
+            PhieuNhapHang pn = phieuNhapHangDao.read(maPhieuNhap);
+
+            lb_maPN.setText(pn.getMaPNH());
+            lb_maNV.setText(pn.getMaNV());
+            lb_tenNV.setText(pn.getTenNV());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            lb_thoiGian.setText(pn.getThoiGian().format(formatter));
+            lb_tslsp.setText(String.valueOf(pn.getTongSoLuongSP()));
+            lb_thanhTien.setText(String.valueOf(pn.getThanhTien()));
+            highlightMatchingRow(maPhieuNhap);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm phiếu nhập: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maPhieuNhap) {
@@ -528,7 +536,7 @@ public class TraCuuPhieuNhap_controller implements Initializable{
             if (selectedValue.equals("Phiếu nhập")) {
                 return;
             }
-            
+
             try {
                 String fxmlFile = switch (selectedValue) {
                     case "Sản phẩm" -> "TraCuu_gui";
@@ -538,13 +546,13 @@ public class TraCuuPhieuNhap_controller implements Initializable{
                     case "Khách hàng" -> "TraCuuKhachHang_gui";
                     default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
                 };
-                
+
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
                 Scene scene = new Scene(loader.load());
                 Stage stage = (Stage) ccb_GiaoDien.getScene().getWindow();
                 stage.setScene(scene);
                 stage.show();
-                
+
             } catch (Exception e) {
                 showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
                 ccb_GiaoDien.setValue("Phiếu nhập");
@@ -590,7 +598,8 @@ public class TraCuuPhieuNhap_controller implements Initializable{
 
     private void loadTableData() {
         try {
-            PhieuNhapHang_dao phieuNhapHangDao = new PhieuNhapHang_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
             List<PhieuNhapHang> dspn = phieuNhapHangDao.readAll();
             ObservableList<PhieuNhapHang> data = FXCollections.observableArrayList(dspn);
             tablePhieuNhap.setItems(data);

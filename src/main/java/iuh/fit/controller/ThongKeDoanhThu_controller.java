@@ -2,13 +2,14 @@ package iuh.fit.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import iuh.fit.App;
-import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.interfaces.HoaDon_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import jakarta.persistence.EntityManager;
@@ -35,7 +36,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class ThongKeDoanhThu_controller implements Initializable {
-    private HoaDon_dao hoaDonDao;
+    private HoaDon_interface hoaDonDao;
 
     @FXML
     private VBox banHangSubMenuList;
@@ -448,16 +449,27 @@ public class ThongKeDoanhThu_controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        hoaDonDao = new HoaDon_dao();
+        // Khởi tạo DAO interface
+        try {
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
+        }
         addMenusToMap();
         setupCharts();
-        
+
         cbLoaiThongKe.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                updateChart(newVal);
+                try {
+                    updateChart(newVal);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
-        
+
         // Mặc định chọn thống kê theo tháng
         cbLoaiThongKe.getSelectionModel().select("Theo tháng");
     }
@@ -499,10 +511,10 @@ public class ThongKeDoanhThu_controller implements Initializable {
     }
 
     @FXML
-    void handleXemThongKe() {
+    void handleXemThongKe() throws RemoteException {
         String loaiThongKe = cbLoaiThongKe.getValue();
         String namString = cbNam.getValue();
-        
+
         if (loaiThongKe == null || namString == null) {
             showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn loại thống kê và năm!");
             return;
@@ -511,7 +523,7 @@ public class ThongKeDoanhThu_controller implements Initializable {
         int nam = Integer.parseInt(namString);
         lineChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        
+
         switch (loaiThongKe) {
             case "Theo ngày":
                 thongKeTheoNgay(series);
@@ -523,13 +535,13 @@ public class ThongKeDoanhThu_controller implements Initializable {
                 thongKeTheoQuyTrongNam(series, nam);
                 break;
         }
-        
+
         lineChart.getData().add(series);
     }
 
-    private void thongKeTheoThangTrongNam(XYChart.Series<String, Number> series, int nam) {
+    private void thongKeTheoThangTrongNam(XYChart.Series<String, Number> series, int nam) throws RemoteException {
         Map<Integer, Double> doanhThuMap = hoaDonDao.getDoanhThuMapTheoThang(nam);
-        
+
         series.setName("Doanh thu theo tháng năm " + nam);
         for (int i = 1; i <= 12; i++) {
             double doanhThu = doanhThuMap.get(i);
@@ -537,9 +549,9 @@ public class ThongKeDoanhThu_controller implements Initializable {
         }
     }
 
-    private void thongKeTheoQuyTrongNam(XYChart.Series<String, Number> series, int nam) {
+    private void thongKeTheoQuyTrongNam(XYChart.Series<String, Number> series, int nam) throws RemoteException {
         Map<Integer, Double> doanhThuMap = hoaDonDao.getDoanhThuMapTheoQuy(nam);
-        
+
         series.setName("Doanh thu theo quý năm " + nam);
         for (int i = 1; i <= 4; i++) {
             double doanhThu = doanhThuMap.get(i);
@@ -547,15 +559,15 @@ public class ThongKeDoanhThu_controller implements Initializable {
         }
     }
 
-    private void thongKeTheoNgay(XYChart.Series<String, Number> series) {
+    private void thongKeTheoNgay(XYChart.Series<String, Number> series) throws RemoteException {
         LocalDateTime endDate = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59);
         LocalDateTime startDate = endDate.minusDays(29).withHour(0).withMinute(0).withSecond(0);
-        
+
         Map<LocalDate, Double> doanhThuMap = hoaDonDao.getDoanhThuMapTheoNgay(startDate, endDate);
-        
+
         series.setName("Doanh thu 30 ngày gần nhất");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM");
-        
+
         LocalDate currentDate = startDate.toLocalDate();
         while (!currentDate.isAfter(endDate.toLocalDate())) {
             Double doanhThu = doanhThuMap.get(currentDate);
@@ -574,16 +586,16 @@ public class ThongKeDoanhThu_controller implements Initializable {
         stage.show();
     }
 
-    private void updateChart(String loaiThongKe) {
+    private void updateChart(String loaiThongKe) throws RemoteException {
         String namString = cbNam.getValue();
         if (namString == null) {
             return;
         }
-        
+
         int nam = Integer.parseInt(namString);
         lineChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
-        
+
         switch (loaiThongKe) {
             case "Theo ngày":
                 thongKeTheoNgay(series);
@@ -595,7 +607,7 @@ public class ThongKeDoanhThu_controller implements Initializable {
                 thongKeTheoQuyTrongNam(series, nam);
                 break;
         }
-        
+
         lineChart.getData().add(series);
     }
 }

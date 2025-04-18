@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.interfaces.HoaDon_interface;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
@@ -466,8 +466,9 @@ public class QL_HoaDon_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            // Tạo DAO object
-            HoaDon_dao hdDAO = new HoaDon_dao();
+            // Sử dụng DAO interface
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            HoaDon_interface hdDAO = (HoaDon_interface) registry.lookup("hoaDonDAO");
 
             // Xóa dữ liệu cũ trong table
             table_HD.getItems().clear();

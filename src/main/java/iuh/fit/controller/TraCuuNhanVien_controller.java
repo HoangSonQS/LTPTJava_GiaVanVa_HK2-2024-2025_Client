@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.NhanVien_dao;
+import iuh.fit.interfaces.NhanVien_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import javafx.animation.FadeTransition;
@@ -511,7 +511,8 @@ public class TraCuuNhanVien_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            NhanVien_dao nhanVienDao = new NhanVien_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
             List<NhanVien> dsnv = nhanVienDao.readAllNhanVien();
             ObservableList<NhanVien> data = FXCollections.observableArrayList(dsnv);
             tableNhanVien.setItems(data);
@@ -585,18 +586,27 @@ public class TraCuuNhanVien_controller implements Initializable {
 
     @FXML
     void timKiem(MouseEvent event) {
-        String maNhanVien = txt_maNV.getText();
-        App.maTraCuu = maNhanVien;
-        NhanVien nhanVien = new NhanVien_dao().readNhanVien(maNhanVien);
-        lb_maNV.setText(nhanVien.getMaNV());
-        lb_tenNV.setText(nhanVien.getTenNV());
-        lb_cccd.setText(nhanVien.getCccd());
-        lb_sdt.setText(nhanVien.getSdt());
-        lb_email.setText(nhanVien.getEmail());
-        lb_diaChi.setText(nhanVien.getDiaChi());
-        lb_chucVu.setText(nhanVien.getChucVu().toString());
-        lb_ngaySinh.setText(nhanVien.getNgaySinh().format(dateFormatter));
-        highlightMatchingRow(maNhanVien);
+        try {
+            String maNhanVien = txt_maNV.getText();
+            App.maTraCuu = maNhanVien;
+
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            NhanVien nhanVien = nhanVienDao.readNhanVien(maNhanVien);
+
+            lb_maNV.setText(nhanVien.getMaNV());
+            lb_tenNV.setText(nhanVien.getTenNV());
+            lb_cccd.setText(nhanVien.getCccd());
+            lb_sdt.setText(nhanVien.getSdt());
+            lb_email.setText(nhanVien.getEmail());
+            lb_diaChi.setText(nhanVien.getDiaChi());
+            lb_chucVu.setText(nhanVien.getChucVu().toString());
+            lb_ngaySinh.setText(nhanVien.getNgaySinh().format(dateFormatter));
+            highlightMatchingRow(maNhanVien);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm nhân viên: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maNhanVien) {

@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.SanPham_dao;
+import iuh.fit.interfaces.SanPham_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.SanPham;
 import iuh.fit.entities.TaiKhoan;
@@ -464,14 +464,17 @@ public class TraCuu_controller implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể lấy thông tin nhân viên: " + e.getMessage());
         }
     }
-    
+
 
     @FXML
     void timKiem(MouseEvent event) {
+        try {
+            String maSanPham = txt_maSP.getText();
+            App.maTraCuu = maSanPham;
 
-        String maSanPham = txt_maSP.getText();
-        App.maTraCuu = maSanPham;
-        SanPham sp = new SanPham_dao().read(maSanPham);
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+            SanPham sp = sanPhamDao.read(maSanPham);
         lb_maSP.setText(sp.getMaSP());
         lb_tenSP.setText(sp.getTenSP());
         lb_ncc.setText(sp.getNhaCC());
@@ -484,6 +487,10 @@ public class TraCuu_controller implements Initializable {
         lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
         lb_loaiHang.setText(sp.getLoaiHang().toString());
         highlightMatchingRow(maSanPham);
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm sản phẩm: " + e.getMessage());
+        }
     }
 
     private void highlightMatchingRow(String maSanPham) {
@@ -628,7 +635,8 @@ public class TraCuu_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            SanPham_dao sanPhamDao = new SanPham_dao();
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
             List<SanPham> dssp = sanPhamDao.readAll();
             ObservableList<SanPham> data = FXCollections.observableArrayList(dssp);
             tableSanPham.setItems(data);

@@ -1,8 +1,8 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.KhachHang_dao;
-import iuh.fit.daos.NhanVien_dao;
+import iuh.fit.interfaces.KhachHang_interface;
+import iuh.fit.interfaces.NhanVien_interface;
 import iuh.fit.entities.KhachHang;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.SanPham;
@@ -503,11 +503,17 @@ public class QL_NhanVien_controller implements Initializable {
             // Tạo đối tượng NhanVien mới
             NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
 
-            // Tạo DAO object
-            NhanVien_dao nvDAO = new NhanVien_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
 
-            // Cập nhật thông tin nhân viên vào database
-            nvDAO.updateNhanVien(nv);
+                // Cập nhật thông tin nhân viên vào database
+                nvDAO.updateNhanVien(nv);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Cập nhật lại dữ liệu trong bảng
             loadTableData();
@@ -535,11 +541,17 @@ public class QL_NhanVien_controller implements Initializable {
             // Tạo đối tượng NhanVien mới
             NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
 
-            // Tạo DAO object
-            NhanVien_dao nvDAO = new NhanVien_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
 
-            // Thêm nhân viên vào database
-            nvDAO.createNhanVien(nv);
+                // Thêm nhân viên vào database
+                nvDAO.createNhanVien(nv);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Cập nhật lại dữ liệu trong bảng
             loadTableData();
@@ -557,11 +569,17 @@ public class QL_NhanVien_controller implements Initializable {
             // Lấy mã nhân viên từ trường nhập liệu
             String maNV = txt_MaNV.getText();
 
-            // Tạo DAO object
-            NhanVien_dao nvDAO = new NhanVien_dao();
+            // Sử dụng DAO interface
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
 
-            // Xóa nhân viên khỏi database
-            nvDAO.deleteNhanVien(maNV);
+                // Xóa nhân viên khỏi database
+                nvDAO.deleteNhanVien(maNV);
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException("Không thể kết nối đến server", e);
+            }
 
             // Cập nhật lại dữ liệu trong bảng
             loadTableData();
@@ -594,13 +612,14 @@ public class QL_NhanVien_controller implements Initializable {
     }
     private void loadTableData() {
         try {
-            // Tạo DAO object
-            NhanVien_dao nvDAO = new NhanVien_dao();
+            // Sử dụng DAO interface
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
 
             // Xóa dữ liệu cũ trong table
             table_NV.getItems().clear();
 
-            // Lấy danh sách nhaan vieen từ database
+            // Lấy danh sách nhân viên từ database
             ObservableList<NhanVien> listNV = FXCollections.observableArrayList(nvDAO.readAllNhanVien());
             // Thiết lập cell value factory cho các cột
             cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));

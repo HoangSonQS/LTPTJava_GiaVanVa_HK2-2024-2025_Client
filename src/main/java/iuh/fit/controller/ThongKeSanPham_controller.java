@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
-import iuh.fit.daos.HoaDon_dao;
+import iuh.fit.interfaces.HoaDon_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import iuh.fit.enums.LoaiHang;
@@ -53,7 +53,7 @@ import java.util.Arrays;
 // import static iuh.fit.App.loadFXML;
 
 public class ThongKeSanPham_controller implements Initializable {
-    private HoaDon_dao hoaDonDao;
+    private HoaDon_interface hoaDonDao;
 
     @FXML
     private VBox banHangSubMenuList;
@@ -466,7 +466,14 @@ public class ThongKeSanPham_controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        hoaDonDao = new HoaDon_dao();
+        // Khởi tạo DAO interface
+        try {
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
+        }
         addMenusToMap();
         initializeNhanVien();
         setupCharts();
@@ -572,7 +579,7 @@ public class ThongKeSanPham_controller implements Initializable {
     private void updateCharts(String nam, String loaiThongKe, String loaiHangDisplay) {
         try {
             List<Object[]> results = hoaDonDao.getThongKeSanPham(nam, loaiThongKe, loaiHangDisplay);
-            
+
             if (results.isEmpty()) {
                 showAlert(Alert.AlertType.INFORMATION, "Thông báo",
                         "Không có dữ liệu thống kê cho thời gian này!");

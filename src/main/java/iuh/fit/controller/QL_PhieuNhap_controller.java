@@ -1,7 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
-import iuh.fit.daos.PhieuNhapHang_dao;
+import iuh.fit.interfaces.PhieuNhapHang_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.PhieuNhapHang;
 import iuh.fit.entities.TaiKhoan;
@@ -465,8 +465,9 @@ public class QL_PhieuNhap_controller implements Initializable {
     }
     private void loadTableData() {
         try {
-            // Tạo DAO object
-            PhieuNhapHang_dao pNhapDAO = new PhieuNhapHang_dao();
+            // Sử dụng DAO interface
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            PhieuNhapHang_interface pNhapDAO = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
 
             // Xóa dữ liệu cũ trong table
             table_PNhap.getItems().clear();

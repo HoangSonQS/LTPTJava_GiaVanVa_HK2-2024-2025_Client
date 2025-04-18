@@ -5,7 +5,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
-import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.TaiKhoan;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -36,12 +36,18 @@ public class Login_controller implements Initializable {
     @FXML
     private Hyperlink linkForgotPassword;
 
-    private TaiKhoan_dao taiKhoanDao;
+    private TaiKhoan_interface taiKhoanDao;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Khởi tạo DAO
-        taiKhoanDao = new TaiKhoan_dao();
+        // Khởi tạo DAO interface
+        try {
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
+        }
 
         // Thêm sự kiện Enter cho các trường nhập liệu
         txtUsername.setOnKeyPressed(this::handleEnterKey);
