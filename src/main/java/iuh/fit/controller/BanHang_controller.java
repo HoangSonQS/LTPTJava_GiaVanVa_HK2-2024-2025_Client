@@ -470,46 +470,6 @@ public class BanHang_controller implements Initializable {
             showSearchInterface();
         }
     }
-    @FXML
-    void themSanPham(MouseEvent event) {
-        // Lấy mã sản phẩm và số lượng từ các trường nhập liệu
-        String maSP = txt_nhapMa.getText().trim();
-        String soLuongStr = txt_nhapSL.getText().trim();
-
-        // Kiểm tra dữ liệu nhập vào
-        if (maSP.isEmpty()) {
-            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập mã sản phẩm!");
-            txt_nhapMa.requestFocus();
-            return;
-        }
-
-        if (soLuongStr.isEmpty()) {
-            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập số lượng!");
-            txt_nhapSL.requestFocus();
-            return;
-        }
-
-        try {
-            int soLuong = Integer.parseInt(soLuongStr);
-            if (soLuong <= 0) {
-                showAlert(AlertType.WARNING, "Thông báo", "Số lượng phải lớn hơn 0!");
-                txt_nhapSL.requestFocus();
-                return;
-            }
-
-            // Tìm kiếm sản phẩm theo mã và thêm vào giỏ hàng
-            addProductToCart(maSP, soLuong);
-
-            // Xóa dữ liệu trong các trường nhập liệu
-            txt_nhapMa.clear();
-            txt_nhapSL.clear();
-            txt_nhapMa.requestFocus();
-
-        } catch (NumberFormatException e) {
-            showAlert(AlertType.ERROR, "Lỗi", "Số lượng phải là số nguyên!");
-            txt_nhapSL.requestFocus();
-        }
-    }
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
@@ -596,6 +556,47 @@ public class BanHang_controller implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+        }
+    }
+
+    @FXML
+    void themSanPham(MouseEvent event) {
+        // Lấy mã sản phẩm và số lượng từ các trường nhập liệu
+        String maSP = txt_nhapMa.getText().trim();
+        String soLuongStr = txt_nhapSL.getText().trim();
+
+        // Kiểm tra dữ liệu nhập vào
+        if (maSP.isEmpty()) {
+            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập mã sản phẩm!");
+            txt_nhapMa.requestFocus();
+            return;
+        }
+
+        if (soLuongStr.isEmpty()) {
+            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập số lượng!");
+            txt_nhapSL.requestFocus();
+            return;
+        }
+
+        try {
+            int soLuong = Integer.parseInt(soLuongStr);
+            if (soLuong <= 0) {
+                showAlert(AlertType.WARNING, "Thông báo", "Số lượng phải lớn hơn 0!");
+                txt_nhapSL.requestFocus();
+                return;
+            }
+
+            // Tìm kiếm sản phẩm theo mã và thêm vào giỏ hàng
+            addProductToCart(maSP, soLuong);
+
+            // Xóa dữ liệu trong các trường nhập liệu
+            txt_nhapMa.clear();
+            txt_nhapSL.clear();
+            txt_nhapMa.requestFocus();
+
+        } catch (NumberFormatException e) {
+            showAlert(AlertType.ERROR, "Lỗi", "Số lượng phải là số nguyên!");
+            txt_nhapSL.requestFocus();
         }
     }
 

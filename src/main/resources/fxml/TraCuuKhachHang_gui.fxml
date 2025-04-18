@@ -16,23 +16,8 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iuh.fit.controller.TraCuuKhachHang_controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="795.0" prefWidth="1540.0" stylesheets="@../styles/menu.css" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="iuh.fit.controller.TraCuuKhachHang_controller">
    <children>
-      <Pane prefHeight="80.0" prefWidth="1540.0" style="-fx-background-color: #CC33FF;">
-         <children>
-            <Circle layoutX="1500.0" layoutY="35.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
-            <Label alignment="CENTER_RIGHT" layoutX="1286.0" layoutY="15.0" prefHeight="20.0" prefWidth="170.0" text="Nguyễn Văn A" textFill="YELLOW">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-            <Label alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
-               <font>
-                  <Font name="Arial Bold" size="18.0" />
-               </font>
-            </Label>
-         </children>
-      </Pane>
       <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
          <children>
             <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
@@ -154,12 +139,12 @@
                               <Pane fx:id="p_hoaDon" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLHoaDon" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <ImageView fx:id="img_hoaDon" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_hoaDon" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLHoaDon" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="lb_hoaDon" layoutX="120.0" layoutY="10.0" text="HÓA ĐƠN" textFill="WHITE">
+                                    <Label fx:id="lb_hoaDon" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLHoaDon" text="HÓA ĐƠN" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
@@ -169,12 +154,12 @@
                               <Pane fx:id="p_nhanVien" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLNhanVien" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <ImageView fx:id="img_nhanVien" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_nhanVien" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLNhanVien" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
                                     </ImageView>
-                                    <Label fx:id="lb_nhanVien" layoutX="120.0" layoutY="10.0" text="NHÂN VIÊN" textFill="WHITE">
+                                    <Label fx:id="lb_nhanVien" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLNhanVien" text="NHÂN VIÊN" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
@@ -184,12 +169,12 @@
                               <Pane fx:id="p_HoaDon" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLKhachHang" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_HoaDon" layoutX="120.0" layoutY="10.0" text="KHÁCH HÀNG" textFill="WHITE">
+                                    <Label fx:id="lb_HoaDon" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLKhachHang" text="KHÁCH HÀNG" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_HoaDon" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_HoaDon" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLKhachHang" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -199,12 +184,12 @@
                               <Pane fx:id="p_sanPham" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLSanPham" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_sanPham" layoutX="120.0" layoutY="10.0" text="SẢN PHẨM" textFill="WHITE">
+                                    <Label fx:id="lb_sanPham" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLSanPham" text="SẢN PHẨM" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_sanPham" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_sanPham" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLSanPham" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -214,12 +199,12 @@
                               <Pane fx:id="p_phieuNhap" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLPhieuNhap" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_phieuNhap" layoutX="120.0" layoutY="10.0" text="PHIẾU NHẬP" textFill="WHITE">
+                                    <Label fx:id="lb_phieuNhap" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLPhieuNhap" text="PHIẾU NHẬP" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_phieuNhap" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_phieuNhap" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLPhieuNhap" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -229,12 +214,12 @@
                               <Pane fx:id="p_taiKhoan" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toQLTaiKhoan" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_taiKhoan" layoutX="120.0" layoutY="10.0" text="TÀI KHOẢN" textFill="WHITE">
+                                    <Label fx:id="lb_taiKhoan" layoutX="120.0" layoutY="10.0" onMouseClicked="#toQLTaiKhoan" text="TÀI KHOẢN" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_taiKhoan" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_taiKhoan" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toQLTaiKhoan" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -255,7 +240,7 @@
                                     <Font name="System Bold" size="26.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="img_timKiem" fitHeight="50.0" fitWidth="50.0" layoutX="15.0" layoutY="5.0" onMouseClicked="#handleGioHangClick" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="img_timKiem" fitHeight="50.0" fitWidth="50.0" layoutX="15.0" layoutY="5.0" onMouseClicked="#handleTimKiemClick" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/find.png" />
                                  </image>
@@ -269,13 +254,13 @@
                      <children>
                         <Pane fx:id="p_thongKe" onMouseClicked="#handleThongKeClick">
                            <children>
-                              <Button mnemonicParsing="false" onMouseClicked="#handleThongKeClick" prefHeight="60.0" prefWidth="270.0" style="-fx-background-color: #9900CCFF; -fx-border-color: #ffffff;" />
-                              <Label fx:id="lb_thongKe" layoutX="100.0" layoutY="10.0" onMouseClicked="#handleTimKiemClick" text="THỐNG KÊ" textFill="WHITE">
+                              <Button mnemonicParsing="false" prefHeight="60.0" prefWidth="270.0" style="-fx-background-color: #9900CCFF; -fx-border-color: #ffffff;" />
+                              <Label fx:id="lb_thongKe" layoutX="100.0" layoutY="10.0" onMouseClicked="#handleThongKeClick" text="THỐNG KÊ" textFill="WHITE">
                                  <font>
                                     <Font name="System Bold" size="26.0" />
                                  </font>
                               </Label>
-                              <ImageView fx:id="img_thongKe" fitHeight="50.0" fitWidth="50.0" layoutX="15.0" layoutY="5.0" onMouseClicked="#handleGioHangClick" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="img_thongKe" fitHeight="50.0" fitWidth="50.0" layoutX="15.0" layoutY="5.0" onMouseClicked="#handleThongKeClick" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../images/chart.png" />
                                  </image>
@@ -287,12 +272,12 @@
                               <Pane fx:id="p_thongKeDoanhThu" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toTKDoanhThu" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_thongKeDoanhThu" layoutX="120.0" layoutY="10.0" text="DOANH THU" textFill="WHITE">
+                                    <Label fx:id="lb_thongKeDoanhThu" layoutX="120.0" layoutY="10.0" onMouseClicked="#toTKDoanhThu" text="DOANH THU" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_thongKeDoanhThu" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_thongKeDoanhThu" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toTKDoanhThu" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -302,12 +287,12 @@
                               <Pane fx:id="p_thongKeSanPham" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toTKSanPham" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
-                                    <Label fx:id="lb_thongKeSanPham" layoutX="120.0" layoutY="10.0" text="SẢN PHẨM" textFill="WHITE">
+                                    <Label fx:id="lb_thongKeSanPham" layoutX="120.0" layoutY="10.0" onMouseClicked="#toTKSanPham" text="SẢN PHẨM" textFill="WHITE">
                                        <font>
                                           <Font name="System Bold" size="20.0" />
                                        </font>
                                     </Label>
-                                    <ImageView fx:id="img_thongKeSanPham" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fx:id="img_thongKeSanPham" fitHeight="40.0" fitWidth="40.0" layoutX="30.0" layoutY="5.0" onMouseClicked="#toTKSanPham" pickOnBounds="true" preserveRatio="true">
                                        <image>
                                           <Image url="@../images/bill.png" />
                                        </image>
@@ -320,11 +305,26 @@
                   </VBox>
                </children>
             </VBox>
-            <Button layoutX="65.0" layoutY="635.0" mnemonicParsing="false" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #FF0033;" text="Đăng xuất" textFill="WHITE">
+            <Button fx:id="btn_dangXuat" layoutX="65.0" layoutY="635.0" mnemonicParsing="false" onMouseClicked="#handleDangXuatClick" prefHeight="60.0" prefWidth="140.0" style="-fx-background-color: #FF0033;" text="Đăng xuất" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="20.0" />
                </font>
             </Button>
+         </children>
+      </Pane>
+      <Pane prefHeight="80.0" prefWidth="1540.0" style="-fx-background-color: #CC33FF;">
+         <children>
+            <Circle layoutX="1500.0" layoutY="35.0" radius="30.0" stroke="BLACK" strokeType="INSIDE" />
+            <Label fx:id="lb_tenNV" alignment="CENTER_RIGHT" layoutX="1286.0" layoutY="15.0" prefHeight="20.0" prefWidth="170.0" text="Nguyễn Văn A" textFill="YELLOW">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="lb_chucVu" alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
+               <font>
+                  <Font name="Arial Bold" size="18.0" />
+               </font>
+            </Label>
          </children>
       </Pane>
    </children>
