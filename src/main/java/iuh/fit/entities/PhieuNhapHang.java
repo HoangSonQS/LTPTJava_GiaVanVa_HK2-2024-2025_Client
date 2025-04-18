@@ -35,6 +35,15 @@ public class PhieuNhapHang implements Serializable {
     @Column(name = "ThanhTien")
     private double thanhTien;
 
+    public PhieuNhapHang(String maPNH, String maNV, String tenNV, LocalDateTime thoiGian, int tongSoLuongSP, double thanhTien) {
+        this.maPNH = maPNH;
+        this.maNV = maNV;
+        this.tenNV = tenNV;
+        this.thoiGian = thoiGian;
+        this.tongSoLuongSP = tongSoLuongSP;
+        this.thanhTien = thanhTien;
+    }
+
     //check
     @OneToMany(mappedBy = "phieuNhapHang", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude

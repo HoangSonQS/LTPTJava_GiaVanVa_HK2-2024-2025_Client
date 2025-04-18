@@ -1,6 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
+import iuh.fit.daos.NhanVien_dao;
 import iuh.fit.daos.TaiKhoan_dao;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
@@ -24,6 +25,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -449,30 +451,100 @@ public class QL_TaiKoan_controller implements Initializable {
         }
     }
 
-    @FXML
-    void moGiaoDienTimKiemNV(MouseEvent event) {
-
-    }
 
     @FXML
-    void suaTTNV(MouseEvent event) {
+    void xoaTK(MouseEvent event) {
+        try{
+            // Lấy mã tài khoản từ ô nhập liệu
+            String maTK = txt_MaTK.getText();
 
-    }
+            // Tạo DAO object
+            TaiKhoan_dao tkDAO = new TaiKhoan_dao();
 
-    @FXML
-    void themNV(MouseEvent event) {
+            // Xóa tài khoản trong database
+            tkDAO.delete(maTK);
 
-    }
-
-
-    @FXML
-    void xoaNV(MouseEvent event) {
-
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể xóa tài khoản: " + e.getMessage());
+        }
     }
 
     @FXML
     void xoaTrang(MouseEvent event) {
+        txt_MaTK.setText("");
+        txt_MaNV.setText("");
+        txt_tenDN.setText("");
+        txt_ThoiGian.setText("");
 
+        // Xóa dữ liệu trong bảng
+        table_TK.getItems().clear();
+    }@FXML
+    void moGiaoDienTimKiemTK(MouseEvent event) {
+        try {
+            loadFXML("/fxml/TraCuuTaiKhoan_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu tài khoản: " + e.getMessage());
+        }
+
+    }
+
+    @FXML
+    void suaTTTK(MouseEvent event) {
+        try{
+            // Lấy mã tài khoản từ ô nhập liệu
+            String maTK = txt_MaTK.getText();
+            String maNV = txt_MaNV.getText();
+            String tenDN = txt_tenDN.getText();
+            LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
+
+
+            // Tạo DAO object
+            NhanVien_dao nv_dao = new NhanVien_dao();
+            // Lấy thông tin nhân viên từ database
+            NhanVien nhanVien = nv_dao.readNhanVien(maNV);
+            TaiKhoan tk = new TaiKhoan(maTK,tenDN, null,thoiGian, nhanVien);
+
+            // Cập nhật thông tin tài khoản trong database
+            TaiKhoan_dao tkDAO = new TaiKhoan_dao();
+            tkDAO.update(tk);
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể cập nhật thông tin tài khoản: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    void themTK(MouseEvent event) {
+        try{
+            // Lấy thông tin từ các ô nhập liệu
+            String maTK = txt_MaTK.getText();
+            String maNV = txt_MaNV.getText();
+            String tenDN = txt_tenDN.getText();
+            LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
+
+            // Tạo DAO object
+            NhanVien_dao nv_dao = new NhanVien_dao();
+            // Lấy thông tin nhân viên từ database
+            NhanVien nhanVien = nv_dao.readNhanVien(maNV);
+            TaiKhoan tk = new TaiKhoan(maTK,tenDN, null,thoiGian, nhanVien);
+
+            // Thêm tài khoản vào database
+            TaiKhoan_dao tkDAO = new TaiKhoan_dao();
+            tkDAO.create(tk);
+
+            // Cập nhật lại dữ liệu trong bảng
+            loadTableData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm tài khoản: " + e.getMessage());
+        }
     }
     private void loadFXML(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -526,5 +598,15 @@ public class QL_TaiKoan_controller implements Initializable {
         initializeNhanVien();
         addMenusToMap();
         loadTableData();
+        // Thiết lập sự kiện khi người dùng chọn một hàng trong bảng
+        table_TK.setOnMouseClicked(event -> {
+                TaiKhoan selectedTaiKhoan = table_TK.getSelectionModel().getSelectedItem();
+                if (selectedTaiKhoan != null) {
+                    txt_MaTK.setText(selectedTaiKhoan.getMaTaiKhoan());
+                    txt_MaNV.setText(selectedTaiKhoan.getNhanVien().getMaNV());
+                    txt_tenDN.setText(selectedTaiKhoan.getTenDangNhap());
+                    txt_ThoiGian.setText(selectedTaiKhoan.getThoiGianDangNhap().toString());
+                }
+        });
     }
 }

@@ -25,6 +25,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -503,11 +504,72 @@ public class QL_PhieuNhap_controller implements Initializable {
             e.printStackTrace();
         }
     }
+    @FXML
+    void Xoa_Trang(MouseEvent event) {
+        txt_MaPhieuNhap.setText("");
+        txt_MaNV.setText("");
+        txt_TenNV.setText("");
+        txt_SoSP.setText("");
+        txt_ThanhTien.setText("");
+        txt_ThoiGian.setText("");
+
+        // Xóa dữ liệu trong table
+        table_PNhap.getItems().clear();
+    }
+    @FXML
+    void moGD_TimkiemPhieuNhap(MouseEvent event) {
+        try {
+            loadFXML("/fxml/TraCuuPhieuNhap_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tìm kiếm phiếu nhập!");
+        }
+    }
+
+    @FXML
+    void them_PNhap(MouseEvent event) {
+        try{
+            // Lấy thông tin từ các trường nhập liệu
+            String maPhieuNhap = txt_MaPhieuNhap.getText();
+            String maNV = txt_MaNV.getText();
+            String tenNV = txt_TenNV.getText();
+            int soLuongSP = Integer.parseInt(txt_SoSP.getText());
+            double thanhTien = Double.parseDouble(txt_ThanhTien.getText());
+            LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
+
+            // Tạo đối tượng PhieuNhapHang
+            PhieuNhapHang phieuNhapHang = new PhieuNhapHang(maPhieuNhap, maNV, tenNV,thoiGian, soLuongSP, thanhTien);
+
+            // Tạo DAO object
+            PhieuNhapHang_dao pNhapDAO = new PhieuNhapHang_dao();
+
+            // Thêm phiếu nhập vào database
+            pNhapDAO.create(phieuNhapHang);
+
+            // Cập nhật lại dữ liệu trong table
+            loadTableData();
+        }catch (Exception e){
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm phiếu nhập: " + e.getMessage());
+        }
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         initializeNhanVien();
         addMenusToMap();
         loadTableData();
+        // Thiết lập sự kiện khi người dùng chọn một hàng trong bảng
+        table_PNhap.setOnMouseClicked(event -> {
+                PhieuNhapHang selectedPNH = table_PNhap.getSelectionModel().getSelectedItem();
+                if (selectedPNH != null) {
+                    txt_MaPhieuNhap.setText(selectedPNH.getMaPNH());
+                    txt_MaNV.setText(selectedPNH.getMaNV());
+                    txt_TenNV.setText(selectedPNH.getTenNV());
+                    txt_SoSP.setText(String.valueOf(selectedPNH.getTongSoLuongSP()));
+                    txt_ThanhTien.setText(String.valueOf(selectedPNH.getThanhTien()));
+                    txt_ThoiGian.setText(String.valueOf(selectedPNH.getThoiGian()));
+                }
+        });
     }
 }
