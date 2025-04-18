@@ -1,22 +1,33 @@
 package iuh.fit.controller;
 
+import iuh.fit.App;
+import iuh.fit.daos.TaiKhoan_dao;
+import iuh.fit.entities.SanPham;
+import iuh.fit.entities.TaiKhoan;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TextField;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -35,22 +46,25 @@ public class TraCuuTaiKhoan_controller implements Initializable {
     private Button btn_qlTaiKhoan;
 
     @FXML
-    private ComboBox<?> ccb_GiaoDien;
+    private ComboBox<String> ccb_GiaoDien;
 
     @FXML
-    private TableColumn<?, ?> cl_maTK;
+    private TableColumn<TaiKhoan, String> cl_maTK;
 
     @FXML
-    private TableColumn<?, ?> cl_mk;
+    private TableColumn<TaiKhoan, String> cl_mk;
 
     @FXML
-    private TableColumn<?, ?> cl_stt;
+    private TableColumn<TaiKhoan, String> cl_stt;
 
     @FXML
-    private TableColumn<?, ?> cl_tenDN;
+    private TableColumn<TaiKhoan, String> cl_tenDN;
 
     @FXML
-    private TableColumn<?, ?> cl_tgdn;
+    private TableColumn<TaiKhoan, String> cl_tgdn;
+
+    @FXML
+    private TableColumn<TaiKhoan, String> cl_maNV;
 
     @FXML
     private ImageView img_HoaDon;
@@ -128,6 +142,9 @@ public class TraCuuTaiKhoan_controller implements Initializable {
     private Label lb_tgdn;
 
     @FXML
+    private Label lb_maNV;
+
+    @FXML
     private Label lb_thongKe;
 
     @FXML
@@ -195,6 +212,9 @@ public class TraCuuTaiKhoan_controller implements Initializable {
 
     @FXML
     private TextField txt_maTK;
+    
+    @FXML
+    private TableView<TaiKhoan> tableTaiKhoan;
 
     @FXML
     private VBox vBox;
@@ -279,48 +299,234 @@ public class TraCuuTaiKhoan_controller implements Initializable {
     }
 
     @FXML
-    void toQLHoaDon(MouseEvent event) {
+    void timKiem(MouseEvent event) {
 
+        String maTaiKhoan = txt_maTK.getText();
+        App.maTraCuu = maTaiKhoan;
+        TaiKhoan tk = new TaiKhoan_dao().read(maTaiKhoan);
+        lb_maTK.setText(tk.getMaTaiKhoan());
+        lb_tenDN.setText(tk.getTenDangNhap());
+        lb_mk.setText(tk.getMatKhau());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        lb_tgdn.setText(tk.getThoiGianDangNhap().format(formatter));
+        highlightMatchingRow(maTaiKhoan);
+    }
+
+    private void highlightMatchingRow(String maTaiKhoan) {
+        if (maTaiKhoan == null || maTaiKhoan.isEmpty()) {
+            return;
+        }
+
+        for (int i = 0; i < tableTaiKhoan.getItems().size(); i++) {
+            TaiKhoan taiKhoan = tableTaiKhoan.getItems().get(i);
+            if (taiKhoan.getMaTaiKhoan().equals(maTaiKhoan)) {  // Sửa lại điều kiện so sánh
+                // Select the row
+                tableTaiKhoan.getSelectionModel().select(i);
+                // Scroll to the row
+                tableTaiKhoan.scrollTo(i);
+                // Request focus
+                tableTaiKhoan.requestFocus();
+                break;
+            }
+        }
+    }
+    @Override
+    public void initialize(URL arg0, ResourceBundle arg1) {
+        // Khởi tạo ComboBox
+        initializeComboBox();
+
+        // Khởi tạo các cột cho bảng
+        initializeTableColumns();
+
+        // Load dữ liệu vào bảng
+        loadTableData();
+
+        // Thêm sự kiện click cho bảng
+        setupTableClickEvent();
+    }
+
+    private void initializeComboBox() {
+        ObservableList<String> list = FXCollections.observableArrayList(
+                "Sản phẩm", "Tài khoản", "Hoá đơn", "Phiếu nhập", "Nhân viên", "Khách hàng"
+        );
+        ccb_GiaoDien.setItems(list);
+        ccb_GiaoDien.setValue("Nhân viên");
+        setupComboBoxHandler();
+    }
+
+    private void setupComboBoxHandler() {
+        ccb_GiaoDien.setOnAction(event -> {
+            String selectedValue = ccb_GiaoDien.getValue();
+            if (selectedValue.equals("Tài khoản")) {
+                return;
+            }
+            
+            try {
+                String fxmlFile = switch (selectedValue) {
+                    case "Sản phẩm" -> "TraCuu_gui";
+                    case "Hoá đơn" -> "TraCuuHoaDon_gui";
+                    case "Phiếu nhập" -> "TraCuuPhieuNhap_gui";
+                    case "Nhân viên" -> "TraCuuNhanVien_gui";
+                    case "Khách hàng" -> "TraCuuKhachHang_gui";
+                    default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
+                };
+                
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) ccb_GiaoDien.getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+                
+            } catch (Exception e) {
+                showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
+                ccb_GiaoDien.setValue("Tài khoản");
+            }
+        });
+    }
+
+    private void showError(String title, String content) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+
+    private void initializeTableColumns() {
+        // Cột STT
+        cl_stt.setCellFactory(col -> new TableCell<TaiKhoan, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    setText(String.valueOf(getIndex() + 1));
+                }
+            }
+        });
+
+        // Các cột khác
+        cl_maTK.setCellValueFactory(new PropertyValueFactory<>("maTaiKhoan"));
+        cl_tenDN.setCellValueFactory(new PropertyValueFactory<>("tenDangNhap"));
+        cl_mk.setCellValueFactory(new PropertyValueFactory<>("matKhau"));
+        // Định dạng ngày tháng
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        // Cột Ngày sản xuất
+        cl_tgdn.setCellValueFactory(cellData -> {
+            LocalDateTime date = cellData.getValue().getThoiGianDangNhap();
+            if (date == null) return new SimpleStringProperty("");
+            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+        });
+        cl_maNV.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getNhanVien().getMaNV()));
+    }
+
+    private void loadTableData() {
+        try {
+            TaiKhoan_dao taiKhoanDao = new TaiKhoan_dao();
+            List<TaiKhoan> dssp = taiKhoanDao.readAll();
+            ObservableList<TaiKhoan> data = FXCollections.observableArrayList(dssp);
+            tableTaiKhoan.setItems(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText("Lỗi khi tải dữ liệu");
+            alert.setContentText("Đã xảy ra lỗi khi tải dữ liệu. Vui lòng thử lại sau.");
+            alert.showAndWait();
+        }
+    }
+
+    private void setupTableClickEvent() {
+        tableTaiKhoan.setOnMouseClicked(event -> {
+            TaiKhoan selectedTaiKhoan = tableTaiKhoan.getSelectionModel().getSelectedItem();
+            if (selectedTaiKhoan != null) {
+                updateLabels(selectedTaiKhoan);
+            }
+        });
+    }
+
+    private void updateLabels(TaiKhoan tk) {
+        lb_maTK.setText(tk.getMaTaiKhoan());
+        lb_tenDN.setText(tk.getTenDangNhap());
+        lb_mk.setText(tk.getMatKhau());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
+        lb_tgdn.setText(tk.getThoiGianDangNhap().format(formatter));
+        lb_maNV.setText(String.valueOf(tk.getNhanVien().getMaNV()));
+
+    }
+    @FXML
+    void toQLHoaDon(MouseEvent event) {
+        try {
+            App.setRoot("QuanLyHoaDon_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý hóa đơn");
+        }
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyKhachHang_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý khách hàng");
+        }
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyNhanVien_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý nhân viên");
+        }
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyPhieuNhap_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý phiếu nhập");
+        }
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLySanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý sản phẩm");
+        }
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyTaiKhoan_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý tài khoản");
+        }
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-
+        try {
+            App.setRoot("ThongKeDoanhThu_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê doanh thu");
+        }
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
-
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        addMenusToMap();
+        try {
+            App.setRoot("ThongKeSanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê sản phẩm");
+        }
     }
 
 }

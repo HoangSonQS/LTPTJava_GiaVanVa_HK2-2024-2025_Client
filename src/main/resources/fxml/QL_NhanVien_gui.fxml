@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -47,14 +49,15 @@
                 </Text>
                 <TableView fx:id="table_NV" layoutX="392.0" layoutY="130.0" prefHeight="555.0" prefWidth="878.0">
                     <columns>
-                        <TableColumn fx:id="cl_txt" prefWidth="45.5999755859375" text="STT" />
-                        <TableColumn fx:id="cl_maNV" prefWidth="96.800048828125" text="Mã nhân viên" />
-                        <TableColumn fx:id="cl_tenNV" prefWidth="112.79998779296875" text="Tên nhân viên" />
-                        <TableColumn fx:id="cl_CCCD" prefWidth="115.2000732421875" text="CCCD" />
-                        <TableColumn fx:id="lc_SDT" prefWidth="124.800048828125" text="Số điện thoại" />
-                        <TableColumn fx:id="cl_email" prefWidth="144.800048828125" text="Email" />
-                        <TableColumn fx:id="cl_ngaySinh" minWidth="0.0" prefWidth="116.0" text="Ngày sinh" />
-                        <TableColumn fx:id="cl_chucVU" prefWidth="132.0" text="Chức vụ" />
+                        <TableColumn fx:id="cl_txt" prefWidth="28.800048828125" text="STT" />
+                        <TableColumn fx:id="cl_maNV" prefWidth="105.5999755859375" text="Mã nhân viên" />
+                        <TableColumn fx:id="cl_tenNV" prefWidth="105.60003662109375" text="Tên nhân viên" />
+                        <TableColumn fx:id="cl_CCCD" prefWidth="92.79998779296875" text="CCCD" />
+                        <TableColumn fx:id="lc_SDT" prefWidth="101.59991455078125" text="Số điện thoại" />
+                        <TableColumn fx:id="cl_email" prefWidth="112.800048828125" text="Email" />
+                        <TableColumn fx:id="cl_ngaySinh" minWidth="0.0" prefWidth="104.0" text="Ngày sinh" />
+                        <TableColumn fx:id="cl_chucVU" minWidth="0.0" prefWidth="92.7999267578125" text="Chức vụ" />
+                  <TableColumn fx:id="cl_DiaChi" prefWidth="131.199951171875" text="Địa chỉ" />
                     </columns>
                 </TableView>
                 <Label layoutX="94.0" layoutY="130.0" text="Thông tin chi tiết:">
@@ -100,35 +103,41 @@
                 <TextField fx:id="txt_MaNV" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_TenNV" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_CCCD" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField fx:id="txt_NgaySinh" layoutX="165.0" layoutY="305.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_Email" layoutX="165.0" layoutY="345.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_SDT" layoutX="165.0" layoutY="385.0" prefHeight="30.0" prefWidth="200.0" />
-                <TextField fx:id="txt_ChucVu" layoutX="165.0" layoutY="425.0" prefHeight="30.0" prefWidth="200.0" />
-            <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="53.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#suaTTNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+            <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="53.0" layoutY="539.0" mnemonicParsing="false" onMouseClicked="#suaTTNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="155.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#xoaNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+            <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="155.0" layoutY="539.0" mnemonicParsing="false" onMouseClicked="#xoaNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="260.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#themNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+            <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="260.0" layoutY="539.0" mnemonicParsing="false" onMouseClicked="#themNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm nhân viên" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+            <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="605.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm nhân viên" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
-            <Button id="btn_XoaTrang" fx:id="btnXoaTrang" contentDisplay="RIGHT" layoutX="53.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#xoaTrang" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: gray;" text="Xoá trắng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+            <Button id="btn_XoaTrang" fx:id="btnXoaTrang" contentDisplay="RIGHT" layoutX="53.0" layoutY="605.0" mnemonicParsing="false" onMouseClicked="#xoaTrang" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: gray;" text="Xoá trắng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                <font>
                   <Font size="16.0" />
                </font>
             </Button>
+            <ComboBox fx:id="txt_chucVu" layoutX="166.0" layoutY="425.0" prefHeight="30.0" prefWidth="200.0" />
+            <DatePicker fx:id="txt_ngaySinh" layoutX="165.0" layoutY="305.0" prefHeight="30.0" prefWidth="200.0" />
+            <Label layoutX="15.0" layoutY="465.0" text="Chức vụ:">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <TextField fx:id="txt_DiaChi" layoutX="165.0" layoutY="465.0" prefHeight="30.0" prefWidth="200.0" />
             </children>
         </Pane>
         <Pane layoutY="80.0" prefHeight="715.0" prefWidth="270.0" style="-fx-background-color: #9900cc;">

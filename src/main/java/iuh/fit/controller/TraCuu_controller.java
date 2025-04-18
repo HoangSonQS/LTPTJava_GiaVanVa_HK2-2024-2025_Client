@@ -10,13 +10,16 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -374,45 +377,29 @@ public class TraCuu_controller implements Initializable {
     private void setupComboBoxHandler() {
         cbb_GiaoDien.setOnAction(event -> {
             String selectedValue = cbb_GiaoDien.getValue();
-            switch (selectedValue) {
-                case "Sản phẩm":
-                    // Giữ nguyên giao diện hiện tại
-                    break;
-                case "Tài khoản":
-                    try {
-                        App.setRoot("TraCuuTaiKhoan_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu tài khoản");
-                    }
-                    break;
-                case "Hoá đơn":
-                    try {
-                        App.setRoot("TraCuuHoaDon_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu hóa đơn");
-                    }
-                    break;
-                case "Phiếu nhập":
-                    try {
-                        App.setRoot("TraCuuPhieuNhap_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu phiếu nhập");
-                    }
-                    break;
-                case "Nhân viên":
-                    try {
-                        App.setRoot("TraCuuNhanVien_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu nhân viên");
-                    }
-                    break;
-                case "Khách hàng":
-                    try {
-                        App.setRoot("TraCuuKhachHang_gui");
-                    } catch (IOException e) {
-                        showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu khách hàng");
-                    }
-                    break;
+            if (selectedValue.equals("Sản phẩm")) {
+                return;
+            }
+            
+            try {
+                String fxmlFile = switch (selectedValue) {
+                    case "Tài khoản" -> "TraCuuTaiKhoan_gui";
+                    case "Hoá đơn" -> "TraCuuHoaDon_gui";
+                    case "Phiếu nhập" -> "TraCuuPhieuNhap_gui";
+                    case "Nhân viên" -> "TraCuuNhanVien_gui";
+                    case "Khách hàng" -> "TraCuuKhachHang_gui";
+                    default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
+                };
+                
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/" + fxmlFile + ".fxml"));
+                Scene scene = new Scene(loader.load());
+                Stage stage = (Stage) cbb_GiaoDien.getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+                
+            } catch (Exception e) {
+                showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
+                cbb_GiaoDien.setValue("Sản phẩm");
             }
         });
     }
@@ -520,42 +507,74 @@ public class TraCuu_controller implements Initializable {
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyHoaDon_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý hóa đơn");
+        }
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyKhachHang_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý khách hàng");
+        }
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyNhanVien_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý nhân viên");
+        }
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyPhieuNhap_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý phiếu nhập");
+        }
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLySanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý sản phẩm");
+        }
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-
+        try {
+            App.setRoot("QuanLyTaiKhoan_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Quản lý tài khoản");
+        }
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-
+        try {
+            App.setRoot("ThongKeDoanhThu_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê doanh thu");
+        }
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
-
+        try {
+            App.setRoot("ThongKeSanPham_gui");
+        } catch (IOException e) {
+            showError("Lỗi chuyển giao diện", "Không thể mở giao diện Thống kê sản phẩm");
+        }
     }
 
 }

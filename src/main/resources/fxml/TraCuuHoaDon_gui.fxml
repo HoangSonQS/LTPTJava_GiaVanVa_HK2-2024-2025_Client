@@ -77,75 +77,75 @@
             </Label>
             <Label layoutX="15.0" layoutY="180.0" text="Mã hoá đơn:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="220.0" text="Mã nhân viên:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maHD" layoutX="259.0" layoutY="180.0" text="Trống">
+            <Label fx:id="lb_maHD" layoutX="202.0" layoutY="180.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maNV" layoutX="259.0" layoutY="220.0" text="Trống">
+            <Label fx:id="lb_maNV" layoutX="202.0" layoutY="220.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="260.0" text="Mã khách hàng:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maKH" layoutX="259.0" layoutY="260.0" text="Trống">
+            <Label fx:id="lb_maKH" layoutX="202.0" layoutY="260.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="300.0" text="Thời gian:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_thoiGian" layoutX="259.0" layoutY="300.0" text="Trống">
+            <Label fx:id="lb_thoiGian" layoutX="202.0" layoutY="300.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="340.0" text="Số lượng sản phẩm:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_tslsp" layoutX="259.0" layoutY="340.0" text="Trống">
+            <Label fx:id="lb_tslsp" layoutX="202.0" layoutY="340.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="380.0" text="Phương thức thanh toán:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_pptt" layoutX="259.0" layoutY="380.0" text="Trống">
+            <Label fx:id="lb_pptt" layoutX="202.0" layoutY="380.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
             <Label layoutX="15.0" layoutY="420.0" text="Thành tiền:">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_thanhTien" layoutX="259.0" layoutY="420.0" text="Trống">
+            <Label fx:id="lb_thanhTien" layoutX="202.0" layoutY="420.0" text="Trống">
                <font>
-                  <Font size="20.0" />
+                  <Font size="16.0" />
                </font>
             </Label>
-            <Button fx:id="btn_qlHoaDon" layoutX="52.0" layoutY="470.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý hoá đơn" textFill="WHITE">
+            <Button fx:id="btn_qlHoaDon" layoutX="52.0" layoutY="470.0" mnemonicParsing="false" onMouseClicked="#toQLHoaDon" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý hoá đơn" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>

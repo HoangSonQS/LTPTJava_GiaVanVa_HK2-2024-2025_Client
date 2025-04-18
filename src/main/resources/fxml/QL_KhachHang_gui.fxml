@@ -76,22 +76,22 @@
                 <TextField fx:id="txt_MaKH" layoutX="165.0" layoutY="180.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_TenKH" layoutX="165.0" layoutY="225.0" prefHeight="30.0" prefWidth="200.0" />
                 <TextField fx:id="txt_SDT" layoutX="165.0" layoutY="265.0" prefHeight="30.0" prefWidth="200.0" />
-                <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="53.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#suaTTNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                <Button id="btn_Sua" fx:id="btnSua" contentDisplay="RIGHT" layoutX="53.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#suaKH" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #edbf6d;" text="     Sửa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="155.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#xoaNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                <Button id="btn_Xoa" fx:id="btnXoa" contentDisplay="RIGHT" layoutX="155.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#xoaKH" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #ff3131;" text="     Xóa" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="260.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#themNV" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                <Button id="btn_Them" fx:id="btnThem" contentDisplay="RIGHT" layoutX="260.0" layoutY="486.0" mnemonicParsing="false" onMouseClicked="#themKH" prefHeight="40.0" prefWidth="90.0" style="-fx-background-color: #00bf63;" text="     Thêm" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
                     </font>
                 </Button>
-                <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemNV" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm khách hàng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
+                <Button id="btn_TimKiem" fx:id="btnTimKiem" contentDisplay="RIGHT" layoutX="153.0" layoutY="552.0" mnemonicParsing="false" onMouseClicked="#moGiaoDienTimKiemKH" prefHeight="40.0" prefWidth="198.0" style="-fx-background-color: #CC33FF;" text="      Tìm kiếm khách hàng" textAlignment="RIGHT" textFill="WHITE" textOverrun="CLIP">
                     <font>
                         <Font size="16.0" />
                     </font>

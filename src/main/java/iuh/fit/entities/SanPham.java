@@ -61,4 +61,16 @@ public class SanPham implements Serializable {
     @ToString.Exclude
     private Set<ChiTietSanPham_PhieuNhap> chiTietSanPhamPhieuNhaps = new HashSet<>();
 
+    public SanPham(String maSP, String tenSP, String nhaCC, int soLuongTon, Double giaNhap, Double giaBan, LocalDateTime ngaySX, LocalDateTime hanSD, LocalDateTime thoiGianCapNhat, LoaiHang loaiHang) {
+        this.maSP = maSP;
+        this.tenSP = tenSP;
+        this.nhaCC = nhaCC;
+        this.soLuongTon = soLuongTon;
+        this.giaNhap = giaNhap;
+        this.giaBan = giaBan;
+        this.ngaySX = ngaySX;
+        this.hanSD = hanSD;
+        this.thoiGianCapNhat = thoiGianCapNhat;
+        this.loaiHang = loaiHang;
+    }
 }
