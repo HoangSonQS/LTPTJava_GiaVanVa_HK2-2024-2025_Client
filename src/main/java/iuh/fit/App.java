@@ -84,11 +84,11 @@ public class App extends Application {
         try {
             // Load the main GUI
             Parent root = FXMLLoader.load(App.class.getResource("/fxml/BanHang_gui.fxml"));
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(App.class.getResource("/styles/menu.css").toExternalForm());
+            primaryScene = new Scene(root);  // Khởi tạo primaryScene
+            primaryScene.getStylesheets().add(App.class.getResource("/styles/menu.css").toExternalForm());
 
             // Set the new scene for the stage
-            stage.setScene(scene);
+            stage.setScene(primaryScene);
             stage.setMaximized(true);
             stage.setTitle("Hệ thống quản lý bán hàng");
 

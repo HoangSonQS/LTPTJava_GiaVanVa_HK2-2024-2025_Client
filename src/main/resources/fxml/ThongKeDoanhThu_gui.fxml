@@ -37,7 +37,7 @@
             </Label>
          </children>
       </Pane>
-
+      
       <!-- Left Menu -->
       <Pane layoutY="80.0" prefHeight="715.0" prefWidth="270.0" style="-fx-background-color: #9900CC;">
          <children>
@@ -136,17 +136,17 @@
          <children>
             <!-- Thống kê controls -->
             <Pane layoutX="15.0" layoutY="15.0" prefHeight="70.0" prefWidth="1240.0" style="-fx-background-color: #EEEEEE;">
-               <children>
-                  <Label layoutX="15.0" layoutY="15.0" text="Thống kê doanh thu">
-                     <font>
-                        <Font name="Arial Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="cbLoaiThongKe" layoutX="250.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" promptText="Loại thống kê" />
-                  <ComboBox fx:id="cbNam" layoutX="420.0" layoutY="15.0" prefHeight="30.0" prefWidth="100.0" promptText="Năm" />
-                  <Button fx:id="btnXemThongKe" layoutX="540.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleXemThongKe"
-                          prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #00CC66;" text="Xem thống kê" textFill="WHITE" />
-               </children>
+                <children>
+                    <Label layoutX="15.0" layoutY="15.0" text="Thống kê doanh thu">
+                        <font>
+                            <Font name="Arial Bold" size="24.0" />
+                        </font>
+                    </Label>
+                    <ComboBox fx:id="cbLoaiThongKe" layoutX="250.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" promptText="Loại thống kê" />
+                    <ComboBox fx:id="cbNam" layoutX="420.0" layoutY="15.0" prefHeight="30.0" prefWidth="100.0" promptText="Năm" />
+                    <Button fx:id="btnXemThongKe" layoutX="540.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleXemThongKe" 
+                            prefHeight="30.0" prefWidth="120.0" style="-fx-background-color: #00CC66;" text="Xem thống kê" textFill="WHITE" />
+                </children>
             </Pane>
 
             <!-- Chart -->
