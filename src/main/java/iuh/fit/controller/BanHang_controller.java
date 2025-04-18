@@ -1,5 +1,6 @@
 package iuh.fit.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -435,7 +436,7 @@ public class BanHang_controller implements Initializable {
 
     @FXML
     void handleThongKeClick(MouseEvent event) {
-        toolsSlider(thongKeSubVBox,thongKeSubMenuList);
+        toolsSlider(thongKeSubVBox, thongKeSubMenuList);
         removeOtherMenus(thongKeSubVBox);
     }
 
@@ -580,19 +581,45 @@ public class BanHang_controller implements Initializable {
     @FXML
     void toTKDoanhThu(MouseEvent event) {
         try {
-            // Chuyển đến giao diện thống kê doanh thu
-            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
+            // Hiển thị menu thống kê
+            toolsSlider(thongKeSubVBox, thongKeSubMenuList);
+            removeOtherMenus(thongKeSubVBox);
+
+            // Load giao diện thống kê doanh thu
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
+            Parent root = loader.load();
+            
+            // Lấy scene hiện tại
+            Scene currentScene = p_gioHang.getScene();
+            Stage currentStage = (Stage) currentScene.getWindow();
+            
+            // Tạo scene mới và áp dụng stylesheet
+            Scene newScene = new Scene(root);
+            newScene.getStylesheets().add(getClass().getResource("/styles/menu.css").toExternalForm());
+            
+            // Set scene mới và hiển thị
+            currentStage.setScene(newScene);
+            currentStage.show();
+            
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Lỗi");
+            alert.setHeaderText(null);
+            alert.setContentText("Không thể mở giao diện thống kê doanh thu!\nLỗi: " + e.getMessage());
+            alert.showAndWait();
         }
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
         try {
-            // Chuyển đến giao diện thống kê sản phẩm
-            loadFXML("/fxml/ThongKeSanPham_gui.fxml");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeSanPham_gui.fxml"));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) p_gioHang.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
@@ -1591,12 +1618,18 @@ public class BanHang_controller implements Initializable {
     /**
      * Load FXML file
      */
-    private void loadFXML(String fxmlPath) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-        Scene scene = new Scene(root);
-        Stage stage = (Stage) p_gioHang.getScene().getWindow();
-        stage.setScene(scene);
-        stage.show();
+    private void loadFXML(String fxmlPath) throws IOException {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            Parent root = loader.load();
+            Scene scene = new Scene(root);
+            Stage stage = (Stage) p_gioHang.getScene().getWindow();
+            stage.setScene(scene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @FXML

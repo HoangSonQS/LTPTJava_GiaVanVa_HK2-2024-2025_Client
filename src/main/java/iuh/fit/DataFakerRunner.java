@@ -9,8 +9,10 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import net.datafaker.Faker;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 public class DataFakerRunner {
     public static void main(String[] args) {
@@ -92,14 +94,25 @@ public class DataFakerRunner {
 
 
             // HoaDon entity
+            LocalDate startDate = LocalDate.of(2025, 1, 1);
+            LocalDate endDate = LocalDate.now();
+
+            long days = ChronoUnit.DAYS.between(startDate, endDate);
+
+            long randomDays = faker.number().numberBetween(0L, days);
+
+            LocalDate randomDate = startDate.plusDays(randomDays);
+
+            LocalDateTime randomDateTime = randomDate.atStartOfDay();
+
             HoaDon hoaDon = new HoaDon();
             hoaDon.setMaHD(faker.idNumber().valid()); // Set the identifier
             hoaDon.setMaNV(nhanVien.getMaNV());
             hoaDon.setMaKH(khachHang.getMaKH());
-            hoaDon.setThoiGian(LocalDateTime.now());
+            hoaDon.setThoiGian(randomDateTime);
             hoaDon.setTongSoLuongSP(faker.number().numberBetween(1, 100));
             hoaDon.setPhuongThucTT(faker.options().option(PhuongThucThanhToan.class));
-            hoaDon.setThanhTien(faker.number().randomDouble(2, 1, 1000));
+            hoaDon.setThanhTien((double) faker.number().numberBetween(5000, 1000000));
             hoaDon.setNhanVien(nhanVien);
             hoaDon.setKhachHang(khachHang);
             hoaDon.setCaLam(caLam);

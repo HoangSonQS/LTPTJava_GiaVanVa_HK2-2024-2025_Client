@@ -223,7 +223,7 @@
                         </Pane>
                         <VBox fx:id="thongKeSubMenuList" styleClass="subVBox">
                            <children>
-                              <Pane fx:id="p_thongKeDoanhThu" prefHeight="50.0" prefWidth="270.0">
+                              <Pane fx:id="p_tkDoanhThu" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toTKDoanhThu" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
                                     <Label fx:id="lb_thongKeDoanhThu" layoutX="120.0" layoutY="10.0" text="DOANH THU" textFill="WHITE">
@@ -238,7 +238,7 @@
                                     </ImageView>
                                  </children>
                               </Pane>
-                              <Pane fx:id="p_thongKeSanPham" prefHeight="50.0" prefWidth="270.0">
+                              <Pane fx:id="p_tkSanPham" prefHeight="50.0" prefWidth="270.0">
                                  <children>
                                     <Button mnemonicParsing="false" onMouseClicked="#toTKSanPham" prefHeight="50.0" prefWidth="270.0" style="-fx-background-color: #cb73ea; -fx-border-color: #ffffff;" />
                                     <Label fx:id="lb_thongKeSanPham" layoutX="120.0" layoutY="10.0" text="SẢN PHẨM" textFill="WHITE">
