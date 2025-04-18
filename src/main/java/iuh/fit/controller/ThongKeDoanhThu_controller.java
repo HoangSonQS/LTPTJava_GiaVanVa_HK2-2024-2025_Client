@@ -1,11 +1,15 @@
 package iuh.fit.controller;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+import iuh.fit.App;
+import iuh.fit.entities.NhanVien;
+import iuh.fit.entities.TaiKhoan;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
@@ -205,7 +209,240 @@ public class ThongKeDoanhThu_controller implements Initializable {
     @FXML
     private TableColumn<?, ?> tcTyLeTangTruong;
 
-    Map<VBox, VBox> map = new HashMap<VBox, VBox>();
+    @FXML
+    private Label lb_tenNV;
+    @FXML
+    private Label lb_chucVu;
+
+    Map<VBox,VBox> map = new HashMap<VBox,VBox>();
+    @FXML
+    private Button btn_dangXuat;
+
+    public void addMenusToMap() {
+        addMenusToMapImpl();
+    }
+
+    private void addMenusToMapImpl() {
+        map.put(banHangSubVBox, banHangSubMenuList);
+        map.put(quanLySubVBox, quanLySubMenuList);
+        map.put(timKiemSubVBox, timKiemSubMenuList);
+        map.put(thongKeSubVBox, thongKeSubMenuList);
+
+        for (Map.Entry<VBox,VBox> entry : map.entrySet()) {
+            entry.getKey().getChildren().remove(entry.getValue());
+        }
+    }
+
+    public void toolsSlider(VBox menu, VBox subMenu) {
+        toolsSliderImpl(menu, subMenu);
+    }
+
+    private void toolsSliderImpl(VBox menu, VBox subMenu) {
+        if(menu.getChildren().contains(subMenu)) {
+            final FadeTransition transition = new FadeTransition(Duration.millis(500), menu);
+            transition.setFromValue(0.5);
+            transition.setToValue(1);
+            transition.setInterpolator(Interpolator.EASE_IN);
+            menu.getChildren().remove(subMenu);
+            transition.play();
+        } else {
+            final FadeTransition transition = new FadeTransition(Duration.millis(500), menu);
+            transition.setFromValue(0.5);
+            transition.setToValue(1);
+            transition.setInterpolator(Interpolator.EASE_IN);
+            menu.getChildren().add(subMenu);
+            transition.play();
+        }
+    }
+
+    public void removeOtherMenus(VBox menu) {
+        removeOtherMenusImpl(menu);
+    }
+
+    private void removeOtherMenusImpl(VBox menu) {
+        for (Map.Entry<VBox,VBox> entry : map.entrySet()) {
+            if(!entry.getKey().equals(menu))
+                entry.getKey().getChildren().remove(entry.getValue());
+        }
+    }
+
+    @FXML
+    void handleGioHangClick(MouseEvent event) {
+        try {
+            if (banHangSubVBox != null && banHangSubMenuList != null) {
+                toolsSlider(banHangSubVBox, banHangSubMenuList);
+                removeOtherMenus(banHangSubVBox);
+                loadFXML("/fxml/BanHang_gui.fxml");
+            }
+        } catch (Exception e) {
+            System.err.println("Lỗi trong handleGioHangClick: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    void handleQuanLyClick(MouseEvent event) {
+        toolsSlider(quanLySubVBox, quanLySubMenuList);
+        removeOtherMenus(quanLySubVBox);
+    }
+
+    @FXML
+    void handleThongKeClick(MouseEvent event) {
+        toolsSlider(thongKeSubVBox, thongKeSubMenuList);
+        removeOtherMenus(thongKeSubVBox);
+    }
+
+    @FXML
+    void handleTimKiemClick(MouseEvent event) throws IOException {
+        try {
+            loadFXML("/fxml/TraCuu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
+            toolsSlider(timKiemSubVBox, timKiemSubMenuList);
+            removeOtherMenus(timKiemSubVBox);
+            App.loadFXML("TraCuu_gui");
+        }
+    }
+
+
+    @FXML
+    void toQLHoaDon(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_HoaDon_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
+        }
+    }
+
+    @FXML
+    void toQLKhachHang(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_KhachHang_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
+        }
+    }
+
+    @FXML
+    void toQLNhanVien(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_NhanVien_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
+        }
+    }
+
+    @FXML
+    void toQLPhieuNhap(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
+        }
+    }
+
+    @FXML
+    void toQLSanPham(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_SanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
+        }
+    }
+
+    @FXML
+    void toQLTaiKhoan(MouseEvent event) {
+        try {
+            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
+        }
+    }
+
+    @FXML
+    void toTKDoanhThu(MouseEvent event) {
+        try {
+            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
+        }
+    }
+
+    @FXML
+    void toTKSanPham(MouseEvent event) {
+        try {
+            loadFXML("/fxml/ThongKeSanPham_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    @FXML
+    private void handleDangXuatClick(MouseEvent event) {
+        try {
+            // Hiển thị hộp thoại xác nhận
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("Xác nhận đăng xuất");
+            alert.setHeaderText(null);
+            alert.setContentText("Bạn có chắc chắn muốn đăng xuất?");
+
+            // Nếu người dùng nhấn OK
+            if (alert.showAndWait().get() == javafx.scene.control.ButtonType.OK) {
+                // Chuyển về màn hình đăng nhập
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Login_gui.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+
+                // Lấy stage hiện tại
+                Stage stage = (Stage) btn_dangXuat.getScene().getWindow();
+
+                // Thiết lập scene mới
+                stage.setScene(scene);
+                stage.setTitle("Đăng nhập");
+
+                // Xóa thông tin đăng nhập hiện tại
+                App.taiKhoan = null;
+                App.user = null;
+                App.ma = null;
+
+                // Hiển thị stage
+                stage.show();
+
+                System.out.println("Đã đăng xuất thành công");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể đăng xuất: " + e.getMessage());
+        }
+    }
+    private void initializeNhanVien() {
+        try {
+            TaiKhoan taiKhoan = App.taiKhoan;
+            System.out.println(taiKhoan);
+            NhanVien nhanVien = taiKhoan.getNhanVien();
+            lb_tenNV.setText(nhanVien.getTenNV());
+            lb_chucVu.setText(nhanVien.getChucVu().toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể lấy thông tin nhân viên: " + e.getMessage());
+        }
+    }
 
     private EntityManager em;
 
@@ -223,93 +460,6 @@ public class ThongKeDoanhThu_controller implements Initializable {
         
         // Mặc định chọn thống kê theo tháng
         cbLoaiThongKe.getSelectionModel().select("Theo tháng");
-    }
-
-    /**
-     * Add Menus to map
-     */
-    public void addMenusToMap() {
-        addMenusToMapImpl();
-    }
-
-    private void addMenusToMapImpl() {
-        map.put(banHangSubVBox, banHangSubMenuList);
-        map.put(quanLySubVBox, quanLySubMenuList);
-        map.put(timKiemSubVBox, timKiemSubMenuList);
-        map.put(thongKeSubVBox, thongKeSubMenuList);
-
-        /**
-         * Remove the components from VBox on load of stage
-         */
-        for (Map.Entry<VBox, VBox> entry : map.entrySet()) {
-            entry.getKey().getChildren().remove(entry.getValue());
-        }
-    }
-
-    /**
-     * Menu slider
-     *
-     * @param menu
-     * @param subMenu
-     */
-    public void toolsSlider(VBox menu, VBox subMenu) {
-        toolsSliderImpl(menu, subMenu);
-    }
-
-    private void toolsSliderImpl(VBox menu, VBox subMenu) {
-        if (menu.getChildren().contains(subMenu)) {
-            final FadeTransition transition = new FadeTransition(Duration.millis(500), menu);
-            transition.setFromValue(0.5);
-            transition.setToValue(1);
-            transition.setInterpolator(Interpolator.EASE_IN);
-            menu.getChildren().remove(subMenu);
-            transition.play();
-        } else {
-            final FadeTransition transition = new FadeTransition(Duration.millis(500), menu);
-            transition.setFromValue(0.5);
-            transition.setToValue(1);
-            transition.setInterpolator(Interpolator.EASE_IN);
-            menu.getChildren().add(subMenu);
-            transition.play();
-        }
-    }
-
-    /**
-     * Remove other menus
-     *
-     * @param menu
-     */
-    public void removeOtherMenus(VBox menu) {
-        removeOtherMenusImpl(menu);
-    }
-
-    private void removeOtherMenusImpl(VBox menu) {
-        for (Map.Entry<VBox, VBox> entry : map.entrySet()) {
-            if (!entry.getKey().equals(menu))
-                entry.getKey().getChildren().remove(entry.getValue());
-        }
-    }
-
-    @FXML
-    void handleGioHangClick(MouseEvent event) {
-        // Xử lý sự kiện click vào giỏ hàng
-    }
-
-    @FXML
-    void handleQuanLyClick(MouseEvent event) {
-        toolsSlider(quanLySubVBox, quanLySubMenuList);
-        removeOtherMenus(quanLySubVBox);
-    }
-
-    @FXML
-    void handleThongKeClick(MouseEvent event) {
-        toolsSlider(thongKeSubVBox, thongKeSubMenuList);
-        removeOtherMenus(thongKeSubVBox);
-    }
-
-    @FXML
-    void handleTimKiemClick(MouseEvent event) {
-        // Xử lý sự kiện click vào tìm kiếm
     }
 
     // Các phương thức mới cho thống kê doanh thu
@@ -512,23 +662,6 @@ public class ThongKeDoanhThu_controller implements Initializable {
         Stage stage = (Stage) vBox.getScene().getWindow(); // Sử dụng vBox hoặc bất kỳ control nào đang có trong scene
         stage.setScene(scene);
         stage.show();
-    }
-
-    @FXML
-    void toTKDoanhThu(MouseEvent event) {
-        try {
-            System.out.println("Attempting to load ThongKeDoanhThu_gui.fxml");
-            URL resource = getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml");
-            if (resource == null) {
-                System.err.println("FXML file not found!");
-                return;
-            }
-            System.out.println("FXML file found at: " + resource.toString());
-            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
-        } catch (Exception e) {
-            System.err.println("Error loading FXML: " + e.getMessage());
-            e.printStackTrace();
-        }
     }
 
     private void updateChart(String loaiThongKe) {
