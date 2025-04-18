@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
+import iuh.fit.daos.HoaDon_dao;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import iuh.fit.enums.LoaiHang;
@@ -52,6 +53,7 @@ import java.util.Arrays;
 // import static iuh.fit.App.loadFXML;
 
 public class ThongKeSanPham_controller implements Initializable {
+    private HoaDon_dao hoaDonDao;
 
     @FXML
     private VBox banHangSubMenuList;
@@ -464,7 +466,7 @@ public class ThongKeSanPham_controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        em = Persistence.createEntityManagerFactory("mariadb").createEntityManager();
+        hoaDonDao = new HoaDon_dao();
         addMenusToMap();
         initializeNhanVien();
         setupCharts();
@@ -505,7 +507,7 @@ public class ThongKeSanPham_controller implements Initializable {
         populateYearComboBox();
 
         // Thêm kiểm tra dữ liệu khi khởi tạo
-        checkDatabaseData();
+//        checkDatabaseData();
     }
 
 
@@ -559,81 +561,7 @@ public class ThongKeSanPham_controller implements Initializable {
             pieChart.getData().clear();
             barChart.getData().clear();
 
-            StringBuilder queryBuilder = new StringBuilder();
-            queryBuilder.append("SELECT s.tenSP, ")
-                    .append("COALESCE(SUM(ct.soLuongSP), 0) as soLuongBan, ")
-                    .append("COALESCE(SUM(ct.soLuongSP * ct.donGia), 0) as doanhThu ")
-                    .append("FROM SanPham s ")
-                    .append("LEFT JOIN s.chiTietHoaDonSanPhams ct ")
-                    .append("LEFT JOIN ct.hoaDon h ")
-                    .append("WHERE 1=1 ");
-
-            // Chỉ lọc theo năm nếu không phải "TẤT CẢ"
-            if (!"TẤT CẢ".equals(nam)) {
-                queryBuilder.append("AND YEAR(h.thoiGian) = :nam ");
-
-                // Thêm điều kiện thời gian dựa trên loại thống kê
-                // Nhưng không giới hạn chặt chẽ vào ngày/tháng/quý hiện tại
-                if ("Theo ngày".equals(loaiThongKe)) {
-                    // Lấy dữ liệu của ngày cuối cùng có trong hệ thống (thay vì ngày hiện tại)
-                    queryBuilder.append("AND h.thoiGian IS NOT NULL ");
-                } else if ("Theo tháng".equals(loaiThongKe)) {
-                    // Lấy dữ liệu của tất cả các tháng trong năm đã chọn
-                    // Không cần thêm điều kiện lọc tháng
-                } else if ("Theo quý".equals(loaiThongKe)) {
-                    // Lấy dữ liệu của quý hiện tại, nhưng có thể mở rộng nếu không có dữ liệu
-                    queryBuilder.append("AND QUARTER(h.thoiGian) <= QUARTER(CURRENT_DATE) ");
-                }
-            }
-
-            // Chỉ lọc theo loại hàng nếu không phải "TẤT CẢ"
-            if (!"TẤT CẢ".equals(loaiHangDisplay)) {
-                queryBuilder.append("AND s.loaiHang = :loaiHang ");
-            }
-
-            // Chỉ lấy các sản phẩm có trong hóa đơn (có bán được)
-            queryBuilder.append("AND ct.soLuongSP IS NOT NULL ");
-            queryBuilder.append("GROUP BY s.tenSP ");
-            queryBuilder.append("ORDER BY soLuongBan DESC"); // Sắp xếp theo số lượng bán giảm dần
-
-            // Debug log
-            System.out.println("Final query: " + queryBuilder.toString());
-
-            Query query = em.createQuery(queryBuilder.toString());
-
-            // Set parameters
-            if (!"TẤT CẢ".equals(nam)) {
-                query.setParameter("nam", Integer.parseInt(nam));
-            }
-
-            if (!"TẤT CẢ".equals(loaiHangDisplay)) {
-                LoaiHang loaiHangEnum = Arrays.stream(LoaiHang.values())
-                        .filter(lh -> lh.getLoaiHang().equals(loaiHangDisplay))
-                        .findFirst()
-                        .orElseThrow(() -> new IllegalArgumentException("Invalid loai hang: " + loaiHangDisplay));
-
-                query.setParameter("loaiHang", loaiHangEnum);
-                System.out.println("Setting loaiHang parameter: " + loaiHangEnum); // Debug log
-            }
-
-            // Execute query
-            List<Object[]> results = query.getResultList();
-
-            // Debug log
-            System.out.println("Query results size: " + results.size());
-            results.forEach(row -> {
-                System.out.println("Row data: " + Arrays.toString(row));
-            });
-
-            if (results.isEmpty()) {
-                showAlert(Alert.AlertType.INFORMATION, "Thông báo",
-                        "Không có dữ liệu thống kê cho thời gian này!");
-                return;
-            }
-
-            // Process and display results
-            updateChartsAndTable(results);
-
+            updateCharts(nam, loaiThongKe, loaiHangDisplay);
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi",
@@ -641,33 +569,108 @@ public class ThongKeSanPham_controller implements Initializable {
         }
     }
 
-    // Thêm method để kiểm tra dữ liệu trong database
+    private void updateCharts(String nam, String loaiThongKe, String loaiHangDisplay) {
+        try {
+            List<Object[]> results = hoaDonDao.getThongKeSanPham(nam, loaiThongKe, loaiHangDisplay);
+            
+            if (results.isEmpty()) {
+                showAlert(Alert.AlertType.INFORMATION, "Thông báo",
+                        "Không có dữ liệu thống kê cho thời gian này!");
+                return;
+            }
+
+            // Tính tổng doanh thu
+            double totalRevenue = results.stream()
+                    .mapToDouble(row -> ((Number) row[2]).doubleValue())
+                    .sum();
+
+            // Cập nhật biểu đồ
+            updateChartsWithData(results, totalRevenue);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi",
+                    "Đã xảy ra lỗi khi thống kê dữ liệu: " + e.getMessage());
+        }
+    }
+
     private void checkDatabaseData() {
         try {
-            // Kiểm tra phân bố loại hàng
-            String checkQuery = "SELECT s.loaiHang, COUNT(s) FROM SanPham s GROUP BY s.loaiHang";
-            List<Object[]> distribution = em.createQuery(checkQuery).getResultList();
-
+            List<Object[]> distribution = hoaDonDao.getLoaiHangDistribution();
             System.out.println("Phân bố loại hàng trong database:");
             distribution.forEach(row -> {
                 System.out.println("Loại hàng: " + row[0] + ", Số lượng: " + row[1]);
             });
 
-            // Kiểm tra chi tiết hóa đơn
-            String checkSalesQuery = "SELECT s.loaiHang, COUNT(ct) " +
-                                   "FROM SanPham s " +
-                                   "LEFT JOIN s.chiTietHoaDonSanPhams ct " +
-                                   "GROUP BY s.loaiHang";
-            List<Object[]> sales = em.createQuery(checkSalesQuery).getResultList();
-
-            System.out.println("\nPhân bố chi tiết hóa đơn theo loại hàng:");
+            List<Object[]> sales = hoaDonDao.getSalesDistribution();
+            System.out.println("Phân bố doanh số theo loại hàng:");
             sales.forEach(row -> {
-                System.out.println("Loại hàng: " + row[0] + ", Số lượng hóa đơn: " + row[1]);
+                System.out.println("Loại hàng: " + row[0] + ", Số lượng bán: " + row[1]);
             });
         } catch (Exception e) {
             e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi",
+                    "Đã xảy ra lỗi khi kiểm tra dữ liệu: " + e.getMessage());
         }
     }
+
+    private void updateChartsWithData(List<Object[]> results, double totalRevenue) {
+        XYChart.Series<String, Number> barSeries = new XYChart.Series<>();
+        ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
+
+        for (Object[] result : results) {
+            String label = (String) result[0]; // tenSP
+            Long soLuongBan = ((Number) result[1]).longValue();
+            Double doanhThu = ((Number) result[2]).doubleValue();
+
+            // Thêm vào biểu đồ cột
+            barSeries.getData().add(new XYChart.Data<>(label, soLuongBan));
+
+            // Thêm vào biểu đồ tròn nếu có doanh thu
+            if (doanhThu > 0) {
+                double percentage = (doanhThu / totalRevenue) * 100;
+                String displayName = String.format("%s (%.1f%%)", label, percentage);
+                pieData.add(new PieChart.Data(displayName, doanhThu));
+            }
+        }
+
+        // Cập nhật biểu đồ
+        barChart.getData().clear();
+        barChart.getData().add(barSeries);
+
+        pieChart.getData().clear();
+        if (!pieData.isEmpty()) {
+            pieChart.setData(pieData);
+        }
+    }
+
+    // Thêm method để kiểm tra dữ liệu trong database
+//    private void checkDatabaseData() {
+//        try {
+//            // Kiểm tra phân bố loại hàng
+//            String checkQuery = "SELECT s.loaiHang, COUNT(s) FROM SanPham s GROUP BY s.loaiHang";
+//            List<Object[]> distribution = em.createQuery(checkQuery).getResultList();
+//
+//            System.out.println("Phân bố loại hàng trong database:");
+//            distribution.forEach(row -> {
+//                System.out.println("Loại hàng: " + row[0] + ", Số lượng: " + row[1]);
+//            });
+//
+//            // Kiểm tra chi tiết hóa đơn
+//            String checkSalesQuery = "SELECT s.loaiHang, COUNT(ct) " +
+//                                   "FROM SanPham s " +
+//                                   "LEFT JOIN s.chiTietHoaDonSanPhams ct " +
+//                                   "GROUP BY s.loaiHang";
+//            List<Object[]> sales = em.createQuery(checkSalesQuery).getResultList();
+//
+//            System.out.println("\nPhân bố chi tiết hóa đơn theo loại hàng:");
+//            sales.forEach(row -> {
+//                System.out.println("Loại hàng: " + row[0] + ", Số lượng hóa đơn: " + row[1]);
+//            });
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
 
 
     private void updateChartsAndTable(List<Object[]> results) {
