@@ -17,4 +17,17 @@ public enum LoaiHang {
                 return null;
         }
     }
+
+    // Method to get enum from display name
+    public static LoaiHang fromDisplayName(String displayName) {
+        if (displayName == null) return null;
+
+        for (LoaiHang lh : values()) {
+            if (lh.getLoaiHang().equalsIgnoreCase(displayName) ||
+                lh.name().equalsIgnoreCase(displayName)) {
+                return lh;
+            }
+        }
+        return null;
+    }
 }

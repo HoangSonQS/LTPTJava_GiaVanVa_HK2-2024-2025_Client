@@ -263,17 +263,11 @@
                         <Font name="Arial Bold" size="24.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="cbLoaiThongKe" layoutX="300.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" promptText="Loại thống kê">
-                     <items>
-                        <FXCollections fx:factory="observableArrayList">
-                           <String fx:value="Theo ngày" />
-                           <String fx:value="Theo tháng" />
-                           <String fx:value="Theo quý" />
-                        </FXCollections>
-                     </items>
-                  </ComboBox>
+                  <ComboBox fx:id="cbLoaiThongKe" layoutX="300.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" promptText="Loại thống kê" />
                   <ComboBox fx:id="cbNam" layoutX="470.0" layoutY="15.0" prefHeight="30.0" prefWidth="100.0" promptText="Năm" />
-                  <Button fx:id="btnXemThongKe" layoutX="590.0" layoutY="15.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #00CC66;" text="Xem thống kê" textFill="WHITE" />
+                  <ComboBox fx:id="cbLoaiHang" layoutX="590.0" layoutY="15.0" prefHeight="30.0" prefWidth="150.0" promptText="Loại hàng" />
+                  <Button fx:id="btnXemThongKe" layoutX="760.0" layoutY="15.0" mnemonicParsing="false" onAction="#handleXemThongKe" 
+                          prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #00CC66;" text="Xem thống kê" textFill="WHITE" />
                </children>
             </Pane>
             <Pane layoutX="15.0" layoutY="95.0" prefHeight="300.0" prefWidth="600.0" style="-fx-background-color: #EEEEEE;">
