@@ -34,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static iuh.fit.App.loadFXML;
 
 public class TraCuuPhieuNhap_controller implements Initializable{
 
@@ -145,6 +144,9 @@ public class TraCuuPhieuNhap_controller implements Initializable{
 
     @FXML
     private Label lb_tenNV;
+
+    @FXML
+    private Label lb_tenNV1;
 
     @FXML
     private Label lb_thanhTien;
@@ -311,7 +313,7 @@ public class TraCuuPhieuNhap_controller implements Initializable{
     }
 
     @FXML
-    void handleTimKiemClick(MouseEvent event) throws IOException {
+    void handleTimKiemClick(MouseEvent event) throws Exception {
         try {
             loadFXML("/fxml/TraCuu_gui.fxml");
         } catch (Exception e) {
@@ -319,7 +321,7 @@ public class TraCuuPhieuNhap_controller implements Initializable{
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
             toolsSlider(timKiemSubVBox, timKiemSubMenuList);
             removeOtherMenus(timKiemSubVBox);
-            loadFXML("TraCuu_gui");
+            loadFXML("/fxml/TraCuu_gui.fxml");
         }
     }
 
@@ -454,7 +456,7 @@ public class TraCuuPhieuNhap_controller implements Initializable{
             TaiKhoan taiKhoan = App.taiKhoan;
             System.out.println(taiKhoan);
             NhanVien nhanVien = taiKhoan.getNhanVien();
-            lb_tenNV.setText(nhanVien.getTenNV());
+            lb_tenNV1.setText(nhanVien.getTenNV());
             lb_chucVu.setText(nhanVien.getChucVu().toString());
         } catch (Exception e) {
             e.printStackTrace();
@@ -505,20 +507,25 @@ public class TraCuuPhieuNhap_controller implements Initializable{
         }
     }
     @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
-        initializeNhanVien();
-        addMenusToMap();
-        // Khởi tạo ComboBox
-        initializeComboBox();
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            initializeNhanVien();
+            addMenusToMap();
+            // Khởi tạo ComboBox
+            initializeComboBox();
 
-        // Khởi tạo các cột cho bảng
-        initializeTableColumns();
+            // Khởi tạo các cột cho bảng
+            initializeTableColumns();
 
-        // Load dữ liệu vào bảng
-        loadTableData();
+            // Load dữ liệu vào bảng
+            loadTableData();
 
-        // Thêm sự kiện click cho bảng
-        setupTableClickEvent();
+            // Thêm sự kiện click cho bảng
+            setupTableClickEvent();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể khởi tạo giao diện: " + e.getMessage());
+        }
     }
 
     private void initializeComboBox() {
@@ -631,5 +638,11 @@ public class TraCuuPhieuNhap_controller implements Initializable{
         lb_tslsp.setText(String.valueOf(pn.getTongSoLuongSP()));
         lb_thanhTien.setText(String.valueOf(pn.getThanhTien()));
     }
-
+    private void loadFXML(String fxmlPath) throws Exception {
+        Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
+        Scene scene = new Scene(root);
+        Stage stage = (Stage) p_gioHang.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
 }

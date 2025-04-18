@@ -72,8 +72,29 @@ public class App extends Application {
 
         // Chỉ mở giao diện đăng nhập nếu không có splash screen
         if (AppPreloader.splashStage == null) {
-            System.out.println("No splash screen detected, opening login screen directly");
-//            openLoginGUI();
+            System.out.println("No splash screen detected, checking server connection before opening login screen");
+            try {
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+                SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+                // Thử gọi một phương thức để kiểm tra kết nối
+                sanPhamDao.readAll();
+                // Nếu kết nối thành công, mở màn hình đăng nhập
+                openLoginGUI();
+            } catch (Exception e) {
+                System.err.println("Không thể kết nối đến máy chủ: " + e.getMessage());
+                e.printStackTrace();
+                // Hiển thị thông báo lỗi
+                javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.ERROR,
+                    "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại sau.",
+                    javafx.scene.control.ButtonType.OK);
+                alert.setTitle("Lỗi kết nối");
+                alert.setHeaderText("Không thể kết nối đến máy chủ");
+                alert.showAndWait().ifPresent(response -> {
+                    if (response == javafx.scene.control.ButtonType.OK) {
+                        System.exit(0);
+                    }
+                });
+            }
         }
     }
 

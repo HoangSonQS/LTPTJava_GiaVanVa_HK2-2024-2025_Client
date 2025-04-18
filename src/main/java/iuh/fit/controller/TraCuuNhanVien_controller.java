@@ -125,6 +125,9 @@ public class TraCuuNhanVien_controller implements Initializable {
     private Label lb_chucVu;
 
     @FXML
+    private Label lb_chucVu1;
+
+    @FXML
     private Label lb_diaChi;
 
     @FXML
@@ -162,6 +165,9 @@ public class TraCuuNhanVien_controller implements Initializable {
 
     @FXML
     private Label lb_tenNV;
+
+    @FXML
+    private Label lb_tenNV1;
 
     @FXML
     private Label lb_thongKe;
@@ -460,8 +466,8 @@ public class TraCuuNhanVien_controller implements Initializable {
             TaiKhoan taiKhoan = App.taiKhoan;
             System.out.println(taiKhoan);
             NhanVien nhanVien = taiKhoan.getNhanVien();
-            lb_tenNV.setText(nhanVien.getTenNV());
-            lb_chucVu.setText(nhanVien.getChucVu().toString());
+            lb_tenNV1.setText(nhanVien.getTenNV());
+            lb_chucVu1.setText(nhanVien.getChucVu().toString());
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể lấy thông tin nhân viên: " + e.getMessage());
@@ -472,6 +478,7 @@ public class TraCuuNhanVien_controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        initializeNhanVien();
         addMenusToMap();
         setupTableColumns();
         loadTableData();
@@ -492,7 +499,6 @@ public class TraCuuNhanVien_controller implements Initializable {
             }
         });
 
-        cl_stt.setCellValueFactory(new PropertyValueFactory<>("stt"));
         cl_maNV.setCellValueFactory(new PropertyValueFactory<>("maNV"));
         cl_tenNV.setCellValueFactory(new PropertyValueFactory<>("tenNV"));
         cl_cccd.setCellValueFactory(new PropertyValueFactory<>("cccd"));

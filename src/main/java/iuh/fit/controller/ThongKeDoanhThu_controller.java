@@ -457,6 +457,7 @@ public class ThongKeDoanhThu_controller implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
         }
+        initializeNhanVien();
         addMenusToMap();
         setupCharts();
 

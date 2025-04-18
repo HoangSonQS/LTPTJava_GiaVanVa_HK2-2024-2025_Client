@@ -542,7 +542,12 @@ public class QL_HoaDon_controller implements Initializable {
 
     @FXML
     void TimKiemHD(MouseEvent event) {
-
+        try {
+            loadFXML("/fxml/TraCuuHoaDon_gui.fxml");
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu hóa đơn!");
+        }
     }
 
     @FXML

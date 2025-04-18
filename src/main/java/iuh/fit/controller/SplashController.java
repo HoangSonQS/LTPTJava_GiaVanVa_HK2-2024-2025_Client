@@ -2,9 +2,13 @@ package iuh.fit.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.ResourceBundle;
 
 import iuh.fit.App;
+import iuh.fit.interfaces.SanPham_interface;
 import javafx.animation.FadeTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -14,6 +18,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.stage.Stage;
@@ -54,9 +60,9 @@ public class SplashController implements Initializable {
      * Khởi động quá trình tải ứng dụng
      */
     private void startLoadingProcess() {
-        Task<Void> task = new Task<Void>() {
+        Task<Boolean> task = new Task<Boolean>() {
             @Override
-            protected Void call() throws Exception {
+            protected Boolean call() throws Exception {
                 // Cập nhật tiến trình
                 updateProgress(0.1, 1.0);
                 updateMessage("Đang khởi động ứng dụng...");
@@ -67,10 +73,28 @@ public class SplashController implements Initializable {
                 updateMessage("Đang kết nối cơ sở dữ liệu...");
                 Thread.sleep(800);
 
-                // Kiểm tra dữ liệu
+                // Kiểm tra kết nối đến server
                 updateProgress(0.5, 1.0);
-                updateMessage("Đang kiểm tra dữ liệu...");
-                Thread.sleep(800);
+                updateMessage("Đang kết nối đến máy chủ...");
+                boolean serverConnected = false;
+                try {
+                    Registry registry = LocateRegistry.getRegistry("localhost", 9090);
+                    SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+                    // Thử gọi một phương thức để kiểm tra kết nối
+                    sanPhamDao.readAll();
+                    serverConnected = true;
+                } catch (Exception e) {
+                    System.err.println("Không thể kết nối đến máy chủ: " + e.getMessage());
+                    e.printStackTrace();
+                    serverConnected = false;
+                }
+
+                if (!serverConnected) {
+                    updateProgress(1.0, 1.0);
+                    updateMessage("Không thể kết nối đến máy chủ!");
+                    Thread.sleep(1000);
+                    return false;
+                }
 
                 // Tải dữ liệu
                 updateProgress(0.7, 1.0);
@@ -82,7 +106,7 @@ public class SplashController implements Initializable {
                 updateMessage("Hoàn tất!");
                 Thread.sleep(500);
 
-                return null;
+                return true;
             }
         };
 
@@ -94,9 +118,10 @@ public class SplashController implements Initializable {
             updateStatus(newValue);
         });
 
-        // Khi task hoàn thành, mở màn hình đăng nhập
+        // Khi task hoàn thành, mở màn hình đăng nhập nếu kết nối thành công
         task.setOnSucceeded(event -> {
-            System.out.println("Loading task completed, opening login screen");
+            Boolean serverConnected = task.getValue();
+            System.out.println("Loading task completed, server connected: " + serverConnected);
 
             // Tạo một task riêng để mở màn hình đăng nhập sau khi splash hoàn tất
             new Thread(() -> {
@@ -104,7 +129,7 @@ public class SplashController implements Initializable {
                     // Đợi một chút trước khi mở màn hình đăng nhập
                     Thread.sleep(1000);
 
-                    // Chuyển sang thread JavaFX để mở màn hình đăng nhập
+                    // Chuyển sang thread JavaFX để mở màn hình đăng nhập hoặc hiển thị thông báo lỗi
                     Platform.runLater(() -> {
                         try {
                             // Đóng màn hình splash
@@ -113,9 +138,23 @@ public class SplashController implements Initializable {
                                 System.out.println("Splash screen closed");
                             }
 
-                            // Mở màn hình đăng nhập
-//                            App.openLoginGUI();
-                            System.out.println("Login screen opened");
+                            if (serverConnected) {
+                                // Mở màn hình đăng nhập nếu kết nối thành công
+                                App.openLoginGUI();
+                                System.out.println("Login screen opened");
+                            } else {
+                                // Hiển thị thông báo lỗi nếu không kết nối được đến máy chủ
+                                Alert alert = new Alert(Alert.AlertType.ERROR,
+                                    "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối và thử lại sau.",
+                                    ButtonType.OK);
+                                alert.setTitle("Lỗi kết nối");
+                                alert.setHeaderText("Không thể kết nối đến máy chủ");
+                                alert.showAndWait().ifPresent(response -> {
+                                    if (response == ButtonType.OK) {
+                                        System.exit(0);
+                                    }
+                                });
+                            }
                         } catch (Exception e) {
                             System.err.println("Error in Platform.runLater when opening login screen: " + e.getMessage());
                             e.printStackTrace();

@@ -29,6 +29,14 @@ public class TaiKhoan implements Serializable {
     @Column(name = "ThoiGianDangNhap")
     private LocalDateTime thoiGianDangNhap;
 
+    public TaiKhoan(String maTaiKhoan, String tenDangNhap, String matKhau, LocalDateTime thoiGianDangNhap, NhanVien nhanVien) {
+        this.maTaiKhoan = maTaiKhoan;
+        this.tenDangNhap = tenDangNhap;
+        this.matKhau = matKhau;
+        this.thoiGianDangNhap = thoiGianDangNhap;
+        this.nhanVien = nhanVien;
+    }
+
     //check
     @OneToOne
     @JoinColumn(name = "MaNV", nullable = false, unique = true)
