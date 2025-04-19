@@ -451,8 +451,10 @@ public class ThongKeDoanhThu_controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Khởi tạo DAO interface
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());

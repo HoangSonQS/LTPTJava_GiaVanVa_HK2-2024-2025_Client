@@ -452,8 +452,10 @@ public class TraCuuKhachHang_controller implements Initializable {
             String maKhachHang = txt_maKH.getText();
             App.maTraCuu = maKhachHang;
 
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
             KhachHang sp = khachHangDao.read(maKhachHang);
 
             lb_maKH.setText(sp.getMaKH());
@@ -576,8 +578,10 @@ public class TraCuuKhachHang_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            KhachHang_interface khachHangDao = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
             List<KhachHang> dssp = khachHangDao.readAll();
             ObservableList<KhachHang> data = FXCollections.observableArrayList(dssp);
             tableKhachHang.setItems(data);

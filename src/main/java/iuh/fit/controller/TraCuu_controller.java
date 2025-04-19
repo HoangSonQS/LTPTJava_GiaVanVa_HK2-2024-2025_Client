@@ -635,8 +635,10 @@ public class TraCuu_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
             List<SanPham> dssp = sanPhamDao.readAll();
             ObservableList<SanPham> data = FXCollections.observableArrayList(dssp);
             tableSanPham.setItems(data);

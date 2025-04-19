@@ -319,13 +319,15 @@ public class BanHang_controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Khởi tạo các DAO interfaces
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
-            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
-            khachHangDao = (KhachHang_interface) registry.lookup("khachHangDAO");
-            chiTietHoaDonDao = (ChiTietHoaDon_SanPham_interface) registry.lookup("chiTietHoaDonSanPhamDAO");
-            caLamDao = (CaLam_interface) registry.lookup("caLamDAO");
-            nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
+            hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
+            khachHangDao = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
+            chiTietHoaDonDao = (ChiTietHoaDon_SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/chiTietHoaDonSanPhamDAO");
+            caLamDao = (CaLam_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/caLamDAO");
+            nhanVienDao = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());

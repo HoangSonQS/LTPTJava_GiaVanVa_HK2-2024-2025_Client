@@ -467,8 +467,10 @@ public class QL_HoaDon_controller implements Initializable {
     private void loadTableData() {
         try {
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            HoaDon_interface hdDAO = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            HoaDon_interface hdDAO = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
 
             // Xóa dữ liệu cũ trong table
             table_HD.getItems().clear();

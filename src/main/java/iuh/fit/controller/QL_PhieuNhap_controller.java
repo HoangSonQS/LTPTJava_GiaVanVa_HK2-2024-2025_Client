@@ -468,8 +468,10 @@ public class QL_PhieuNhap_controller implements Initializable {
     private void loadTableData() {
         try {
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            PhieuNhapHang_interface pNhapDAO = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            PhieuNhapHang_interface pNhapDAO = (PhieuNhapHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/phieuNhapHangDAO");
 
             // Xóa dữ liệu cũ trong table
             table_PNhap.getItems().clear();
@@ -543,8 +545,10 @@ public class QL_PhieuNhap_controller implements Initializable {
             PhieuNhapHang phieuNhapHang = new PhieuNhapHang(maPhieuNhap, maNV, tenNV,thoiGian, soLuongSP, thanhTien);
 
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            PhieuNhapHang_interface pNhapDAO = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            PhieuNhapHang_interface pNhapDAO = (PhieuNhapHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/phieuNhapHangDAO");
 
             // Thêm phiếu nhập vào database
             pNhapDAO.create(phieuNhapHang);

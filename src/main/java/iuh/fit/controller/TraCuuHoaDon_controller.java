@@ -474,8 +474,10 @@ public class TraCuuHoaDon_controller implements Initializable {
             String maHoaDon = txt_maHD.getText();
             App.maTraCuu = maHoaDon;
 
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
             HoaDon sp = hoaDonDao.read(maHoaDon);
 
             lb_maHD.setText(sp.getMaHD());
@@ -612,8 +614,10 @@ public class TraCuuHoaDon_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
             List<HoaDon> dssp = hoaDonDao.readAll();
             ObservableList<HoaDon> data = FXCollections.observableArrayList(dssp);
             tableHoaDon.setItems(data);

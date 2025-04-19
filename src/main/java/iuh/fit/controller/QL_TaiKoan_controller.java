@@ -459,8 +459,10 @@ public class QL_TaiKoan_controller implements Initializable {
             String maTK = txt_MaTK.getText();
 
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
 
             // Xóa tài khoản trong database
             tkDAO.delete(maTK);
@@ -504,14 +506,16 @@ public class QL_TaiKoan_controller implements Initializable {
 
 
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            NhanVien_interface nv_dao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            NhanVien_interface nv_dao = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
             // Lấy thông tin nhân viên từ database
             NhanVien nhanVien = nv_dao.readNhanVien(maNV);
             TaiKhoan tk = new TaiKhoan(maTK,tenDN, null,thoiGian, nhanVien);
 
             // Cập nhật thông tin tài khoản trong database
-            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
             tkDAO.update(tk);
 
             // Cập nhật lại dữ liệu trong bảng
@@ -532,14 +536,16 @@ public class QL_TaiKoan_controller implements Initializable {
             LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
 
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            NhanVien_interface nv_dao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            NhanVien_interface nv_dao = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
             // Lấy thông tin nhân viên từ database
             NhanVien nhanVien = nv_dao.readNhanVien(maNV);
             TaiKhoan tk = new TaiKhoan(maTK,tenDN, null,thoiGian, nhanVien);
 
             // Thêm tài khoản vào database
-            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
             tkDAO.create(tk);
 
             // Cập nhật lại dữ liệu trong bảng
@@ -559,8 +565,10 @@ public class QL_TaiKoan_controller implements Initializable {
     private void loadTableData() {
         try {
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            TaiKhoan_interface tkDAO = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
 
             // Xóa dữ liệu cũ trong table
             table_TK.getItems().clear();

@@ -78,8 +78,10 @@ public class SplashController implements Initializable {
                 updateMessage("Đang kết nối đến máy chủ...");
                 boolean serverConnected = false;
                 try {
-                    Registry registry = LocateRegistry.getRegistry("localhost", 9090);
-                    SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+                    System.setProperty("java.security.policy", "rmi.policy");
+                    System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                    Registry registry = LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                    SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
                     // Thử gọi một phương thức để kiểm tra kết nối
                     sanPhamDao.readAll();
                     serverConnected = true;

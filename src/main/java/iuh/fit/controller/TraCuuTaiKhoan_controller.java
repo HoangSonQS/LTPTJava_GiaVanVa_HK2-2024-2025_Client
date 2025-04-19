@@ -461,8 +461,10 @@ public class TraCuuTaiKhoan_controller implements Initializable {
             String maTaiKhoan = txt_maTK.getText();
             App.maTraCuu = maTaiKhoan;
 
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
             TaiKhoan tk = taiKhoanDao.read(maTaiKhoan);
 
             lb_maTK.setText(tk.getMaTaiKhoan());
@@ -596,8 +598,10 @@ public class TraCuuTaiKhoan_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            TaiKhoan_interface taiKhoanDao = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
             List<TaiKhoan> dssp = taiKhoanDao.readAll();
             ObservableList<TaiKhoan> data = FXCollections.observableArrayList(dssp);
             tableTaiKhoan.setItems(data);

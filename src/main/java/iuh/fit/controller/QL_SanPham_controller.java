@@ -519,8 +519,10 @@ public class QL_SanPham_controller implements Initializable {
 
             // Gọi DAO interface để cập nhật
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                SanPham_interface dao = (SanPham_interface) registry.lookup("sanPhamDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                SanPham_interface dao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
                 dao.update(sp);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -565,8 +567,10 @@ public class QL_SanPham_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                SanPham_interface spDAO = (SanPham_interface) registry.lookup("sanPhamDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                SanPham_interface spDAO = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
 
                 // Thêm sản phẩm vào database
                 spDAO.create(sanPham);
@@ -591,8 +595,10 @@ public class QL_SanPham_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                SanPham_interface spDAO = (SanPham_interface) registry.lookup("sanPhamDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                SanPham_interface spDAO = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
 
                 // Xóa sản phẩm khỏi database
                 spDAO.delete(maSP);
@@ -636,8 +642,10 @@ public class QL_SanPham_controller implements Initializable {
         try {
 
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            SanPham_interface spDAO = (SanPham_interface) registry.lookup("sanPhamDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            SanPham_interface spDAO = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
             List<SanPham> ds = spDAO.readAll();
             // Xóa dữ liệu cũ trong table
             table_SP.getItems().clear();

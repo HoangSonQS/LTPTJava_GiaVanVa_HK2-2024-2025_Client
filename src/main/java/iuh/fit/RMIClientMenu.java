@@ -29,20 +29,20 @@ public class RMIClientMenu {
         try {
             // Set system properties for RMI
             System.setProperty("java.security.policy", "rmi.policy");
-            System.setProperty("java.rmi.server.hostname", "localhost");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
 
             // Get the registry
-            registry = LocateRegistry.getRegistry("localhost", 9090);
+            registry = LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
 
             // Look up the DAO services from the registry
-            taiKhoanDAO = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
-            caLamDAO = (CaLam_interface) registry.lookup("caLamDAO");
-            hoaDonDAO = (HoaDon_interface) registry.lookup("hoaDonDAO");
-            sanPhamDAO = (SanPham_interface) registry.lookup("sanPhamDAO");
-            khachHangDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
-            phieuNhapHangDAO = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
-            chiTietHoaDonSanPhamDAO = (ChiTietHoaDon_SanPham_interface) registry.lookup("chiTietHoaDonSanPhamDAO");
-            chiTietSanPhamPhieuNhapDAO = (ChiTietSanPham_PhieuNhap_interface) registry.lookup("chiTietSanPhamPhieuNhapDAO");
+            taiKhoanDAO = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
+            caLamDAO = (CaLam_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/caLamDAO");
+            hoaDonDAO = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
+            sanPhamDAO = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
+            khachHangDAO = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
+            phieuNhapHangDAO = (PhieuNhapHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/phieuNhapHangDAO");
+            chiTietHoaDonSanPhamDAO = (ChiTietHoaDon_SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/chiTietHoaDonSanPhamDAO");
+            chiTietSanPhamPhieuNhapDAO = (ChiTietSanPham_PhieuNhap_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/chiTietSanPhamPhieuNhapDAO");
 
             System.out.println("Connected to RMI Server successfully!");
 

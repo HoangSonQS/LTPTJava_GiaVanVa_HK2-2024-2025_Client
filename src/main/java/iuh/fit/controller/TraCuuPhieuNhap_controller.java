@@ -470,8 +470,10 @@ public class TraCuuPhieuNhap_controller implements Initializable{
             String maPhieuNhap = txt_maPN.getText();
             App.maTraCuu = maPhieuNhap;
 
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/phieuNhapHangDAO");
             PhieuNhapHang pn = phieuNhapHangDao.read(maPhieuNhap);
 
             lb_maPN.setText(pn.getMaPNH());
@@ -605,8 +607,10 @@ public class TraCuuPhieuNhap_controller implements Initializable{
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("phieuNhapHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            PhieuNhapHang_interface phieuNhapHangDao = (PhieuNhapHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/phieuNhapHangDAO");
             List<PhieuNhapHang> dspn = phieuNhapHangDao.readAll();
             ObservableList<PhieuNhapHang> data = FXCollections.observableArrayList(dspn);
             tablePhieuNhap.setItems(data);

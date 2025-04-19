@@ -42,8 +42,10 @@ public class Login_controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Khởi tạo DAO interface
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            taiKhoanDao = (TaiKhoan_interface) registry.lookup("taiKhoanDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            taiKhoanDao = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
