@@ -452,6 +452,8 @@ public class TraCuu_controller implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể đăng xuất: " + e.getMessage());
         }
     }
+    private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     private void initializeNhanVien() {
         try {
             TaiKhoan taiKhoan = App.taiKhoan;
@@ -475,18 +477,18 @@ public class TraCuu_controller implements Initializable {
             java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
             SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
             SanPham sp = sanPhamDao.read(maSanPham);
-        lb_maSP.setText(sp.getMaSP());
-        lb_tenSP.setText(sp.getTenSP());
-        lb_ncc.setText(sp.getNhaCC());
-        lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
-        lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
-        lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        lb_nsx.setText(sp.getNgaySX().format(formatter));
-        lb_hsd.setText(sp.getHanSD().format(formatter));
-        lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
-        lb_loaiHang.setText(sp.getLoaiHang().toString());
-        highlightMatchingRow(maSanPham);
+            lb_maSP.setText(sp.getMaSP());
+            lb_tenSP.setText(sp.getTenSP());
+            lb_ncc.setText(sp.getNhaCC());
+            lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
+            lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
+            lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            lb_nsx.setText(sp.getNgaySX().format(formatter));
+            lb_hsd.setText(sp.getHanSD().format(formatter));
+            lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
+            lb_loaiHang.setText(sp.getLoaiHang().toString());
+            highlightMatchingRow(maSanPham);
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể tìm kiếm sản phẩm: " + e.getMessage());
@@ -607,38 +609,32 @@ public class TraCuu_controller implements Initializable {
         // Cột Ngày sản xuất
         cl_nsx.setCellValueFactory(cellData -> {
             LocalDateTime date = cellData.getValue().getNgaySX();
-            if (date == null) return new SimpleStringProperty("");
-            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            if (date == null) return new SimpleStringProperty("ngaySX");
+            return new SimpleStringProperty(date.format(dateFormatter));
         });
 
         // Cột Hạn sử dụng
         cl_hsd.setCellValueFactory(cellData -> {
             LocalDateTime date = cellData.getValue().getHanSD();
-            if (date == null) return new SimpleStringProperty("");
-            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            if (date == null) return new SimpleStringProperty("hanSD");
+            return new SimpleStringProperty(date.format(dateFormatter));
         });
 
         // Cột Thời gian cập nhật
         cl_tgcn.setCellValueFactory(cellData -> {
             LocalDateTime date = cellData.getValue().getThoiGianCapNhat();
-            if (date == null) return new SimpleStringProperty("");
-            return new SimpleStringProperty(date.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            if (date == null) return new SimpleStringProperty("thoiGianCapNhat");
+            return new SimpleStringProperty(date.format(dateFormatter));
         });
 
         // Cột Loại hàng
-        cl_loaiHang.setCellValueFactory(cellData -> {
-            LoaiHang loaiHang = cellData.getValue().getLoaiHang();
-            if (loaiHang == null) return new SimpleStringProperty("");
-            return new SimpleStringProperty(loaiHang.toString());
-        });
+        cl_loaiHang.setCellValueFactory(new PropertyValueFactory<>("loaiHang"));
     }
 
     private void loadTableData() {
         try {
-            System.setProperty("java.security.policy", "rmi.policy");
-            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
-            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
             List<SanPham> dssp = sanPhamDao.readAll();
             ObservableList<SanPham> data = FXCollections.observableArrayList(dssp);
             tableSanPham.setItems(data);
@@ -662,17 +658,48 @@ public class TraCuu_controller implements Initializable {
     }
 
     private void updateLabels(SanPham sp) {
-        lb_maSP.setText(sp.getMaSP());
-        lb_tenSP.setText(sp.getTenSP());
-        lb_ncc.setText(sp.getNhaCC());
-        lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
-        lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
-        lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm dd/MM/yyyy");
-        lb_nsx.setText(sp.getNgaySX().format(formatter));
-        lb_hsd.setText(sp.getHanSD().format(formatter));
-        lb_tgcn.setText(sp.getThoiGianCapNhat().format(formatter));
-        lb_loaiHang.setText(sp.getLoaiHang().toString());
+        try {
+            // Các label đầu tiên
+            lb_maSP.setText(sp.getMaSP());
+            lb_tenSP.setText(sp.getTenSP());
+            lb_ncc.setText(sp.getNhaCC());
+            lb_slt.setText(String.valueOf(sp.getSoLuongTon()));
+            lb_giaNhap.setText(String.valueOf(sp.getGiaNhap()));
+            lb_giaBan.setText(String.valueOf(sp.getGiaBan()));
+
+            // Xử lý các label ngày tháng
+            if (sp.getNgaySX() != null) {
+                lb_nsx.setText(sp.getNgaySX().format(dateFormatter));
+            } else {
+                lb_nsx.setText("Không có dữ liệu");
+            }
+
+            if (sp.getHanSD() != null) {
+                lb_hsd.setText(sp.getHanSD().format(dateFormatter));
+            } else {
+                lb_hsd.setText("Không có dữ liệu");
+            }
+
+            if (sp.getThoiGianCapNhat() != null) {
+                lb_tgcn.setText(sp.getThoiGianCapNhat().format(dateFormatter));
+            } else {
+                lb_tgcn.setText("Không có dữ liệu");
+            }
+
+            // Xử lý loại hàng
+            if (sp.getLoaiHang() != null) {
+                lb_loaiHang.setText(sp.getLoaiHang().toString());
+            } else {
+                lb_loaiHang.setText("Không có dữ liệu");
+            }
+
+            System.out.println("Đã cập nhật thông tin sản phẩm: " + sp.getMaSP());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Lỗi khi cập nhật thông tin sản phẩm: " + e.getMessage());
+        }
     }
 
 }
+
+

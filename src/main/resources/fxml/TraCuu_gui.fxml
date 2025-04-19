@@ -20,7 +20,7 @@
    <children>
       <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
          <children>
-          <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
+            <Button fx:id="btn_TraCuu" layoutX="1087.0" layoutY="22.0" mnemonicParsing="false" onMouseClicked="#timKiem" prefHeight="40.0" prefWidth="112.0" style="-fx-background-color: #CC33FF;" text="Tra cứu" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>
@@ -44,9 +44,9 @@
                </font>
             </Text>
             <TableView fx:id="tableSanPham" layoutX="397.0" layoutY="130.0" prefHeight="555.0" prefWidth="871.0">
-              <columns>
-                <TableColumn fx:id="cl_txt" prefWidth="41.60003662109375" text="STT" />
-                <TableColumn fx:id="cl_maSP" prefWidth="86.39996337890625" text="Mã sản phẩm" />
+               <columns>
+                  <TableColumn fx:id="cl_txt" prefWidth="41.60003662109375" text="STT" />
+                  <TableColumn fx:id="cl_maSP" prefWidth="86.39996337890625" text="Mã sản phẩm" />
                   <TableColumn fx:id="cl_tenSP" prefWidth="109.60003662109375" text="Tên sản phẩm" />
                   <TableColumn fx:id="cl_ncc" prefWidth="103.199951171875" text="Nhà cung cấp" />
                   <TableColumn fx:id="cl_slt" prefWidth="79.2000732421875" text="Số lượng tồn" />
@@ -56,7 +56,7 @@
                   <TableColumn fx:id="cl_hsd" prefWidth="84.0001220703125" text="Hạn sử dụng" />
                   <TableColumn fx:id="cl_tgcn" prefWidth="120.0" text="Thời gian cập nhật" />
                   <TableColumn fx:id="cl_loaiHang" text="Loại hàng" />
-              </columns>
+               </columns>
             </TableView>
             <Label layoutX="15.0" layoutY="140.0" text="Thông tin chi tiết:">
                <font>
