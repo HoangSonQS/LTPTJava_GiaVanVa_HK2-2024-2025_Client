@@ -3,6 +3,7 @@ package iuh.fit.controller;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,16 +16,25 @@ import iuh.fit.entities.TaiKhoan;
 import jakarta.persistence.EntityManager;
 import javafx.collections.FXCollections;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -34,8 +44,85 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.scene.control.Tooltip;
 
 public class ThongKeDoanhThu_controller implements Initializable {
+
+    public static class ThongKeDoanhThuModel {
+        private final StringProperty thoiGian;
+        private final DoubleProperty doanhThu;
+        private final IntegerProperty soLuongHoaDon;
+        private final IntegerProperty soLuongSanPham;
+        private final DoubleProperty tyLeTangTruong;
+
+        public ThongKeDoanhThuModel(String thoiGian, Double doanhThu, Integer soLuongHoaDon, Integer soLuongSanPham, Double tyLeTangTruong) {
+            this.thoiGian = new SimpleStringProperty(thoiGian);
+            this.doanhThu = new SimpleDoubleProperty(doanhThu);
+            this.soLuongHoaDon = new SimpleIntegerProperty(soLuongHoaDon);
+            this.soLuongSanPham = new SimpleIntegerProperty(soLuongSanPham);
+            this.tyLeTangTruong = new SimpleDoubleProperty(tyLeTangTruong);
+        }
+
+        public String getThoiGian() {
+            return thoiGian.get();
+        }
+
+        public StringProperty thoiGianProperty() {
+            return thoiGian;
+        }
+
+        public void setThoiGian(String thoiGian) {
+            this.thoiGian.set(thoiGian);
+        }
+
+        public Double getDoanhThu() {
+            return doanhThu.get();
+        }
+
+        public DoubleProperty doanhThuProperty() {
+            return doanhThu;
+        }
+
+        public void setDoanhThu(Double doanhThu) {
+            this.doanhThu.set(doanhThu);
+        }
+
+        public Integer getSoLuongHoaDon() {
+            return soLuongHoaDon.get();
+        }
+
+        public IntegerProperty soLuongHoaDonProperty() {
+            return soLuongHoaDon;
+        }
+
+        public void setSoLuongHoaDon(Integer soLuongHoaDon) {
+            this.soLuongHoaDon.set(soLuongHoaDon);
+        }
+
+        public Integer getSoLuongSanPham() {
+            return soLuongSanPham.get();
+        }
+
+        public IntegerProperty soLuongSanPhamProperty() {
+            return soLuongSanPham;
+        }
+
+        public void setSoLuongSanPham(Integer soLuongSanPham) {
+            this.soLuongSanPham.set(soLuongSanPham);
+        }
+
+        public Double getTyLeTangTruong() {
+            return tyLeTangTruong.get();
+        }
+
+        public DoubleProperty tyLeTangTruongProperty() {
+            return tyLeTangTruong;
+        }
+
+        public void setTyLeTangTruong(Double tyLeTangTruong) {
+            this.tyLeTangTruong.set(tyLeTangTruong);
+        }
+    }
     private HoaDon_interface hoaDonDao;
 
     @FXML
@@ -193,22 +280,22 @@ public class ThongKeDoanhThu_controller implements Initializable {
     private NumberAxis yAxis;
 
     @FXML
-    private TableView<?> tbThongKe;
+    private TableView<ThongKeDoanhThuModel> tbThongKe;
 
     @FXML
-    private TableColumn<?, ?> tcThoiGian;
+    private TableColumn<ThongKeDoanhThuModel, String> tcThoiGian;
 
     @FXML
-    private TableColumn<?, ?> tcDoanhThu;
+    private TableColumn<ThongKeDoanhThuModel, Number> tcDoanhThu;
 
     @FXML
-    private TableColumn<?, ?> tcSoLuongHoaDon;
+    private TableColumn<ThongKeDoanhThuModel, Number> tcSoLuongHoaDon;
 
     @FXML
-    private TableColumn<?, ?> tcSoLuongSanPham;
+    private TableColumn<ThongKeDoanhThuModel, Number> tcSoLuongSanPham;
 
     @FXML
-    private TableColumn<?, ?> tcTyLeTangTruong;
+    private TableColumn<ThongKeDoanhThuModel, Number> tcTyLeTangTruong;
 
     @FXML
     private Label lb_tenNV;
@@ -462,11 +549,25 @@ public class ThongKeDoanhThu_controller implements Initializable {
         initializeNhanVien();
         addMenusToMap();
         setupCharts();
+        setupTable();
 
         cbLoaiThongKe.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 try {
                     updateChart(newVal);
+                } catch (RemoteException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+
+        cbNam.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                try {
+                    String loaiThongKe = cbLoaiThongKe.getValue();
+                    if (loaiThongKe != null) {
+                        updateChart(loaiThongKe);
+                    }
                 } catch (RemoteException e) {
                     throw new RuntimeException(e);
                 }
@@ -493,6 +594,68 @@ public class ThongKeDoanhThu_controller implements Initializable {
 
         // Thêm dữ liệu vào combobox năm
         populateYearComboBox();
+    }
+
+    private void setupTable() {
+        // Thiết lập các cột cho bảng thống kê
+        tcThoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGian"));
+        tcDoanhThu.setCellValueFactory(new PropertyValueFactory<>("doanhThu"));
+        tcSoLuongHoaDon.setCellValueFactory(new PropertyValueFactory<>("soLuongHoaDon"));
+        tcSoLuongSanPham.setCellValueFactory(new PropertyValueFactory<>("soLuongSanPham"));
+        tcTyLeTangTruong.setCellValueFactory(new PropertyValueFactory<>("tyLeTangTruong"));
+
+        // Format doanh thu
+        tcDoanhThu.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeDoanhThuModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                    setText(currencyFormat.format(item.doubleValue()));
+                }
+            }
+        });
+
+        // Format số lượng hóa đơn
+        tcSoLuongHoaDon.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeDoanhThuModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%,d", item.intValue()));
+                }
+            }
+        });
+
+        // Format số lượng sản phẩm
+        tcSoLuongSanPham.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeDoanhThuModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%,d", item.intValue()));
+                }
+            }
+        });
+
+        // Format tỷ lệ tăng trưởng
+        tcTyLeTangTruong.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeDoanhThuModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f%%", item.doubleValue()));
+                }
+            }
+        });
     }
 
     /**
@@ -540,6 +703,20 @@ public class ThongKeDoanhThu_controller implements Initializable {
         }
 
         lineChart.getData().add(series);
+
+        // Thêm tooltip cho biểu đồ
+        for (XYChart.Data<String, Number> data : series.getData()) {
+            Node node = data.getNode();
+            Tooltip tooltip = new Tooltip(String.format(
+                "%s\nDoanh thu: %,.0f VNĐ",
+                data.getXValue(),
+                data.getYValue().doubleValue()
+            ));
+            Tooltip.install(node, tooltip);
+        }
+
+        // Cập nhật bảng dữ liệu
+        updateTableData(loaiThongKe, nam, series);
     }
 
     private void thongKeTheoThangTrongNam(XYChart.Series<String, Number> series, int nam) throws RemoteException {
@@ -612,5 +789,60 @@ public class ThongKeDoanhThu_controller implements Initializable {
         }
 
         lineChart.getData().add(series);
+
+        // Thêm tooltip cho biểu đồ
+        for (XYChart.Data<String, Number> data : series.getData()) {
+            Node node = data.getNode();
+            Tooltip tooltip = new Tooltip(String.format(
+                "%s\nDoanh thu: %,.0f VNĐ",
+                data.getXValue(),
+                data.getYValue().doubleValue()
+            ));
+            Tooltip.install(node, tooltip);
+        }
+
+        // Cập nhật bảng dữ liệu
+        updateTableData(loaiThongKe, nam, series);
+    }
+
+    private void updateTableData(String loaiThongKe, int nam, XYChart.Series<String, Number> series) {
+        // Xóa dữ liệu cũ trong bảng
+        tbThongKe.getItems().clear();
+
+        if (series.getData().isEmpty()) {
+            return;
+        }
+
+        // Tạo danh sách dữ liệu mới
+        ObservableList<ThongKeDoanhThuModel> tableData = FXCollections.observableArrayList();
+
+        // Lấy dữ liệu từ series
+        List<XYChart.Data<String, Number>> chartData = series.getData();
+
+        // Tính toán tỷ lệ tăng trưởng
+        for (int i = 0; i < chartData.size(); i++) {
+            XYChart.Data<String, Number> data = chartData.get(i);
+            String thoiGian = data.getXValue();
+            Double doanhThu = data.getYValue().doubleValue();
+
+            // Giả lập số lượng hóa đơn và sản phẩm (trong thực tế sẽ lấy từ database)
+            Integer soLuongHoaDon = (int) (doanhThu / 500000); // Giả sử mỗi hóa đơn trung bình 500,000 VNĐ
+            Integer soLuongSanPham = soLuongHoaDon * 3; // Giả sử mỗi hóa đơn có trung bình 3 sản phẩm
+
+            // Tính tỷ lệ tăng trưởng
+            Double tyLeTangTruong = 0.0;
+            if (i > 0) {
+                Double doanhThuTruoc = chartData.get(i-1).getYValue().doubleValue();
+                if (doanhThuTruoc > 0) {
+                    tyLeTangTruong = ((doanhThu - doanhThuTruoc) / doanhThuTruoc) * 100;
+                }
+            }
+
+            // Thêm vào danh sách dữ liệu
+            tableData.add(new ThongKeDoanhThuModel(thoiGian, doanhThu, soLuongHoaDon, soLuongSanPham, tyLeTangTruong));
+        }
+
+        // Cập nhật bảng
+        tbThongKe.setItems(tableData);
     }
 }
