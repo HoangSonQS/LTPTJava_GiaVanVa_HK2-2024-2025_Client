@@ -19,11 +19,6 @@
     <children>
         <Pane layoutX="270.0" layoutY="80.0" prefHeight="715.0" prefWidth="1270.0" style="-fx-background-color: #FFFFFF;">
             <children>
-                <ImageView fx:id="img_taiKhoan1" fitHeight="30.0" fitWidth="30.0" layoutX="1037.0" layoutY="27.0" pickOnBounds="true" preserveRatio="true">
-                    <image>
-                        <Image url="@../images/find.png" />
-                    </image>
-                </ImageView>
                 <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#cc33ff" height="50.0" layoutY="56.0" stroke="BLACK" strokeType="INSIDE" width="1270.0" />
                 <Text fill="WHITE" layoutX="568.0" layoutY="11.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Thông tin tài khoản" wrappingWidth="284.7574462890625" y="80.0">
                     <font>
