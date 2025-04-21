@@ -311,10 +311,18 @@ public class BanHang_controller implements Initializable {
     private NhanVien_interface nhanVienDao;
 
     // Danh sách các sản phẩm trong giỏ hàng
-    private ObservableList<SanPham> cartItems;
+    public static ObservableList<SanPham> cartItems;
 
     // Số lượng sản phẩm trong giỏ hàng
-    private Map<String, Integer> productQuantities = new HashMap<>();
+    public static Map<String, Integer> productQuantities = new HashMap<>();
+    public static String maHD;
+    public static KhachHang khachHang;
+    public static double tienKhachTra;
+    public static double tienThua;
+    public static double TongTien_HoaDon;
+    public static double giamGia_HD;
+    public static double TamTinh_HD;
+
 
     public void initialize(URL location, ResourceBundle resources) {
         // Khởi tạo các DAO interfaces
@@ -864,7 +872,7 @@ public class BanHang_controller implements Initializable {
 
             // Nếu sản phẩm chưa có trong giỏ hàng, thêm mới
             if (!productExists) {
-                cartItems.add(sanPham);
+                BanHang_controller.cartItems.add(sanPham);
                 productQuantities.put(maSP, soLuong);
             }
 
@@ -912,7 +920,7 @@ public class BanHang_controller implements Initializable {
 
             // Nếu tìm thấy sản phẩm, xóa khỏi giỏ hàng
             if (productToRemove != null) {
-                cartItems.remove(productToRemove);
+                BanHang_controller.cartItems.remove(productToRemove);
                 productQuantities.remove(maSP);
                 tableView.refresh();
 
@@ -994,7 +1002,7 @@ public class BanHang_controller implements Initializable {
             String sdt = txt_sdt.getText().trim();
 
             // Generate invoice ID
-            String maHD = "HD" + System.currentTimeMillis();
+            maHD = "HD" + System.currentTimeMillis();
 
             // Handle shift (CaLam)
             String maCa = "CA" + System.currentTimeMillis();
@@ -1017,7 +1025,7 @@ public class BanHang_controller implements Initializable {
             }
 
             // Handle customer (KhachHang)
-            KhachHang khachHang = null;
+            khachHang = null;
             if (!tenKH.isEmpty() && !sdt.isEmpty()) {
                 khachHang = khachHangDao.findByPhone(sdt);
                 if (khachHang == null) {
@@ -1048,8 +1056,8 @@ public class BanHang_controller implements Initializable {
             hoaDon.setThanhTien(tongTien);
 
             // Lấy thông tin tiền khách trả và tiền thừa
-            double tienKhachTra = 0;
-            double tienThua = 0;
+            tienKhachTra = 0;
+            tienThua = 0;
             try {
                 tienKhachTra = Double.parseDouble(txt_tienKhachTra.getText().trim());
                 // Tính tiền thừa
@@ -1453,6 +1461,7 @@ public class BanHang_controller implements Initializable {
                     showAlert(AlertType.ERROR, "Lỗi", "Mã giảm giá không hợp lệ!");
                     return;
                 }
+                giamGia_HD = giamGia;
 
                 // Cập nhật giảm giá
                 NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
@@ -1496,11 +1505,14 @@ public class BanHang_controller implements Initializable {
 
             // Tính tạm tính (tổng tiền hàng chưa bao gồm thuế)
             double tamTinh = calculateSubtotal();
+
+
             NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             if (lb_tamTinh != null) {
                 lb_tamTinh.setText(currencyFormat.format(tamTinh));
             }
-
+            TamTinh_HD = tamTinh;
+            System.out.println("TamTinh_HD => " + TamTinh_HD);
             // Tính tổng tiền (bao gồm thuế)
             double total = calculateTotal();
             if (lb_tongTien != null) {
@@ -1550,66 +1562,80 @@ public class BanHang_controller implements Initializable {
      * Xử lý sự kiện khi nhấn nút thanh toán
      */
     @FXML
-    void thanhToan(MouseEvent event) {
+    void thanhToan(MouseEvent event) throws IOException {
         if (cartItems.isEmpty()) {
-            showAlert(AlertType.WARNING, "Thông báo", "Giỏ hàng trống!");
+            showAlert(Alert.AlertType.WARNING, "Thông báo", "Giỏ hàng trống!");
             return;
         }
 
-        // Kiểm tra xem khách hàng đã trả đủ tiền chưa
         if (txt_tienKhachTra.getText().trim().isEmpty()) {
-            showAlert(AlertType.WARNING, "Thông báo", "Vui lòng nhập số tiền khách trả!");
+            showAlert(Alert.AlertType.WARNING, "Thông báo", "Vui lòng nhập số tiền khách trả!");
             txt_tienKhachTra.requestFocus();
             return;
         }
 
-        // Kiểm tra xem tiền thừa có âm không
         if (lb_tienThua.getText().startsWith("-")) {
-            showAlert(AlertType.WARNING, "Thông báo", "Số tiền khách trả chưa đủ!");
+            showAlert(Alert.AlertType.WARNING, "Thông báo", "Số tiền khách trả chưa đủ!");
             txt_tienKhachTra.requestFocus();
             return;
         }
 
-        // Xác nhận thanh toán
-        Alert alert = new Alert(AlertType.CONFIRMATION);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Xác nhận thanh toán");
         alert.setHeaderText(null);
 
-        // Tạo nội dung xác nhận chi tiết hơn
         StringBuilder content = new StringBuilder("Thông tin thanh toán:\n");
         content.append("Tổng sản phẩm: ").append(cartItems.size()).append("\n");
 
-        // Lấy tổng tiền từ lb_tongThanhToan
-        String tongTien = "0 VNĐ";
-        if (lb_tongThanhToan != null) {
-            tongTien = lb_tongThanhToan.getText();
-        } else if (lb_tongTien != null) {
-            tongTien = lb_tongTien.getText();
-        }
+        String tongTien = lb_tongThanhToan != null ? lb_tongThanhToan.getText() : lb_tongTien.getText();
         content.append("Tổng thanh toán: ").append(tongTien).append("\n");
 
-        // Lấy phương thức thanh toán
-        String phuongThuc = "Tiền mặt";
-        if (rb_chuyenKhoan != null && rb_chuyenKhoan.isSelected()) {
-            phuongThuc = "Chuyển khoản";
-        } else if (rb_the != null && rb_the.isSelected()) {
-            phuongThuc = "Thẻ";
-        }
+        String phuongThuc = rb_chuyenKhoan.isSelected() ? "Chuyển khoản" : rb_the.isSelected() ? "Thẻ" : "Tiền mặt";
         content.append("Phương thức thanh toán: ").append(phuongThuc).append("\n");
 
-        // Lấy ghi chú nếu có
         if (ta_ghiChu != null && !ta_ghiChu.getText().trim().isEmpty()) {
             content.append("Ghi chú: ").append(ta_ghiChu.getText().trim()).append("\n");
         }
 
         content.append("\nBạn có chắc chắn muốn thanh toán?");
-
         alert.setContentText(content.toString());
 
         if (alert.showAndWait().get() == javafx.scene.control.ButtonType.OK) {
+            // 🛑 Backup giỏ hàng trước khi bị xóa
+            ObservableList<SanPham> itemsCopy = FXCollections.observableArrayList(cartItems);
+            Map<String, Integer> quantitiesCopy = new HashMap<>(productQuantities);
+            double tamTinhBackup = TamTinh_HD;
+            double tongTienBackup = TongTien_HoaDon;
+            // Cập nhật lại tổng tiền lần cuối
+            updateTotalAmount();
+
+            // Tạo hóa đơn & xóa giỏ hàng
             createInvoice();
+
+            // Mở giao diện hóa đơn
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/HoaDon_gui.fxml"));
+            Parent root = loader.load();
+
+            HoaDon_controller hoaDonController = loader.getController();
+            hoaDonController.setCartData(itemsCopy, quantitiesCopy);
+            hoaDonController.setHoaDonInfo(
+                    tamTinhBackup,
+                    tongTienBackup,
+                    tienKhachTra,
+                    tienThua,
+                    giamGia_HD,
+                    maHD,
+                    khachHang != null ? khachHang.getMaKH() : "KH001",
+                    App.taiKhoan.getNhanVien().getMaNV()
+            );
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Hóa Đơn");
+            stage.show();
         }
     }
+
 
     /**
      * Hiển thị thông báo
@@ -1668,6 +1694,7 @@ public class BanHang_controller implements Initializable {
             // Loại bỏ các ký tự không phải số
             tongTienText = tongTienText.replaceAll("[^\\d]", "");
             double tongTien = Double.parseDouble(tongTienText);
+            TongTien_HoaDon = tongTien;
 
             // Lấy số tiền khách trả
             String tienKhachTraText = txt_tienKhachTra.getText().trim();
@@ -1715,6 +1742,7 @@ public class BanHang_controller implements Initializable {
                 if (tienKhachTra >= tongTien) {
                     // Nếu đủ, cho phép thanh toán
                     btn_thanhToan.setDisable(false);
+
                 }
             } else {
                 // Tiền thừa âm - màu đỏ
@@ -1731,5 +1759,6 @@ public class BanHang_controller implements Initializable {
             e.printStackTrace();
         }
     }
+
 
 }

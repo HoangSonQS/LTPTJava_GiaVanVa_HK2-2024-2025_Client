@@ -7,6 +7,7 @@ import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -56,7 +57,7 @@ public class QL_TaiKoan_controller implements Initializable {
     private Button btnXoaTrang;
 
     @FXML
-    private TableColumn<?, ?> cl_MaNV;
+    private TableColumn<TaiKhoan, String> cl_MaNV;
 
     @FXML
     private TableColumn<?, ?> cl_ThoiGian;
@@ -569,7 +570,10 @@ public class QL_TaiKoan_controller implements Initializable {
             ObservableList<TaiKhoan> listTK = FXCollections.observableArrayList(tkDAO.readAll());
             // Thiết lập cell value factory cho các cột
             cl_maTK.setCellValueFactory(new PropertyValueFactory<>("maTaiKhoan"));
-            cl_MaNV.setCellValueFactory(new PropertyValueFactory<>("nhanVien"));
+            cl_MaNV.setCellValueFactory(cellData -> {
+                NhanVien nv = cellData.getValue().getNhanVien();
+                return new SimpleStringProperty(nv != null ? nv.getMaNV() : "");
+            });
             cl_tenDN.setCellValueFactory(new PropertyValueFactory<>("tenDangNhap"));
             cl_ThoiGian.setCellValueFactory(new PropertyValueFactory<>("thoiGianDangNhap"));
 
