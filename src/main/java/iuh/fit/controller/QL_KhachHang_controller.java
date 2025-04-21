@@ -470,8 +470,10 @@ public class QL_KhachHang_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
 
                 // Cập nhật thông tin khách hàng vào database
                 khDAO.update(khachHang);
@@ -502,8 +504,10 @@ public class QL_KhachHang_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
 
                 // Thêm khách hàng vào database
                 khDAO.create(khachHang);
@@ -529,8 +533,10 @@ public class QL_KhachHang_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
 
                 // Xóa khách hàng khỏi database
                 khDAO.delete(maKH);
@@ -566,8 +572,10 @@ public class QL_KhachHang_controller implements Initializable {
     private void loadTableData() {
         try {
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("khachHangDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            KhachHang_interface khDAO = (KhachHang_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/khachHangDAO");
 
             // Xóa dữ liệu cũ trong table
             table_KH.getItems().clear();

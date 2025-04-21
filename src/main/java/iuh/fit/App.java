@@ -74,8 +74,10 @@ public class App extends Application {
         if (AppPreloader.splashStage == null) {
             System.out.println("No splash screen detected, checking server connection before opening login screen");
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
                 // Thử gọi một phương thức để kiểm tra kết nối
                 sanPhamDao.readAll();
                 // Nếu kết nối thành công, mở màn hình đăng nhập
@@ -250,8 +252,10 @@ public class App extends Application {
      */
     private static void checkSanPham() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("sanPhamDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            SanPham_interface sanPhamDao = (SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/sanPhamDAO");
             List<SanPham> dsSanPham = sanPhamDao.readAll();
 
             // Kiểm tra và cập nhật thông tin sản phẩm nếu cần
@@ -279,8 +283,10 @@ public class App extends Application {
      */
     private static void checkHoaDon() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            HoaDon_interface hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
             List<HoaDon> dsHoaDon = hoaDonDao.readAll();
 
             // Kiểm tra và cập nhật thông tin hóa đơn nếu cần

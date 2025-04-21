@@ -18,6 +18,13 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+
 import javafx.collections.FXCollections;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -32,6 +39,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -48,11 +56,88 @@ import javafx.scene.control.Alert;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Tooltip;
 import java.util.Arrays;
+import java.text.NumberFormat;
+import java.util.Locale;
 
-// Using local loadFXML method instead of App.loadFXML
-// import static iuh.fit.App.loadFXML;
 
 public class ThongKeSanPham_controller implements Initializable {
+
+
+    public static class ThongKeSanPhamModel {
+        private final StringProperty maSP;
+        private final StringProperty tenSP;
+        private final LongProperty soLuongBan;
+        private final DoubleProperty doanhThu;
+        private final DoubleProperty tyLe;
+
+        public ThongKeSanPhamModel(String maSP, String tenSP, Long soLuongBan, Double doanhThu, Double tyLe) {
+            this.maSP = new SimpleStringProperty(maSP);
+            this.tenSP = new SimpleStringProperty(tenSP);
+            this.soLuongBan = new SimpleLongProperty(soLuongBan);
+            this.doanhThu = new SimpleDoubleProperty(doanhThu);
+            this.tyLe = new SimpleDoubleProperty(tyLe);
+        }
+
+        public String getMaSP() {
+            return maSP.get();
+        }
+
+        public StringProperty maSPProperty() {
+            return maSP;
+        }
+
+        public void setMaSP(String maSP) {
+            this.maSP.set(maSP);
+        }
+
+        public String getTenSP() {
+            return tenSP.get();
+        }
+
+        public StringProperty tenSPProperty() {
+            return tenSP;
+        }
+
+        public void setTenSP(String tenSP) {
+            this.tenSP.set(tenSP);
+        }
+
+        public Long getSoLuongBan() {
+            return soLuongBan.get();
+        }
+
+        public LongProperty soLuongBanProperty() {
+            return soLuongBan;
+        }
+
+        public void setSoLuongBan(Long soLuongBan) {
+            this.soLuongBan.set(soLuongBan);
+        }
+
+        public Double getDoanhThu() {
+            return doanhThu.get();
+        }
+
+        public DoubleProperty doanhThuProperty() {
+            return doanhThu;
+        }
+
+        public void setDoanhThu(Double doanhThu) {
+            this.doanhThu.set(doanhThu);
+        }
+
+        public Double getTyLe() {
+            return tyLe.get();
+        }
+
+        public DoubleProperty tyLeProperty() {
+            return tyLe;
+        }
+
+        public void setTyLe(Double tyLe) {
+            this.tyLe.set(tyLe);
+        }
+    }
     private HoaDon_interface hoaDonDao;
 
     @FXML
@@ -207,22 +292,22 @@ public class ThongKeSanPham_controller implements Initializable {
     private BarChart<String, Number> barChart;
 
     @FXML
-    private TableView<?> tbThongKe;
+    private TableView<ThongKeSanPhamModel> tbThongKe;
 
     @FXML
-    private TableColumn<?, ?> tcMaSP;
+    private TableColumn<ThongKeSanPhamModel, String> tcMaSP;
 
     @FXML
-    private TableColumn<?, ?> tcTenSP;
+    private TableColumn<ThongKeSanPhamModel, String> tcTenSP;
 
     @FXML
-    private TableColumn<?, ?> tcSoLuongBan;
+    private TableColumn<ThongKeSanPhamModel, Number> tcSoLuongBan;
 
     @FXML
-    private TableColumn<?, ?> tcDoanhThu;
+    private TableColumn<ThongKeSanPhamModel, Number> tcDoanhThu;
 
     @FXML
-    private TableColumn<?, ?> tcTyLe;
+    private TableColumn<ThongKeSanPhamModel, Number> tcTyLe;
 
     @FXML
     private ComboBox<String> cbLoaiHang;
@@ -468,8 +553,10 @@ public class ThongKeSanPham_controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         // Khởi tạo DAO interface
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            hoaDonDao = (HoaDon_interface) registry.lookup("hoaDonDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
@@ -477,6 +564,7 @@ public class ThongKeSanPham_controller implements Initializable {
         addMenusToMap();
         initializeNhanVien();
         setupCharts();
+        setupTable();
 
         // Populate loại hàng ComboBox với giá trị đẹp
         ObservableList<String> loaiHangList = FXCollections.observableArrayList(
@@ -496,6 +584,20 @@ public class ThongKeSanPham_controller implements Initializable {
 
         // Add listener for loại hàng changes
         cbLoaiHang.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                handleXemThongKe();
+            }
+        });
+
+        // Add listener for loại thống kê changes
+        cbLoaiThongKe.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                handleXemThongKe();
+            }
+        });
+
+        // Add listener for năm changes
+        cbNam.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
                 handleXemThongKe();
             }
@@ -527,6 +629,55 @@ public class ThongKeSanPham_controller implements Initializable {
         // Thiết lập biểu đồ cột
         barChart.setTitle("Số lượng bán theo sản phẩm");
         barChart.setAnimated(true);
+    }
+
+    private void setupTable() {
+        // Thiết lập các cột cho bảng thống kê
+        tcMaSP.setCellValueFactory(new PropertyValueFactory<>("maSP"));
+        tcTenSP.setCellValueFactory(new PropertyValueFactory<>("tenSP"));
+        tcSoLuongBan.setCellValueFactory(new PropertyValueFactory<>("soLuongBan"));
+        tcDoanhThu.setCellValueFactory(new PropertyValueFactory<>("doanhThu"));
+        tcTyLe.setCellValueFactory(new PropertyValueFactory<>("tyLe"));
+
+        // Format số lượng bán
+        tcSoLuongBan.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeSanPhamModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%,d", item.longValue()));
+                }
+            }
+        });
+
+        // Format doanh thu
+        tcDoanhThu.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeSanPhamModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+                    setText(currencyFormat.format(item.doubleValue()));
+                }
+            }
+        });
+
+        // Format tỷ lệ
+        tcTyLe.setCellFactory(column -> new javafx.scene.control.TableCell<ThongKeSanPhamModel, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                } else {
+                    setText(String.format("%.2f%%", item.doubleValue()));
+                }
+            }
+        });
     }
 
     /**
@@ -583,6 +734,8 @@ public class ThongKeSanPham_controller implements Initializable {
             if (results.isEmpty()) {
                 showAlert(Alert.AlertType.INFORMATION, "Thông báo",
                         "Không có dữ liệu thống kê cho thời gian này!");
+                // Xóa dữ liệu cũ trong bảng
+                tbThongKe.getItems().clear();
                 return;
             }
 
@@ -591,8 +744,9 @@ public class ThongKeSanPham_controller implements Initializable {
                     .mapToDouble(row -> ((Number) row[2]).doubleValue())
                     .sum();
 
-            // Cập nhật biểu đồ
+            // Cập nhật biểu đồ và bảng
             updateChartsWithData(results, totalRevenue);
+            updateTableWithData(results, totalRevenue);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -649,6 +803,77 @@ public class ThongKeSanPham_controller implements Initializable {
         if (!pieData.isEmpty()) {
             pieChart.setData(pieData);
         }
+
+        // Thêm tooltip cho biểu đồ cột
+        barSeries.getData().forEach(data -> {
+            Node node = data.getNode();
+            Tooltip tooltip = new Tooltip(String.format(
+                "%s\nSố lượng: %d",
+                data.getXValue(),
+                data.getYValue().intValue()
+            ));
+            Tooltip.install(node, tooltip);
+        });
+
+        // Thêm tooltip cho biểu đồ tròn
+        pieChart.getData().forEach(data -> {
+            Tooltip tooltip = new Tooltip(String.format(
+                "%s\nDoanh thu: %.2f VNĐ",
+                data.getName(),
+                data.getPieValue()
+            ));
+            Tooltip.install(data.getNode(), tooltip);
+        });
+    }
+
+    private void updateTableWithData(List<Object[]> results, double totalRevenue) {
+        // Xóa dữ liệu cũ trong bảng
+        tbThongKe.getItems().clear();
+
+        // Tạo danh sách dữ liệu mới
+        ObservableList<ThongKeSanPhamModel> tableData = FXCollections.observableArrayList();
+
+        for (Object[] result : results) {
+            String tenSP = (String) result[0];
+            Long soLuongBan = ((Number) result[1]).longValue();
+            Double doanhThu = ((Number) result[2]).doubleValue();
+            Double tyLe = (doanhThu / totalRevenue) * 100;
+
+            // Tạo mã sản phẩm từ tên sản phẩm (giải pháp tạm thời)
+            String maSP = generateMaSPFromTenSP(tenSP);
+
+            // Thêm vào danh sách dữ liệu
+            tableData.add(new ThongKeSanPhamModel(maSP, tenSP, soLuongBan, doanhThu, tyLe));
+        }
+
+        // Cập nhật bảng
+        tbThongKe.setItems(tableData);
+    }
+
+    /**
+     * Tạo mã sản phẩm từ tên sản phẩm (giải pháp tạm thời)
+     * Trong thực tế, mã sản phẩm nên được lấy từ database
+     */
+    private String generateMaSPFromTenSP(String tenSP) {
+        if (tenSP == null || tenSP.isEmpty()) {
+            return "SP000";
+        }
+
+        // Lấy các chữ cái đầu của từng từ trong tên sản phẩm
+        StringBuilder maSP = new StringBuilder("SP");
+        String[] words = tenSP.split("\\s+");
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                maSP.append(word.charAt(0));
+            }
+        }
+
+        // Thêm số ngẫu nhiên để đảm bảo tính duy nhất
+        int randomNum = (int) (Math.random() * 1000);
+        maSP.append(String.format("%03d", randomNum));
+
+        return maSP.toString().toUpperCase();
     }
 
     // Thêm method để kiểm tra dữ liệu trong database

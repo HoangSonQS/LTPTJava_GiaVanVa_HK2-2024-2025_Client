@@ -505,8 +505,10 @@ public class QL_NhanVien_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
 
                 // Cập nhật thông tin nhân viên vào database
                 nvDAO.updateNhanVien(nv);
@@ -543,8 +545,10 @@ public class QL_NhanVien_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
 
                 // Thêm nhân viên vào database
                 nvDAO.createNhanVien(nv);
@@ -571,8 +575,10 @@ public class QL_NhanVien_controller implements Initializable {
 
             // Sử dụng DAO interface
             try {
-                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
+                System.setProperty("java.security.policy", "rmi.policy");
+                System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+                java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
 
                 // Xóa nhân viên khỏi database
                 nvDAO.deleteNhanVien(maNV);
@@ -613,8 +619,10 @@ public class QL_NhanVien_controller implements Initializable {
     private void loadTableData() {
         try {
             // Sử dụng DAO interface
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            NhanVien_interface nvDAO = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
 
             // Xóa dữ liệu cũ trong table
             table_NV.getItems().clear();

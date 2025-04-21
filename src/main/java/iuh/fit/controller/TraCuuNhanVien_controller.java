@@ -517,8 +517,10 @@ public class TraCuuNhanVien_controller implements Initializable {
 
     private void loadTableData() {
         try {
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
             List<NhanVien> dsnv = nhanVienDao.readAllNhanVien();
             ObservableList<NhanVien> data = FXCollections.observableArrayList(dsnv);
             tableNhanVien.setItems(data);
@@ -596,8 +598,10 @@ public class TraCuuNhanVien_controller implements Initializable {
             String maNhanVien = txt_maNV.getText();
             App.maTraCuu = maNhanVien;
 
-            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("localhost", 9090);
-            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("nhanVienDAO");
+            System.setProperty("java.security.policy", "rmi.policy");
+            System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
+            java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+            NhanVien_interface nhanVienDao = (NhanVien_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/nhanVienDAO");
             NhanVien nhanVien = nhanVienDao.readNhanVien(maNhanVien);
 
             lb_maNV.setText(nhanVien.getMaNV());
