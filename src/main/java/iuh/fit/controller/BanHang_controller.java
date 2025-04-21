@@ -22,6 +22,10 @@ import iuh.fit.interfaces.KhachHang_interface;
 import iuh.fit.interfaces.NhanVien_interface;
 import iuh.fit.interfaces.SanPham_interface;
 import iuh.fit.entities.*;
+import iuh.fit.security.Permission;
+import iuh.fit.security.PermissionChecker;
+import iuh.fit.security.SecurityContext;
+import iuh.fit.security.UIPermissionManager;
 import iuh.fit.enums.PhuongThucThanhToan;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
@@ -344,6 +348,11 @@ public class BanHang_controller implements Initializable {
         // Khởi tạo các menu
         addMenusToMap();
 
+        // Apply permissions to UI elements
+        System.out.println("Applying permissions in BanHang_controller");
+        System.out.println("Current user role: " + SecurityContext.getInstance().getCurrentRole());
+        applyPermissions();
+
         // Hiển thị ngày và thời gian hiện tại
         displayCurrentDateTime();
 
@@ -446,160 +455,191 @@ public class BanHang_controller implements Initializable {
 
     @FXML
     void handleQuanLyClick(MouseEvent event) {
+        // No specific permission check needed here as the submenu items will be checked individually
         toolsSlider(quanLySubVBox,quanLySubMenuList);
         removeOtherMenus(quanLySubVBox);
     }
 
     @FXML
     void handleThongKeClick(MouseEvent event) {
-        toolsSlider(thongKeSubVBox, thongKeSubMenuList);
-        removeOtherMenus(thongKeSubVBox);
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            toolsSlider(thongKeSubVBox, thongKeSubMenuList);
+            removeOtherMenus(thongKeSubVBox);
+        });
     }
 
     @FXML
     void handleTimKiemClick(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện TraCuu_gui.fxml
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TraCuu_gui.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_SAN_PHAM, () -> {
+            try {
+                // Chuyển đến giao diện TraCuu_gui.fxml
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/TraCuu_gui.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
 
-            // Lấy stage hiện tại
-            Stage stage = (Stage) p_gioHang.getScene().getWindow();
+                // Lấy stage hiện tại
+                Stage stage = (Stage) p_gioHang.getScene().getWindow();
 
-            // Thiết lập scene mới
-            stage.setScene(scene);
-            stage.setTitle("Tra cứu sản phẩm");
+                // Thiết lập scene mới
+                stage.setScene(scene);
+                stage.setTitle("Tra cứu sản phẩm");
 
-            // Hiển thị stage
-            stage.show();
+                // Hiển thị stage
+                stage.show();
 
-            System.out.println("Chuyển đến giao diện tra cứu thành công");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
+                System.out.println("Chuyển đến giao diện tra cứu thành công");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
 
-            // Nếu không thể mở giao diện tra cứu, hiển thị giao diện tìm kiếm trên giao diện hiện tại
-            toolsSlider(timKiemSubVBox, timKiemSubMenuList);
-            removeOtherMenus(timKiemSubVBox);
+                // Nếu không thể mở giao diện tra cứu, hiển thị giao diện tìm kiếm trên giao diện hiện tại
+                toolsSlider(timKiemSubVBox, timKiemSubMenuList);
+                removeOtherMenus(timKiemSubVBox);
 
-            // Hiển thị giao diện tìm kiếm
-            showSearchInterface();
-        }
+                // Hiển thị giao diện tìm kiếm
+                showSearchInterface();
+            }
+        });
     }
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý hóa đơn
-            loadFXML("/fxml/QL_HoaDon_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_HOA_DON, () -> {
+            try {
+                // Chuyển đến giao diện quản lý hóa đơn
+                loadFXML("/fxml/QL_HoaDon_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
+            }
+        });
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý khách hàng
-            loadFXML("/fxml/QL_KhachHang_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_KHACH_HANG, () -> {
+            try {
+                // Chuyển đến giao diện quản lý khách hàng
+                loadFXML("/fxml/QL_KhachHang_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
+            }
+        });
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý nhân viên
-            loadFXML("/fxml/QL_NhanVien_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_NHAN_VIEN, () -> {
+            try {
+                // Chuyển đến giao diện quản lý nhân viên
+                loadFXML("/fxml/QL_NhanVien_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
+            }
+        });
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý phiếu nhập
-            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_PHIEU_NHAP, () -> {
+            try {
+                // Chuyển đến giao diện quản lý phiếu nhập
+                loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
+            }
+        });
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý sản phẩm
-            loadFXML("/fxml/QL_SanPham_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_SAN_PHAM, () -> {
+            try {
+                // Chuyển đến giao diện quản lý sản phẩm
+                loadFXML("/fxml/QL_SanPham_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
+            }
+        });
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-        try {
-            // Chuyển đến giao diện quản lý tài khoản
-            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_TAI_KHOAN, () -> {
+            try {
+                // Chuyển đến giao diện quản lý tài khoản
+                loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
+            }
+        });
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-        try {
-            // Hiển thị menu thống kê
-            toolsSlider(thongKeSubVBox, thongKeSubMenuList);
-            removeOtherMenus(thongKeSubVBox);
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            try {
+                // Hiển thị menu thống kê
+                toolsSlider(thongKeSubVBox, thongKeSubMenuList);
+                removeOtherMenus(thongKeSubVBox);
 
-            // Load giao diện thống kê doanh thu
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
-            Parent root = loader.load();
+                // Load giao diện thống kê doanh thu
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeDoanhThu_gui.fxml"));
+                Parent root = loader.load();
 
-            // Lấy scene hiện tại
-            Scene currentScene = p_gioHang.getScene();
-            Stage currentStage = (Stage) currentScene.getWindow();
+                // Lấy scene hiện tại
+                Scene currentScene = p_gioHang.getScene();
+                Stage currentStage = (Stage) currentScene.getWindow();
 
-            // Tạo scene mới và áp dụng stylesheet
-            Scene newScene = new Scene(root);
-            newScene.getStylesheets().add(getClass().getResource("/styles/menu.css").toExternalForm());
+                // Tạo scene mới và áp dụng stylesheet
+                Scene newScene = new Scene(root);
+                newScene.getStylesheets().add(getClass().getResource("/styles/menu.css").toExternalForm());
 
-            // Set scene mới và hiển thị
-            currentStage.setScene(newScene);
-            currentStage.show();
+                // Set scene mới và hiển thị
+                currentStage.setScene(newScene);
+                currentStage.show();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Lỗi");
-            alert.setHeaderText(null);
-            alert.setContentText("Không thể mở giao diện thống kê doanh thu!\nLỗi: " + e.getMessage());
-            alert.showAndWait();
-        }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Lỗi");
+                alert.setHeaderText(null);
+                alert.setContentText("Không thể mở giao diện thống kê doanh thu!\nLỗi: " + e.getMessage());
+                alert.showAndWait();
+            }
+        });
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeSanPham_gui.fxml"));
-            Parent root = loader.load();
-            Scene scene = new Scene(root);
-            Stage stage = (Stage) p_gioHang.getScene().getWindow();
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            try {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ThongKeSanPham_gui.fxml"));
+                Parent root = loader.load();
+                Scene scene = new Scene(root);
+                Stage stage = (Stage) p_gioHang.getScene().getWindow();
+                stage.setScene(scene);
+                stage.show();
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+            }
+        });
     }
 
     @FXML
@@ -1648,6 +1688,24 @@ public class BanHang_controller implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+
+    /**
+     * Apply permissions to UI elements
+     */
+    private void applyPermissions() {
+        System.out.println("Starting permission application");
+
+        // Check if the security context is properly initialized
+        SecurityContext securityContext = SecurityContext.getInstance();
+        if (securityContext.getCurrentRole() == null) {
+            System.out.println("WARNING: Current role is null in SecurityContext");
+            return;
+        }
+
+        System.out.println("Current role: " + securityContext.getCurrentRole());
+        System.out.println("Permissions are now checked at function call level");
+        System.out.println("Finished applying permissions");
     }
 
     /**

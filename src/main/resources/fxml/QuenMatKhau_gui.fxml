@@ -19,12 +19,12 @@
                         <Font name="System Bold" size="24.0" />
                      </font>
                   </Label>
-                  <Label layoutX="50.0" layoutY="90.0" text="Vui lòng nhập email hoặc số điện thoại để lấy lại mật khẩu:">
+                  <Label layoutX="50.0" layoutY="90.0" text="Vui lòng nhập email để lấy lại mật khẩu:">
                      <font>
                         <Font size="14.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtEmail" layoutX="50.0" layoutY="130.0" prefHeight="40.0" prefWidth="400.0" promptText="Email hoặc số điện thoại">
+                  <TextField fx:id="txtEmail" layoutX="50.0" layoutY="130.0" prefHeight="40.0" prefWidth="400.0" promptText="Email">
                      <font>
                         <Font size="14.0" />
                      </font>

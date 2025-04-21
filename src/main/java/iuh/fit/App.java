@@ -11,6 +11,9 @@ import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.HoaDon;
 import iuh.fit.entities.SanPham;
 import iuh.fit.entities.TaiKhoan;
+import iuh.fit.security.SecurityContext;
+import iuh.fit.security.Role;
+import iuh.fit.security.Permission;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -52,10 +55,24 @@ public class App extends Application {
 
             // Kiểm tra và cập nhật dữ liệu khi khởi động ứng dụng
             checkSanPham();
+
+            // Initialize the security context
+            SecurityContext.getInstance();
         } catch (Exception e) {
             System.err.println("Lỗi khi khởi tạo ứng dụng: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Check if the current user has a specific permission
+     *
+     * @param permission The permission to check
+     * @return true if the user has the permission, false otherwise
+     */
+    public static boolean hasPermission(Permission permission) {
+        SecurityContext securityContext = SecurityContext.getInstance();
+        return securityContext.hasPermission(permission);
     }
 
     @Override
@@ -172,16 +189,33 @@ public class App extends Application {
     }
 
     /**
-     * Mở giao diện quên mật khẩu
+     * Mở giao diện quên mật khẩu dạng modal dialog
      */
     public static void openQuenMK() throws IOException {
         try {
+            // Load the FXML file
             FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("/fxml/QuenMatKhau_gui.fxml"));
             Parent root = fxmlLoader.load();
+
+            // Create a new stage for the modal dialog
+            Stage modalStage = new Stage();
+            modalStage.initModality(Modality.APPLICATION_MODAL); // Make it modal
+            modalStage.initOwner(stage); // Set the owner to the main stage
+
+            // Create and set the scene
             Scene scene = new Scene(root, 600, 400);
-            stage.setScene(scene);
-            stage.setTitle("Quên mật khẩu");
-            stage.show();
+            modalStage.setScene(scene);
+
+            // Set the title
+            modalStage.setTitle("Quên mật khẩu");
+
+            // Center the dialog on the screen
+            Rectangle2D screenBounds = Screen.getPrimary().getVisualBounds();
+            modalStage.setX((screenBounds.getWidth() - scene.getWidth()) / 2);
+            modalStage.setY((screenBounds.getHeight() - scene.getHeight()) / 2);
+
+            // Show the dialog and wait for it to be closed
+            modalStage.showAndWait();
         } catch (NullPointerException ex) {
             System.err.println("Không tìm thấy file QuenMatKhau_gui.fxml: " + ex.getMessage());
             ex.printStackTrace();

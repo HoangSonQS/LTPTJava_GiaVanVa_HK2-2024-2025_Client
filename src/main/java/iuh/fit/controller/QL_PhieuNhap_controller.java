@@ -5,7 +5,10 @@ import iuh.fit.interfaces.PhieuNhapHang_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.PhieuNhapHang;
 import iuh.fit.entities.TaiKhoan;
-import iuh.fit.daos.PhieuNhapHang_dao;
+
+import iuh.fit.security.Permission;
+import iuh.fit.security.PermissionChecker;
+import iuh.fit.security.SecurityContext;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.collections.FXCollections;
@@ -296,108 +299,143 @@ public class QL_PhieuNhap_controller implements Initializable {
 
     @FXML
     void handleQuanLyClick(MouseEvent event) {
+        // No specific permission check needed here as the submenu items will be checked individually
         toolsSlider(quanLySubVBox, quanLySubMenuList);
         removeOtherMenus(quanLySubVBox);
     }
 
     @FXML
     void handleThongKeClick(MouseEvent event) {
-        toolsSlider(thongKeSubVBox, thongKeSubMenuList);
-        removeOtherMenus(thongKeSubVBox);
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            toolsSlider(thongKeSubVBox, thongKeSubMenuList);
+            removeOtherMenus(thongKeSubVBox);
+        });
     }
 
     @FXML
     void handleTimKiemClick(MouseEvent event) throws IOException {
-        try {
-            loadFXML("/fxml/TraCuu_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
-            toolsSlider(timKiemSubVBox, timKiemSubMenuList);
-            removeOtherMenus(timKiemSubVBox);
-            App.loadFXML("TraCuu_gui");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_SAN_PHAM, () -> {
+            try {
+                loadFXML("/fxml/TraCuu_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện tra cứu: " + e.getMessage());
+                toolsSlider(timKiemSubVBox, timKiemSubMenuList);
+                removeOtherMenus(timKiemSubVBox);
+                try {
+                    App.loadFXML("TraCuu_gui");
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        });
     }
 
 
     @FXML
     void toQLHoaDon(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_HoaDon_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_HOA_DON, () -> {
+            try {
+                loadFXML("/fxml/QL_HoaDon_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý hóa đơn!");
+            }
+        });
     }
 
     @FXML
     void toQLKhachHang(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_KhachHang_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_KHACH_HANG, () -> {
+            try {
+                loadFXML("/fxml/QL_KhachHang_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý khách hàng!");
+            }
+        });
     }
 
     @FXML
     void toQLNhanVien(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_NhanVien_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_NHAN_VIEN, () -> {
+            try {
+                loadFXML("/fxml/QL_NhanVien_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý nhân viên!");
+            }
+        });
     }
 
     @FXML
     void toQLPhieuNhap(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_PHIEU_NHAP, () -> {
+            try {
+                loadFXML("/fxml/QL_PhieuNhap_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý phiếu nhập!");
+            }
+        });
     }
 
     @FXML
     void toQLSanPham(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_SanPham_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_SAN_PHAM, () -> {
+            try {
+                loadFXML("/fxml/QL_SanPham_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý sản phẩm!");
+            }
+        });
     }
 
     @FXML
     void toQLTaiKhoan(MouseEvent event) {
-        try {
-            loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.QUAN_LY_TAI_KHOAN, () -> {
+            try {
+                loadFXML("/fxml/QL_TaiKhoan_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện quản lý tài khoản!");
+            }
+        });
     }
 
     @FXML
     void toTKDoanhThu(MouseEvent event) {
-        try {
-            loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            try {
+                loadFXML("/fxml/ThongKeDoanhThu_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê doanh thu!");
+            }
+        });
     }
 
     @FXML
     void toTKSanPham(MouseEvent event) {
-        try {
-            loadFXML("/fxml/ThongKeSanPham_gui.fxml");
-        } catch (Exception e) {
-            e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
-        }
+        // Check permission before proceeding
+        PermissionChecker.checkPermissionAndExecute(Permission.THONG_KE, () -> {
+            try {
+                loadFXML("/fxml/ThongKeSanPham_gui.fxml");
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể mở giao diện thống kê sản phẩm!");
+            }
+        });
     }
 
     private void showAlert(Alert.AlertType alertType, String title, String content) {

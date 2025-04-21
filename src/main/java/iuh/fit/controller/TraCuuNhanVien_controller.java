@@ -4,6 +4,9 @@ import iuh.fit.App;
 import iuh.fit.interfaces.NhanVien_interface;
 import iuh.fit.entities.NhanVien;
 import iuh.fit.entities.TaiKhoan;
+import iuh.fit.security.Permission;
+import iuh.fit.security.PermissionChecker;
+import iuh.fit.security.SecurityContext;
 import javafx.animation.FadeTransition;
 import javafx.animation.Interpolator;
 import javafx.beans.property.SimpleStringProperty;
@@ -565,22 +568,35 @@ public class TraCuuNhanVien_controller implements Initializable {
                 return;
             }
 
-            try {
-                String fxmlFile = switch (selectedValue) {
-                    case "Sản phẩm" -> "TraCuu_gui";
-                    case "Tài khoản" -> "TraCuuTaiKhoan_gui";
-                    case "Hoá đơn" -> "TraCuuHoaDon_gui";
-                    case "Phiếu nhập" -> "TraCuuPhieuNhap_gui";
-                    case "Khách hàng" -> "TraCuuKhachHang_gui";
-                    default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
-                };
+            // Determine the required permission based on the selected value
+            Permission requiredPermission = switch (selectedValue) {
+                case "Sản phẩm" -> Permission.QUAN_LY_SAN_PHAM;
+                case "Tài khoản" -> Permission.QUAN_LY_TAI_KHOAN;
+                case "Hoá đơn" -> Permission.QUAN_LY_HOA_DON;
+                case "Phiếu nhập" -> Permission.QUAN_LY_PHIEU_NHAP;
+                case "Khách hàng" -> Permission.QUAN_LY_KHACH_HANG;
+                default -> Permission.QUAN_LY_NHAN_VIEN;
+            };
 
-                loadFXML("/fxml/" + fxmlFile + ".fxml");
+            // Check permission before proceeding
+            PermissionChecker.checkPermissionAndExecute(requiredPermission, () -> {
+                try {
+                    String fxmlFile = switch (selectedValue) {
+                        case "Sản phẩm" -> "TraCuu_gui";
+                        case "Tài khoản" -> "TraCuuTaiKhoan_gui";
+                        case "Hoá đơn" -> "TraCuuHoaDon_gui";
+                        case "Phiếu nhập" -> "TraCuuPhieuNhap_gui";
+                        case "Khách hàng" -> "TraCuuKhachHang_gui";
+                        default -> throw new IllegalArgumentException("Unexpected value: " + selectedValue);
+                    };
 
-            } catch (Exception e) {
-                showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
-                ccb_GiaoDien.setValue("Nhân viên");
-            }
+                    loadFXML("/fxml/" + fxmlFile + ".fxml");
+
+                } catch (Exception e) {
+                    showError("Lỗi chuyển giao diện", "Không thể mở giao diện Tra cứu " + selectedValue.toLowerCase());
+                    ccb_GiaoDien.setValue("Nhân viên");
+                }
+            });
         });
     }
 

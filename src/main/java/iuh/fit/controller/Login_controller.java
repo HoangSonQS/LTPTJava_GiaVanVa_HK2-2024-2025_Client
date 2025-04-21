@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 import iuh.fit.App;
 import iuh.fit.interfaces.TaiKhoan_interface;
 import iuh.fit.entities.TaiKhoan;
+import iuh.fit.security.AuthenticationService;
+import iuh.fit.security.SecurityContext;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -37,6 +39,7 @@ public class Login_controller implements Initializable {
     private Hyperlink linkForgotPassword;
 
     private TaiKhoan_interface taiKhoanDao;
+    private AuthenticationService authService;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -46,6 +49,7 @@ public class Login_controller implements Initializable {
             System.setProperty("java.rmi.server.hostname", "LAPTOP-O8OOBHDK");
             java.rmi.registry.Registry registry = java.rmi.registry.LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
             taiKhoanDao = (TaiKhoan_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/taiKhoanDAO");
+            authService = new AuthenticationService(taiKhoanDao);
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(AlertType.ERROR, "Lỗi", "Không thể kết nối đến server: " + e.getMessage());
@@ -108,8 +112,16 @@ public class Login_controller implements Initializable {
 
         // Check login
         try {
-            TaiKhoan taiKhoan = taiKhoanDao.findByUsernameandPassword(username, password);
-            if (taiKhoan != null) {
+            System.out.println("Attempting to authenticate user: " + username);
+            boolean authenticated = authService.authenticate(username, password);
+            if (authenticated) {
+                // Get the authenticated user from the security context
+                TaiKhoan taiKhoan = SecurityContext.getInstance().getCurrentUser();
+                System.out.println("Authentication successful for user: " + username);
+
+                // Print role information
+                System.out.println("User role: " + SecurityContext.getInstance().getCurrentRole());
+
                 // Save login information
                 App.taiKhoan = taiKhoan;
                 App.user = username;
