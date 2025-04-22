@@ -38,8 +38,8 @@
                         <Font name="Arial" size="20.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtUsername" layoutX="140.0" layoutY="143.0" prefHeight="30.0" prefWidth="170.0" text="shanae.zboncak" />
-                  <PasswordField fx:id="txtPassword" layoutX="140.0" layoutY="198.0" prefHeight="30.0" prefWidth="170.0" text="s90qt102911" />
+                  <TextField fx:id="txtUsername" layoutX="140.0" layoutY="143.0" prefHeight="30.0" prefWidth="170.0" />
+                  <PasswordField fx:id="txtPassword" layoutX="140.0" layoutY="198.0" prefHeight="30.0" prefWidth="170.0" />
                   <Button fx:id="btnLogin" layoutX="90.0" layoutY="265.0" mnemonicParsing="false" onAction="#handleLoginButtonAction" prefHeight="50.0" prefWidth="170.0" style="-fx-background-color: #00CC66;" text="Đăng nhập" textFill="WHITE">
                      <font>
                         <Font name="Arial Bold" size="22.0" />

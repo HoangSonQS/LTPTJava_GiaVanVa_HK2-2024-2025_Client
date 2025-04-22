@@ -34,7 +34,7 @@
                   <Font name="Arial Bold" size="18.0" />
                </font>
             </Label>
-            <Label fx:id="lb_chucVu" alignment="CENTER_RIGHT" layoutX="1356.0" layoutY="40.0" prefHeight="20.0" prefWidth="100.0" text="Quản lý" textFill="WHITE">
+            <Label fx:id="lb_chucVu" alignment="CENTER_RIGHT" layoutX="1256.0" layoutY="40.0" prefHeight="21.0" prefWidth="200.0" text="Quản lý" textFill="WHITE">
                <font>
                   <Font name="Arial Bold" size="18.0" />
                </font>
@@ -351,6 +351,20 @@
                      </rowConstraints>
                   </GridPane>
 
+                     <!-- Payment Summary -->
+                  <GridPane hgap="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" vgap="8">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
+                     </columnConstraints>
+
+                        <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Tổng thanh toán:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                     <Label fx:id="lb_tongThanhToan" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #0000cc;" text="0 VNĐ" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                     <rowConstraints>
+                        <RowConstraints />
+                     </rowConstraints>
+                  </GridPane>
+
                   <!-- Discount Section -->
                   <TitledPane expanded="false" text="Khuyến mãi / Giảm giá">
                      <VBox spacing="10">
@@ -467,20 +481,6 @@
                         </VBox>
                      </VBox>
                   </TitledPane>
-
-                  <!-- Payment Summary -->
-                  <GridPane hgap="10" style="-fx-background-color: #f0f0f0; -fx-padding: 10;" vgap="8">
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="160.0" />
-                     </columnConstraints>
-
-                     <Label style="-fx-font-weight: bold; -fx-font-size: 16;" text="Tổng thanh toán:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                     <Label fx:id="lb_tongThanhToan" style="-fx-font-weight: bold; -fx-font-size: 16; -fx-text-fill: #0000cc;" text="0 VNĐ" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                     <rowConstraints>
-                        <RowConstraints />
-                     </rowConstraints>
-                  </GridPane>
                </VBox>
                <children>
                   <Button fx:id="btn_thanhToan" layoutX="50.0" layoutY="500.0" mnemonicParsing="false" onMouseClicked="#thanhToan" prefHeight="50.0" prefWidth="275.0" style="-fx-background-color: #FF6600;" text="THANH TOÁN" textFill="WHITE">

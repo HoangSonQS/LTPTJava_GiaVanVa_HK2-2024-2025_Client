@@ -2,6 +2,8 @@ package iuh.fit.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -995,7 +997,7 @@ public class BanHang_controller implements Initializable {
      * Tính thuế VAT (8% tổng tiền hàng)
      */
     private double calculateVAT(double subtotal) {
-        return subtotal * 0.08; // 8% VAT
+        return subtotal * 0.1; // 8% VAT
     }
 
     /**
@@ -1088,13 +1090,38 @@ public class BanHang_controller implements Initializable {
                 }
             }
 
+            // Check if hoaDonDao is null
+            if (hoaDonDao == null) {
+                System.out.println("hoaDonDao is null, trying to reconnect...");
+                try {
+                    Registry registry = LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                    hoaDonDao = (HoaDon_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/hoaDonDAO");
+                    if (hoaDonDao == null) {
+                        System.out.println("Failed to reconnect to hoaDonDao");
+                        showAlert(AlertType.ERROR, "Lỗi kết nối", "Không thể kết nối đến dịch vụ hóa đơn!");
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error reconnecting to hoaDonDao: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert(AlertType.ERROR, "Lỗi kết nối", "Không thể kết nối đến dịch vụ hóa đơn: " + e.getMessage());
+                    return;
+                }
+            }
+
             // Create invoice (HoaDon)
+            System.out.println("Creating invoice with ID: " + maHD);
             HoaDon hoaDon = new HoaDon();
             hoaDon.setMaHD(maHD);
             hoaDon.setThoiGian(java.time.LocalDateTime.now());
-            hoaDon.setTongSoLuongSP(productQuantities.values().stream().mapToInt(Integer::intValue).sum());
+
+            int totalQuantity = productQuantities.values().stream().mapToInt(Integer::intValue).sum();
+            System.out.println("Total quantity: " + totalQuantity);
+            hoaDon.setTongSoLuongSP(totalQuantity);
+
             // Tính tổng tiền thanh toán
             double tongTien = calculateTotal();
+            System.out.println("Total amount: " + tongTien);
             hoaDon.setThanhTien(tongTien);
 
             // Lấy thông tin tiền khách trả và tiền thừa
@@ -1104,10 +1131,12 @@ public class BanHang_controller implements Initializable {
                 tienKhachTra = Double.parseDouble(txt_tienKhachTra.getText().trim());
                 // Tính tiền thừa
                 tienThua = tienKhachTra - tongTien;
+                System.out.println("Customer payment: " + tienKhachTra + ", Change: " + tienThua);
             } catch (NumberFormatException e) {
                 // Nếu không thể chuyển đổi, sử dụng giá trị mặc định
                 tienKhachTra = tongTien;
                 tienThua = 0;
+                System.out.println("Using default payment values: " + tienKhachTra + ", Change: " + tienThua);
             }
 
             // Lưu thông tin tiền khách trả và tiền thừa vào hóa đơn
@@ -1119,36 +1148,109 @@ public class BanHang_controller implements Initializable {
             PhuongThucThanhToan phuongThuc = PhuongThucThanhToan.Tien_Mat;
             if (rb_chuyenKhoan != null && rb_chuyenKhoan.isSelected()) {
                 phuongThuc = PhuongThucThanhToan.Chuyen_Khoan;
+                System.out.println("Payment method: Bank transfer");
             } else if (rb_the != null && rb_the.isSelected()) {
                 phuongThuc = PhuongThucThanhToan.The_Ngan_Hang;
+                System.out.println("Payment method: Card");
+            } else {
+                System.out.println("Payment method: Cash");
             }
             hoaDon.setPhuongThucTT(phuongThuc);
+
+            System.out.println("Setting shift: " + caLam.getMaCa());
             hoaDon.setCaLam(caLam);
+
+            System.out.println("Setting customer: " + khachHang.getMaKH() + " - " + khachHang.getTenKH());
             hoaDon.setKhachHang(khachHang);
-            hoaDonDao.create(hoaDon);
+
+            hoaDon.setNhanVien(App.taiKhoan.getNhanVien());
+
+            System.out.println("Saving invoice to database...");
+            boolean result = hoaDonDao.create(hoaDon);
+            if (!result) {
+                System.out.println("Failed to create invoice in database");
+                showAlert(AlertType.ERROR, "Lỗi", "Không thể tạo hóa đơn trong CSDL!");
+                return;
+            }
+            System.out.println("Invoice saved successfully");
+
+            // Check if chiTietHoaDonDao is null
+            if (chiTietHoaDonDao == null) {
+                System.out.println("chiTietHoaDonDao is null, trying to reconnect...");
+                try {
+                    Registry registry = LocateRegistry.getRegistry("LAPTOP-O8OOBHDK", 9090);
+                    chiTietHoaDonDao = (ChiTietHoaDon_SanPham_interface) registry.lookup("rmi://LAPTOP-O8OOBHDK:9090/chiTietHoaDonDAO");
+                    if (chiTietHoaDonDao == null) {
+                        System.out.println("Failed to reconnect to chiTietHoaDonDao");
+                        showAlert(AlertType.ERROR, "Lỗi kết nối", "Không thể kết nối đến dịch vụ chi tiết hóa đơn!");
+                        return;
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error reconnecting to chiTietHoaDonDao: " + e.getMessage());
+                    e.printStackTrace();
+                    showAlert(AlertType.ERROR, "Lỗi kết nối", "Không thể kết nối đến dịch vụ chi tiết hóa đơn: " + e.getMessage());
+                    return;
+                }
+            }
 
             // Create invoice details (ChiTietHoaDon_SanPham)
+            System.out.println("Creating invoice details for " + cartItems.size() + " products");
             for (SanPham sp : cartItems) {
                 int soLuong = productQuantities.getOrDefault(sp.getMaSP(), 0);
+                System.out.println("Processing product: " + sp.getMaSP() + " - " + sp.getTenSP() + ", quantity: " + soLuong);
 
                 // Check stock availability
                 if (sp.getSoLuongTon() < soLuong) {
+                    System.out.println("Insufficient stock for product: " + sp.getMaSP() + ", available: " + sp.getSoLuongTon() + ", needed: " + soLuong);
                     showAlert(AlertType.WARNING, "Thông báo", "Sản phẩm " + sp.getTenSP() + " không đủ số lượng trong kho!");
                     return;
                 }
 
-                ChiTietHoaDon_SanPhamId chiTietId = new ChiTietHoaDon_SanPhamId(maHD, sp.getMaSP());
-                ChiTietHoaDon_SanPham chiTiet = new ChiTietHoaDon_SanPham();
-                chiTiet.setId(chiTietId);
-                chiTiet.setSoLuongSP(soLuong);
-                chiTiet.setDonGia(sp.getGiaBan());
-                chiTiet.setHoaDon(hoaDon);
-                chiTiet.setSanPham(sp);
-                chiTietHoaDonDao.create(chiTiet);
+                try {
+                    // Create the composite ID
+                    ChiTietHoaDon_SanPhamId chiTietId = new ChiTietHoaDon_SanPhamId();
+                    chiTietId.setMaHD(maHD);
+                    chiTietId.setMaSP(sp.getMaSP());
+                    System.out.println("Created composite ID: " + chiTietId.getMaHD() + " - " + chiTietId.getMaSP());
+
+                    // Create the detail object
+                    ChiTietHoaDon_SanPham chiTiet = new ChiTietHoaDon_SanPham();
+                    chiTiet.setId(chiTietId);
+                    chiTiet.setSoLuongSP(soLuong);
+                    chiTiet.setDonGia(sp.getGiaBan());
+                    chiTiet.setHoaDon(hoaDon);
+                    chiTiet.setSanPham(sp);
+                    System.out.println("Created invoice detail object with quantity: " + soLuong + ", price: " + sp.getGiaBan());
+
+                    // Save the detail
+                    System.out.println("Saving invoice detail to database...");
+                    boolean detailResult = chiTietHoaDonDao.create(chiTiet);
+                    if (!detailResult) {
+                        System.out.println("Failed to create invoice detail in database");
+                        showAlert(AlertType.ERROR, "Lỗi", "Không thể tạo chi tiết hóa đơn trong CSDL!");
+                    } else {
+                        System.out.println("Invoice detail saved successfully");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error creating invoice detail: " + e.getMessage());
+                    e.printStackTrace();
+                }
 
                 // Update stock
-                sp.setSoLuongTon(sp.getSoLuongTon() - soLuong);
-                sanPhamDao.update(sp);
+                try {
+                    System.out.println("Updating stock for product: " + sp.getMaSP() + ", current stock: " + sp.getSoLuongTon() + ", reducing by: " + soLuong);
+                    sp.setSoLuongTon(sp.getSoLuongTon() - soLuong);
+                    boolean updateResult = sanPhamDao.update(sp);
+                    if (!updateResult) {
+                        System.out.println("Failed to update stock in database");
+                        showAlert(AlertType.ERROR, "Lỗi", "Không thể cập nhật số lượng tồn trong CSDL!");
+                    } else {
+                        System.out.println("Stock updated successfully, new stock: " + sp.getSoLuongTon());
+                    }
+                } catch (Exception e) {
+                    System.out.println("Error updating stock: " + e.getMessage());
+                    e.printStackTrace();
+                }
             }
 
             // Clear cart and refresh UI

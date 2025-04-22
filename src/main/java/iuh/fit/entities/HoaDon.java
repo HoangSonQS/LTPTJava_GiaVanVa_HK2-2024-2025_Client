@@ -49,7 +49,7 @@ public class HoaDon implements Serializable {
     @ToString.Exclude
     private Set<ChiTietHoaDon_SanPham> chiTietHoaDonSanPhams = new HashSet<>();
     //check
-    @ManyToOne
+    @ManyToOne(optional = false)
     @JoinColumn(name = "MaNV", nullable = false)
     private NhanVien nhanVien;
     //check
