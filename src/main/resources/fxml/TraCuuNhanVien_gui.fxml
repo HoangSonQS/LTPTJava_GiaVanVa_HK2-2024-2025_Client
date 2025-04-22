@@ -71,12 +71,12 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_maNV" layoutX="124.0" layoutY="180.0" text="Trống">
+            <Label fx:id="lb_maNV" layoutX="125.0" layoutY="180.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_tenNV" layoutX="124.0" layoutY="220.0" text="Trống">
+            <Label fx:id="lb_tenNV" layoutX="125.0" layoutY="220.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
@@ -86,7 +86,7 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_cccd" layoutX="124.0" layoutY="260.0" text="Trống">
+            <Label fx:id="lb_cccd" layoutX="125.0" layoutY="260.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
@@ -96,52 +96,52 @@
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_diaChi" layoutX="124.0" layoutY="300.0" text="Trống">
+            <Label fx:id="lb_diaChi" alignment="TOP_LEFT" layoutX="125.0" layoutY="300.0" maxWidth="170.0" prefHeight="60.0" prefWidth="170.0" text="Trống" wrapText="true">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="15.0" layoutY="340.0" text="Email:">
+            <Label layoutX="15.0" layoutY="360.0" text="Email:">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_email" layoutX="124.0" layoutY="340.0" text="Trống">
+            <Label fx:id="lb_email" layoutX="125.0" layoutY="360.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="15.0" layoutY="380.0" text="Số điện thoại:">
+            <Label layoutX="15.0" layoutY="400.0" text="Số điện thoại:">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_sdt" layoutX="124.0" layoutY="380.0" text="Trống">
+            <Label fx:id="lb_sdt" layoutX="125.0" layoutY="400.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="15.0" layoutY="420.0" text="Ngày sinh:">
+            <Label layoutX="15.0" layoutY="440.0" text="Ngày sinh:">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_ngaySinh" layoutX="124.0" layoutY="420.0" text="Trống">
+            <Label fx:id="lb_ngaySinh" layoutX="125.0" layoutY="440.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label layoutX="15.0" layoutY="460.0" text="Chức vụ:">
+            <Label layoutX="15.0" layoutY="480.0" text="Chức vụ:">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Label fx:id="lb_chucVu" layoutX="124.0" layoutY="460.0" text="Trống">
+            <Label fx:id="lb_chucVu" layoutX="125.0" layoutY="480.0" text="Trống">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <Button fx:id="btn_qlNhanVien" layoutX="52.0" layoutY="520.0" mnemonicParsing="false" onMouseClicked="#toQLNhanVien" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý nhân viên" textFill="WHITE">
+            <Button fx:id="btn_qlNhanVien" layoutX="50.0" layoutY="540.0" mnemonicParsing="false" onMouseClicked="#toQLNhanVien" prefHeight="40.0" prefWidth="185.0" style="-fx-background-color: #CC33FF;" text="Đến quản lý nhân viên" textFill="WHITE">
                <font>
                   <Font size="16.0" />
                </font>

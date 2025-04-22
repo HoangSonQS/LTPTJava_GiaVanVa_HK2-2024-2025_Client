@@ -12,7 +12,7 @@ repositories {
 }
 
 javafx {
-    version = "21"
+    version = "23"
     modules = [ 'javafx.controls', 'javafx.fxml' ]
 }
 
@@ -35,7 +35,7 @@ tasks.withType(AbstractArchiveTask) {
 
 // Không cần cấu hình module path vì đã vô hiệu hóa Java Module System
 //mainClassName = 'Main'
-mainClassName = 'App'
+mainClassName = 'iuh.fit.App'
 ext {
     junitVersion = '5.10.2'
 }
