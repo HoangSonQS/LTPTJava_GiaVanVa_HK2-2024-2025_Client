@@ -1,6 +1,7 @@
 package iuh.fit.controller;
 
 import iuh.fit.App;
+import iuh.fit.daos.KhachHang_dao;
 import iuh.fit.interfaces.HoaDon_interface;
 import iuh.fit.interfaces.KhachHang_interface;
 import iuh.fit.entities.HoaDon;
@@ -30,8 +31,10 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -500,8 +503,23 @@ public class QL_KhachHang_controller implements Initializable {
         try {
             // Lấy thông tin từ các trường nhập liệu
             String maKH = txt_MaKH.getText();
+            if (maKH.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn khách hàng để sửa!");
+                return;
+            }
             String tenKH = txt_TenKH.getText();
+            if (tenKH.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên khách hàng!");
+                return;
+            }
             String sdt = txt_SDT.getText();
+            if (sdt.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập số điện thoại!");
+                return;
+            }else if (!sdt.matches("\\d{10}")) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại không hợp lệ!");
+                return;
+            }
 
             // Tạo đối tượng KhachHang mới
             KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
@@ -533,10 +551,20 @@ public class QL_KhachHang_controller implements Initializable {
     void themKH(MouseEvent event) {
         try{
             // Lấy thông tin từ các trường nhập liệu
-            String maKH = txt_MaKH.getText();
+            String maKH = taoMaKH();
             String tenKH = txt_TenKH.getText();
+            if (tenKH.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên khách hàng!");
+                return;
+            }
             String sdt = txt_SDT.getText();
-
+            if (sdt.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập số điện thoại!");
+                return;
+            }else if (!sdt.matches("\\d{10}")) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại không hợp lệ!");
+                return;
+            }
             // Tạo đối tượng KhachHang mới
             KhachHang khachHang = new KhachHang(maKH, tenKH, sdt);
 
@@ -562,6 +590,20 @@ public class QL_KhachHang_controller implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm khách hàng!");
         }
 
+    }
+    private String taoMaKH(){
+        LocalDate today = LocalDate.now();
+        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format("%02d", today.getMonthValue());
+        String year = String.valueOf(today.getYear()).substring(2); // Lấy 2 số cuối năm
+
+        String prefix = "KH" + year + month + day;
+
+        Random rand = new Random();
+        int soNgauNhien = 100000 + rand.nextInt(900000); // Tạo số ngẫu nhiên 6 chữ số
+
+        String maKH = prefix + soNgauNhien;
+        return maKH;
     }
     @FXML
     void xoaKH(MouseEvent event) {
@@ -650,6 +692,7 @@ public class QL_KhachHang_controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_MaKH.setEditable(false);
         initializeNhanVien();
         addMenusToMap();
         loadTableData();

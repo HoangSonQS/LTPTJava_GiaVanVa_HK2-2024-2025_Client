@@ -29,9 +29,11 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 public class QL_TaiKhoan_controller implements Initializable {
@@ -539,8 +541,15 @@ public class QL_TaiKhoan_controller implements Initializable {
             String maTK = txt_MaTK.getText();
             String maNV = txt_MaNV.getText();
             String tenDN = txt_tenDN.getText();
+            if(tenDN.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Tên đăng nhập không được để trống!");
+                return;
+            }
             LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
-
+            if(thoiGian == null) {
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Thời gian không được để trống!");
+                return;
+            }
 
             // Sử dụng DAO interface
             System.setProperty("java.security.policy", "rmi.policy");
@@ -567,9 +576,13 @@ public class QL_TaiKhoan_controller implements Initializable {
     void themTK(MouseEvent event) {
         try{
             // Lấy thông tin từ các ô nhập liệu
-            String maTK = txt_MaTK.getText();
-            String maNV = txt_MaNV.getText();
+            String maTK = taoMaTK();
+            String maNV = QL_NhanVien_controller.taoMaNV();
             String tenDN = txt_tenDN.getText();
+            if(tenDN.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Lỗi", "Tên đăng nhập không được để trống!");
+                return;
+            }
             LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
 
             // Sử dụng DAO interface
@@ -592,6 +605,23 @@ public class QL_TaiKhoan_controller implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm tài khoản: " + e.getMessage());
         }
     }
+
+    private String taoMaTK() {
+        LocalDate today = LocalDate.now();
+        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format("%02d", today.getMonthValue());
+        String year = String.valueOf(today.getYear()).substring(2); // 2 số cuối năm
+
+        String prefix = "TK" + year + month + day;
+
+        Random rand = new Random();
+        int soNgauNhien = 100000 + rand.nextInt(900000); // Tạo số ngẫu nhiên 6 chữ số
+
+        String maKH = prefix + soNgauNhien;
+
+        return maKH;
+    }
+
     private void loadFXML(String fxmlPath) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
         Scene scene = new Scene(root);
@@ -647,6 +677,8 @@ public class QL_TaiKhoan_controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_MaTK.setEditable(false);
+        txt_MaNV.setEditable(false);
         initializeNhanVien();
         addMenusToMap();
         loadTableData();

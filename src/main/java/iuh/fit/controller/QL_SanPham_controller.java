@@ -34,10 +34,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static iuh.fit.App.loadFXML;
 
@@ -540,16 +537,51 @@ public class QL_SanPham_controller implements Initializable {
             // Lấy thông tin từ các trường nhập liệu
             String maSP = txt_MaSP.getText();
             String tenSP = txt_tenSP.getText();
+            if (tenSP.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên sản phẩm!");
+                return;
+            }
             LoaiHang loaiHang = txt_loaiHang.getValue();
+            if (loaiHang == null) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn loại hàng!");
+                return;
+            }
             String nhaCC = txt_NhaCC.getText();
+            if (nhaCC.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập nhà cung cấp!");
+                return;
+            }
             double giaNhap = Double.parseDouble(txt_GiaNhap.getText());
+            if (giaNhap <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá nhập phải lớn hơn 0!");
+                return;
+            }
             double giaBan = Double.parseDouble(txt_GiaBan.getText());
+            if (giaBan <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá bán phải lớn hơn 0!");
+                return;
+            } else if (giaBan < giaNhap) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá bán phải lớn hơn giá nhập!");
+                return;
+            }
 
             // Ngày sản xuất và hạn sử dụng
             LocalDateTime ngaySXWithTime = txt_NgaySX.getValue().atStartOfDay();
+            if (ngaySXWithTime.isAfter(LocalDateTime.now())) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Ngày sản xuất không được lớn hơn ngày hiện tại!");
+                return;
+            }
             LocalDateTime hanSDWithTime = txt_hanSD.getValue().atStartOfDay();
+            if (hanSDWithTime.isBefore(ngaySXWithTime)) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Hạn sử dụng không được nhỏ hơn ngày sản xuất!");
+                return;
+            }
 
             int soLuongTon = Integer.parseInt(txt_SoLuongTon.getText());
+            if (soLuongTon < 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số lượng tồn phải lớn hơn hoặc bằng 0!");
+                return;
+            }
 
             // Tạo sản phẩm mới
             SanPham sp = new SanPham(maSP, tenSP, nhaCC, soLuongTon, giaNhap, giaBan,
@@ -581,24 +613,59 @@ public class QL_SanPham_controller implements Initializable {
     void themSP(MouseEvent event) {
         try {
             // Lấy thông tin từ các trường nhập liệu
-            String maSP = txt_MaSP.getText();
+            String maSP = taomaSP();
             String tenSP = txt_tenSP.getText();
+            if (tenSP.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên sản phẩm!");
+                return;
+            }
             LoaiHang loaiHang = txt_loaiHang.getValue();
+            if (loaiHang == null) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn loại hàng!");
+                return;
+            }
             String nhaCC = txt_NhaCC.getText();
+            if (nhaCC.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập nhà cung cấp!");
+                return;
+            }
             double giaNhap = Double.parseDouble(txt_GiaNhap.getText());
+            if (giaNhap <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá nhập phải lớn hơn 0!");
+                return;
+            }
             double giaBan = Double.parseDouble(txt_GiaBan.getText());
+            if (giaBan <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá bán phải lớn hơn 0!");
+                return;
+            }else if (giaBan < giaNhap) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Giá bán phải lớn hơn giá nhập!");
+                return;
+            }
 
             String textNgaySX = txt_NgaySX.getValue().toString();
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             LocalDate ngaySX = LocalDate.parse(textNgaySX, formatter); // Sử dụng LocalDate
             LocalDateTime ngaySXWithTime = ngaySX.atStartOfDay(); // Chuyển đổi thành LocalDateTime, giờ mặc định là 00:00:00
+            if (ngaySX.isAfter(LocalDate.now())) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Ngày sản xuất không được lớn hơn ngày hiện tại!");
+                return;
+            }
 
             String textHanSD = txt_hanSD.getValue().toString();
             LocalDate hanSD = LocalDate.parse(textHanSD, formatter); // Sử dụng LocalDate
             LocalDateTime hanSDWithTime = hanSD.atStartOfDay(); // Chuyển đổi thành LocalDateTime, giờ mặc định là 00:00:00
+            if (hanSD.isBefore(ngaySX)) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Hạn sử dụng không được nhỏ hơn ngày sản xuất!");
+                return;
+            }
 
 
             int soLuongTon = Integer.parseInt(txt_SoLuongTon.getText());
+            if (soLuongTon < 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số lượng tồn phải lớn hơn hoặc bằng 0!");
+                return;
+            }
 
             // Tạo đối tượng SanPham mới
             SanPham sanPham = new SanPham(maSP, tenSP, nhaCC, soLuongTon, giaNhap, giaBan, ngaySXWithTime, hanSDWithTime, LocalDateTime.now(),loaiHang);
@@ -623,6 +690,22 @@ public class QL_SanPham_controller implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm sản phẩm!");
         }
+    }
+
+    private String taomaSP() {
+        LocalDate today = LocalDate.now();
+        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format("%02d", today.getMonthValue());
+        String year = String.valueOf(today.getYear()).substring(2); // 2 số cuối năm
+
+        String prefix = "SP" + year + month + day;
+
+        Random rand = new Random();
+        int soNgauNhien = 100000 + rand.nextInt(900000); // Tạo số ngẫu nhiên 6 chữ số
+
+        String maKH = prefix + soNgauNhien;
+
+        return maKH;
     }
 
     @FXML
@@ -665,6 +748,9 @@ public class QL_SanPham_controller implements Initializable {
         txt_NgaySX.setValue(null);
         txt_hanSD.setValue(null);
         txt_SoLuongTon.setText("");
+
+        // Xóa dữ liệu trong bảng
+        table_SP.getItems().clear();
     }
 
 
@@ -739,6 +825,7 @@ public class QL_SanPham_controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_MaSP.setEditable(false);
         addMenusToMap();
         initializeNhanVien();
         loadTableData();

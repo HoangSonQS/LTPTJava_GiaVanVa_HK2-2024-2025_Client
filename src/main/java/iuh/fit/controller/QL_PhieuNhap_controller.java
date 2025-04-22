@@ -29,9 +29,11 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -572,12 +574,31 @@ public class QL_PhieuNhap_controller implements Initializable {
     void them_PNhap(MouseEvent event) {
         try{
             // Lấy thông tin từ các trường nhập liệu
-            String maPhieuNhap = txt_MaPhieuNhap.getText();
-            String maNV = txt_MaNV.getText();
-            String tenNV = txt_TenNV.getText();
+            String maPhieuNhap = taoMaPN();
+            String maNV = App.taiKhoan.getNhanVien().getMaNV();
+            String tenNV = App.taiKhoan.getNhanVien().getTenNV();
             int soLuongSP = Integer.parseInt(txt_SoSP.getText());
+            // Kiểm tra xem số lượng sản phẩm có hợp lệ không
+            if (soLuongSP <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số lượng sản phẩm không hợp lệ!");
+                return;
+            }
+
             double thanhTien = Double.parseDouble(txt_ThanhTien.getText());
+            // Kiểm tra xem thành tiền có hợp lệ không
+            if (thanhTien <= 0) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Thành tiền không hợp lệ!");
+                return;
+            }
             LocalDateTime thoiGian = LocalDateTime.parse(txt_ThoiGian.getText());
+            // Kiểm tra xem thời gian có hợp lệ không
+            if (thoiGian == null) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Thời gian không hợp lệ!");
+                return;
+            }else if (thoiGian.isBefore(LocalDateTime.now())) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Thời gian không hợp lệ!");
+                return;
+            }
 
             // Tạo đối tượng PhieuNhapHang
             PhieuNhapHang phieuNhapHang = new PhieuNhapHang(maPhieuNhap, maNV, tenNV,thoiGian, soLuongSP, thanhTien);
@@ -599,8 +620,27 @@ public class QL_PhieuNhap_controller implements Initializable {
         }
     }
 
+    private String taoMaPN() {
+        LocalDate today = LocalDate.now();
+        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format("%02d", today.getMonthValue());
+        String year = String.valueOf(today.getYear()).substring(2); // 2 số cuối năm
+
+        String prefix = "PN" + year + month + day;
+
+        Random rand = new Random();
+        int soNgauNhien = 100000 + rand.nextInt(900000); // Tạo số ngẫu nhiên 6 chữ số
+
+        String maKH = prefix + soNgauNhien;
+
+        return maKH;
+    }
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_MaPhieuNhap.setEditable(false);
+        txt_MaNV.setEditable(false);
+
         initializeNhanVien();
         addMenusToMap();
         loadTableData();

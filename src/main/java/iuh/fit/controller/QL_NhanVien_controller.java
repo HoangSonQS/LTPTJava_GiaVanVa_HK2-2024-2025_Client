@@ -35,6 +35,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.ResourceBundle;
 
 import static iuh.fit.App.loadFXML;
@@ -532,12 +533,52 @@ public class QL_NhanVien_controller implements Initializable {
             // Lấy thông tin nhân viên từ các trường nhập liệu
             String maNV = txt_MaNV.getText();
             String tenNV = txt_TenNV.getText();
+            if (tenNV == null || tenNV.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên nhân viên!");
+                return;
+            }
             String cccd = txt_CCCD.getText();
+            if (cccd == null || cccd.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập CCCD!");
+                return;
+            }else if(cccd.length() != 12){
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "CCCD phải có 12 ký tự!");
+                return;
+            }
             String sdt = txt_SDT.getText();
+            if (sdt == null || sdt.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập số điện thoại!");
+                return;
+            }else if(sdt.length() != 10){
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại phải có 10 ký tự!");
+                return;
+            } else if (!sdt.matches("\\d+")) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại chỉ được chứa các ký tự số!");
+                return;
+            }
             String email = txt_Email.getText();
+            if (email == null || email.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập email!");
+                return;
+            }else if(!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")){
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Email không hợp lệ!");
+                return;
+            }
             String ngaySinh = txt_ngaySinh.getValue().toString();
+            if (ngaySinh == null || ngaySinh.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập ngày sinh!");
+                return;
+            }
             ChucVu chucVu = txt_chucVu.getValue();
+            if (chucVu == null) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn chức vụ!");
+                return;
+            }
             String diaChi = txt_DiaChi.getText();
+            if (diaChi == null || diaChi.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập địa chỉ!");
+                return;
+            }
             // Tạo đối tượng NhanVien mới
             NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
 
@@ -569,14 +610,54 @@ public class QL_NhanVien_controller implements Initializable {
     void themNV(MouseEvent event) {
         try{
             // Lấy thông tin nhân viên từ các trường nhập liệu
-            String maNV = txt_MaNV.getText();
+            String maNV = taoMaNV();
             String tenNV = txt_TenNV.getText();
+            if (tenNV == null || tenNV.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập tên nhân viên!");
+                return;
+            }
             String cccd = txt_CCCD.getText();
+            if (cccd == null || cccd.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập CCCD!");
+                return;
+            }else if(cccd.length() != 12){
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "CCCD phải có 12 ký tự!");
+                return;
+            }
             String sdt = txt_SDT.getText();
+            if (sdt == null || sdt.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập số điện thoại!");
+                return;
+            }else if(sdt.length() != 10){
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại phải có 10 ký tự!");
+                return;
+            } else if (!sdt.matches("\\d+")) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Số điện thoại chỉ được chứa các ký tự số!");
+                return;
+            }
             String email = txt_Email.getText();
+            if (email == null || email.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập email!");
+                return;
+            } else if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Email không hợp lệ!");
+                return;
+            }
             String ngaySinh = txt_ngaySinh.getValue().toString();
+            if (ngaySinh == null || ngaySinh.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập ngày sinh!");
+                return;
+            }
             ChucVu chucVu = txt_chucVu.getValue();
+            if (chucVu == null) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng chọn chức vụ!");
+                return;
+            }
             String diaChi = txt_DiaChi.getText();
+            if (diaChi == null || diaChi.isEmpty()) {
+                showAlert(Alert.AlertType.WARNING, "Cảnh báo", "Vui lòng nhập địa chỉ!");
+                return;
+            }
 
             // Tạo đối tượng NhanVien mới
             NhanVien nv = new NhanVien(maNV, tenNV, cccd, diaChi, email, sdt, LocalDate.parse(ngaySinh), chucVu, null);
@@ -602,6 +683,22 @@ public class QL_NhanVien_controller implements Initializable {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Lỗi", "Không thể thêm nhân viên!");
         }
+    }
+
+    public static String taoMaNV() {
+        LocalDate today = LocalDate.now();
+        String day = String.format("%02d", today.getDayOfMonth());
+        String month = String.format("%02d", today.getMonthValue());
+        String year = String.valueOf(today.getYear()).substring(2); // 2 số cuối năm
+
+        String prefix = "NV" + year + month + day;
+
+        Random rand = new Random();
+        int soNgauNhien = 100000 + rand.nextInt(900000); // Tạo số ngẫu nhiên 6 chữ số
+
+        String maNV = prefix + soNgauNhien;
+
+        return maNV;
     }
 
 
@@ -715,6 +812,7 @@ public class QL_NhanVien_controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        txt_MaNV.setEditable(false);
         addMenusToMap();
         initializeNhanVien();
         loadTableData();
